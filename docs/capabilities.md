@@ -70,6 +70,12 @@ Command: `.venv\Scripts\python.exe -m pytest -q`
 
 Outcome after MCP SDK pin `mcp==1.30.0`: **PASS**, `10 passed in 6.14s`. Tests cover all 3 decisions, no-candidate monitoring, unsimulated-action rejection, approval, execute/verify/rollback, graph-copy cleanup, scripted traces, and mock API flow.
 
+## Graph physics UI update (2026-10-16)
+
+- `ui/index.html` uses Cytoscape.js's built-in CoSE force-directed layout; no new dependency was added.
+- Browser JavaScript passed `node --check`; the rebuilt Compose app returned HTTP 200 and served the physics configuration and rerun control.
+- Browser visual QA remains outstanding.
+
 ## Benchmark (2026-10-16)
 
 Command: `python -m bench.run_benchmark` with `MOCK_LLM=1` and the default `BENCH_N=30`.

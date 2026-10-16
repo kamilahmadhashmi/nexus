@@ -24,6 +24,8 @@ flowchart LR
 
 In real mode, the LLM orchestrates the investigation; FalkorDB provides the graph evidence, and deterministic analysis constrains the action. In scripted mode, the application calls the same tools in a fixed order without an LLM. Scripted mode proves engine behavior; it is not AI tool selection.
 
+The attack graph uses Cytoscape.js's built-in CoSE force-directed physics layout. It animates into position, supports dragging nodes, and provides a **Re-run physics** control. See the [Cytoscape.js layout docs](https://js.cytoscape.org/index.html).
+
 ## FalkorDB graph model
 
 The deterministic seed creates synthetic `Person`, `Device`, `Server`, `ServiceAccount`, `Service`, `DataStore`, `Vulnerability`, `IPAddress`, and `Alert` nodes. Typed relationships model ownership, logins, access, credentials, authentication, reads, dependencies, usage, and alert attribution. Cypher traverses up to seven hops to critical data stores and filters inactive nodes and edges. `GRAPH.COPY` creates disposable what-if graphs; executed containment writes status fields rather than deleting graph entities.

@@ -8,6 +8,8 @@ NEXUS is a Track 1 hackathon prototype for investigating synthetic cybersecurity
 
 **Current verified state (2026-10-16):** B8–B21 core work is implemented in C:\Users\KIIT\Desktop\nexus_win. Gate A, Gate B, the 10-test pytest suite, mock HTTP flow, MCP stdio discovery/call, the 30-alert deterministic benchmark, and packaged Compose startup/ALT-1042 investigation have passed. The app runs at http://localhost:8080 when Compose is up. No API key was configured, so real LLM tool selection has not been run. Browser visual review, fresh-clone rehearsal, public repo, and demo recording remain outstanding.
 
+**Graph physics UI update (2026-10-16):** The attack graph uses Cytoscape.js's built-in CoSE force-directed layout, animates into position, allows dragging nodes, and has a **Re-run physics** control. No layout dependency was added. The Compose image was rebuilt; localhost:8080 returned HTTP 200 and served the physics config and control. Browser visual QA remains outstanding.
+
 ### Documentation recovery note
 
 During a documentation update on 2026-10-16, an accidental empty file patch truncated the previous 44 KB stuff.md. The local Git repository had no commits, so the previous file could not be restored from Git. This handover has been reconstructed from the supplied continuity-rule attachment, the three pasted planning/resource files, PROJECT.md, docs/capabilities.md, current source, and outputs captured during this session. It records verified current facts and important prior decisions; where earlier detail could not be recovered verbatim, it is summarized rather than presented as an exact transcript.
