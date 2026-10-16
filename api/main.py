@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from agent import loop
 from engine import execute, store
 from engine.db import graph
+from seed.generate import build as rebuild_demo_graph
 
 app = FastAPI(title="NEXUS")
 
@@ -29,6 +30,13 @@ def alerts():
         "MATCH (a:Alert) RETURN a.id, a.type, a.raw_text ORDER BY a.id"
     ).result_set
     return [{"id": row[0], "type": row[1], "raw_text": row[2]} for row in rows]
+
+
+@app.post("/api/reset")
+def reset_demo():
+    count = rebuild_demo_graph()
+    store.clear()
+    return {"ok": True, "nodes": count, "message": "Synthetic demo graph restored."}
 
 
 @app.post("/api/investigate")

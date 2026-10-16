@@ -10,6 +10,8 @@ NEXUS is a Track 1 hackathon prototype for investigating synthetic cybersecurity
 
 **Graph physics UI update (2026-10-16):** The attack graph uses Cytoscape.js's built-in CoSE force-directed layout, animates into position, allows dragging nodes, and has a **Re-run physics** control. No layout dependency was added. The Compose image was rebuilt; localhost:8080 returned HTTP 200 and served the physics config and control. Browser visual QA remains outstanding.
 
+**Demo reset and state clarity (2026-10-16):** Added `POST /api/reset`, which rebuilds the deterministic synthetic graph with the existing seed routine and clears persisted investigation records after a successful rebuild. The UI asks for confirmation, clears stale investigation/graph display, shows an execution-mode badge, and displays a rollback reminder after containment. FalkorDB ports remain private in Compose: port 3000 was already occupied by another local app during this project, and direct database exposure is unnecessary for the main demo.
+
 ### Documentation recovery note
 
 During a documentation update on 2026-10-16, an accidental empty file patch truncated the previous 44 KB stuff.md. The local Git repository had no commits, so the previous file could not be restored from Git. This handover has been reconstructed from the supplied continuity-rule attachment, the three pasted planning/resource files, PROJECT.md, docs/capabilities.md, current source, and outputs captured during this session. It records verified current facts and important prior decisions; where earlier detail could not be recovered verbatim, it is summarized rather than presented as an exact transcript.

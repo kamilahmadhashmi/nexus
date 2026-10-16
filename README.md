@@ -26,6 +26,8 @@ In real mode, the LLM orchestrates the investigation; FalkorDB provides the grap
 
 The attack graph uses Cytoscape.js's built-in CoSE force-directed physics layout. It animates into position, supports dragging nodes, and provides a **Re-run physics** control. See the [Cytoscape.js layout docs](https://js.cytoscape.org/index.html).
 
+Use **Reset demo graph** to restore the seeded synthetic graph and clear saved investigations after a containment demo. Containment state is also shown with a rollback reminder; the header identifies whether the latest investigation used scripted or live-agent mode.
+
 ## FalkorDB graph model
 
 The deterministic seed creates synthetic `Person`, `Device`, `Server`, `ServiceAccount`, `Service`, `DataStore`, `Vulnerability`, `IPAddress`, and `Alert` nodes. Typed relationships model ownership, logins, access, credentials, authentication, reads, dependencies, usage, and alert attribution. Cypher traverses up to seven hops to critical data stores and filters inactive nodes and edges. `GRAPH.COPY` creates disposable what-if graphs; executed containment writes status fields rather than deleting graph entities.

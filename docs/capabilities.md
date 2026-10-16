@@ -76,6 +76,12 @@ Outcome after MCP SDK pin `mcp==1.30.0`: **PASS**, `10 passed in 6.14s`. Tests c
 - Browser JavaScript passed `node --check`; the rebuilt Compose app returned HTTP 200 and served the physics configuration and rerun control.
 - Browser visual QA remains outstanding.
 
+## Demo reset and state clarity (2026-10-16)
+
+- Added `POST /api/reset` to rebuild the seeded synthetic graph and clear saved investigation records.
+- UI reset requires confirmation; it clears stale displayed state and updates mode badge and rollback warning behavior.
+- Compose continues to keep FalkorDB ports private; host port 3000 conflicts with another local app and database exposure is not needed for the demo flow.
+
 ## Benchmark (2026-10-16)
 
 Command: `python -m bench.run_benchmark` with `MOCK_LLM=1` and the default `BENCH_N=30`.
