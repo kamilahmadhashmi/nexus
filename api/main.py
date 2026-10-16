@@ -83,6 +83,8 @@ def investigation(investigation_id: str):
         "initial": record["initial"],
         "matrix": record["matrix"],
         "recommendation": record["recommendation"],
+        "evidence_paths": record["base_paths"][:3],
+        "evidence_path_count": len(record["base_paths"]),
         "executed": record.get("executed"),
     }
 

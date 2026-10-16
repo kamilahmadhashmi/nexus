@@ -209,3 +209,12 @@ No hackathon submission, video upload, emails, team invites, public posting, or 
 - User-provided event excerpt: C:\Users\KIIT\.codex\attachments\200c5ac5-8ffb-4b41-83ee-485c1d1f361d\Pasted text.txt.
 - User-provided official resource extraction/analysis: C:\Users\KIIT\.codex\attachments\37035029-f757-4e08-bd8c-8f7972d9f9b7\Pasted text.txt.
 - Full build spec: original PDF C:\Users\KIIT\Downloads\NEXUS Build Specification (Track 1, Graph Hacks).pdf; text extraction PROJECT.md.
+
+## 14. Guided demo and evidence clarity
+
+- Added a **Run guided demo** action that selects ALT-1042, forces deterministic scripted mode, disables autonomous actions, and runs the investigation without a model key.
+- The first screen now explains the three-step flow and states that the graph is unchanged until the user approves containment.
+- Investigation responses include up to three traversed routes plus the route count. The decision card translates policy selection into plain language, displays graph route IDs/relationship types and risk inputs, and labels the score as a heuristic rather than attack probability.
+- After containment, the UI compares live and simulated risk and spells out whether they match within the engine tolerance. After rollback, it reports whether live risk returned to baseline.
+- README and browser workflow assertions updated for the guided flow. Record test results and refreshed screenshots after verification.
+- Fixed force-loop startup and Re-layout by registering the `layoutstop` handler before running CoSE; the non-animated layout can complete synchronously, which previously left the animation frame loop stopped. Playwright now checks node motion, pause stability, resumed motion, and motion after Re-layout.

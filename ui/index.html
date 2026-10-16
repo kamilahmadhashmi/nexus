@@ -153,6 +153,39 @@
       background: rgba(139, 92, 246, 0.08);
       color: #C4B5FD;
     }
+    .demo-guide {
+      max-width: 1440px;
+      width: calc(100% - 32px);
+      margin: 16px auto 0;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-md);
+      background: linear-gradient(110deg, rgba(37, 99, 235, 0.12), rgba(13, 17, 26, 0.94) 55%);
+      position: relative;
+      z-index: 1;
+    }
+    .demo-guide-copy { min-width: 0; }
+    .demo-guide-title { color: #DBEAFE; font-weight: 700; margin-bottom: 3px; }
+    .demo-guide-steps { color: var(--text-muted); font-size: 12px; }
+    .demo-guide-note { color: var(--text-dim); font-size: 11px; margin-top: 3px; }
+    .evidence-panel, .action-notice {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel-subtle);
+      padding: 12px 14px;
+      margin-top: 12px;
+    }
+    .evidence-panel h4 { font-size: 12px; color: #BFDBFE; margin-bottom: 5px; }
+    .evidence-panel p, .evidence-panel li { color: var(--text-muted); font-size: 12px; }
+    .evidence-panel ul { padding-left: 18px; margin-top: 6px; }
+    .evidence-panel li + li { margin-top: 4px; }
+    .evidence-panel code { color: #BAE6FD; overflow-wrap: anywhere; }
+    .action-notice { color: #A7F3D0; border-color: rgba(16,185,129,0.35); }
+    .action-notice.mismatch { color: #FCD34D; border-color: rgba(245,158,11,0.35); }
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.85); }
@@ -292,12 +325,24 @@
     /* Grid Layouts */
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 440px 1fr;
+      grid-template-columns: 440px minmax(0, 1fr);
+      grid-template-areas:
+        "decision graph"
+        "matrix matrix"
+        "trace trace";
       gap: 20px;
       align-items: start;
     }
+    .analysis-stack { display: contents; }
+    #decision-card { grid-area: decision; }
+    #matrix-card { grid-area: matrix; min-width: 0; }
+    #trace-card { grid-area: trace; min-width: 0; }
+    #graph-card { grid-area: graph; min-width: 0; }
     @media (max-width: 1080px) {
-      .dashboard-grid { grid-template-columns: 1fr; }
+      .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "decision" "graph" "matrix" "trace";
+      }
     }
     @media (max-width: 768px) {
       header {
@@ -333,6 +378,8 @@
         right: 10px;
         top: 10px;
       }
+      .demo-guide { width: calc(100% - 20px); margin-top: 10px; padding: 12px; align-items: stretch; flex-direction: column; }
+      .demo-guide button { justify-content: center; }
     }
 
     /* Hero Decision Card */
@@ -620,7 +667,7 @@
     
     <select id="mode" title="Execution Mode">
       <option value="auto">Real agent (needs key)</option>
-      <option value="mock" selected>Scripted tools (reproducible)</option>
+      <option value="mock" selected>Scripted tools (no key · reproducible)</option>
     </select>
 
     <label class="checkbox-label" title="Allow agent to execute low-impact actions autonomously">
@@ -629,7 +676,7 @@
 
     <button id="go" class="primary">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-      Investigate
+      Investigate selected alert
     </button>
 
     <button id="reset" class="secondary" title="Restore pristine synthetic graph and drop mutated nodes">
@@ -639,10 +686,19 @@
   </div>
 </header>
 
+<aside class="demo-guide" aria-label="Guided demo instructions">
+  <div class="demo-guide-copy">
+    <div class="demo-guide-title">Start here · guided synthetic demo</div>
+    <div class="demo-guide-steps">1. Trace an alert to critical data · 2. Compare simulated responses · 3. Approve containment, verify the result, then roll it back</div>
+    <div class="demo-guide-note">Uses deterministic scripted tools; no model key required. The graph changes only after you approve a containment action.</div>
+  </div>
+  <button id="guided-demo" class="primary">Run guided demo</button>
+</aside>
+
 <main>
   <div class="dashboard-grid">
     <!-- Left Column: Decision & Simulation Matrix -->
-    <div style="display:flex; flex-direction:column; gap:20px;">
+      <div class="analysis-stack">
       
       <!-- Decision Card -->
       <section class="card hero-card" id="decision-card">
@@ -655,12 +711,12 @@
         </div>
 
         <div id="decision-content">
-          <p style="color:var(--text-muted); padding: 20px 0;">Select a security alert from the top header and click <b>Investigate</b> to discover attack paths in FalkorDB.</p>
+          <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
         </div>
       </section>
 
       <!-- Containment Matrix Card -->
-      <section class="card">
+      <section class="card" id="matrix-card">
         <div class="card-header">
           <span class="card-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
@@ -675,7 +731,7 @@
       </section>
 
       <!-- Agent Trace Card -->
-      <section class="card">
+      <section class="card" id="trace-card">
         <div class="card-header">
           <span class="card-title">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
@@ -692,7 +748,7 @@
     </div>
 
     <!-- Right Column: Interactive Attack Graph -->
-    <div style="display:flex; flex-direction:column; gap:20px;">
+    <div id="graph-card" style="display:flex; flex-direction:column; gap:20px;">
       <section class="card graph-card">
         <div class="graph-toolbar">
           <div>
@@ -837,6 +893,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 let INV = null;
+let ACTION_NOTICE = '';
 let cy = null;
 let jiggleLoopId = null;
 
@@ -897,11 +954,13 @@ window.rerunInitialLayout = function() {
     cancelAnimationFrame(jiggleLoopId);
     jiggleLoopId = null;
   }
-  targetCy.layout(initialLayout).run();
+  const layout = targetCy.layout(initialLayout);
   targetCy.one('layoutstop', () => {
+    if (cy !== targetCy) return;
     initObsidianPhysics(targetCy);
     targetCy.animate({ fit: { padding: 40 }, duration: 400 });
   });
+  layout.run();
 };
 
 window.toggleAttackPathSpotlight = function() {
@@ -1241,6 +1300,7 @@ async function init() {
   const alerts = await (await fetch('/api/alerts')).json();
   $('alert').innerHTML = alerts.map(a => `<option value="${esc(a.id)}">${esc(a.id)} — ${esc(a.type)}</option>`).join('');
   $('go').onclick = run;
+  $('guided-demo').onclick = runGuidedDemo;
   $('reset').onclick = resetDemo;
 
   // Obsidian Force-Directed Controls Drawer Wireup
@@ -1357,8 +1417,19 @@ async function init() {
   }
 }
 
+async function runGuidedDemo() {
+  const preferredAlert = [...$('alert').options].find(option => option.value === 'ALT-1042');
+  if (preferredAlert) $('alert').value = preferredAlert.value;
+  $('mode').value = 'mock';
+  $('auto').checked = false;
+  ACTION_NOTICE = '';
+  await run();
+  $('decision-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 async function run() {
   const button = $('go');
+  ACTION_NOTICE = '';
   button.disabled = true;
   button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="animate-spin"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Tracing...`;
   $('trace').innerHTML = '';
@@ -1372,7 +1443,7 @@ async function run() {
     
     INV = data.investigation_id;
     $('inv-id').textContent = INV;
-    $('mode-badge').textContent = data.mode === 'scripted' ? '● SCRIPTED TRACE' : '● LIVE AGENT (MCP)';
+    $('mode-badge').textContent = data.mode === 'scripted' ? '● SCRIPTED · NO MODEL' : '● LIVE AGENT (MCP)';
     
     $('trace-step-count').textContent = `${data.trace.length} tool calls`;
     for (const step of data.trace) {
@@ -1398,7 +1469,7 @@ async function run() {
     alert('Investigation error: ' + error.message);
   } finally {
     button.disabled = false;
-    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Investigate`;
+    button.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Investigate selected alert`;
   }
 }
 
@@ -1409,6 +1480,7 @@ async function resetDemo() {
   try {
     const result = await post('/api/reset', {});
     INV = null;
+    ACTION_NOTICE = '';
     if (jiggleLoopId) {
       cancelAnimationFrame(jiggleLoopId);
       jiggleLoopId = null;
@@ -1434,17 +1506,38 @@ async function resetDemo() {
   }
 }
 
+function describeRecommendation(rec, row, initial) {
+  if (rec.action === 'monitor_only') {
+    return `The starting score is ${initial.score}/100, below the monitor-only threshold. No graph change is recommended.`;
+  }
+  if (!row) return rec.why;
+  const tradeoff = `${row.action} ${row.target || ''} leaves simulated risk at ${row.residual_risk}/100, breaks ${row.paths_broken} of ${row.paths_before} critical-data paths, and has estimated ${row.impact_label.toLowerCase()} business impact (${row.impact}/100).`;
+  if (rec.why.includes('lowest business impact')) {
+    return `The policy chooses the lowest-impact Pareto option that reaches the residual-risk target (40/100 or lower). ${tradeoff}`;
+  }
+  if (rec.why.includes('no action reaches')) {
+    return `No simulated action reaches the 40/100 risk target, so the policy chooses the option with the lowest remaining risk and requires human approval. ${tradeoff}`;
+  }
+  return `${tradeoff} Review the candidate matrix for the other simulated choices.`;
+}
+
 function render(data) {
   if (!data.initial) return;
   const rec = data.recommendation;
   const ini = data.initial;
   const ex = data.executed;
+  const recRow = data.matrix.find(row => row.action === rec.action && row.target === rec.target);
   const actionText = rec.action === 'monitor_only' ? 'MONITOR ONLY' : `${rec.action} ${rec.target || ''}`.toUpperCase();
+  const evidencePaths = (data.evidence_paths || []).map(path => {
+    const steps = path.ids.map((id, index) => `${esc(id)}${path.types[index] ? ` <span aria-label="relationship">—${esc(path.types[index])}→</span> ` : ''}`).join('');
+    return `<li><code>${steps}</code></li>`;
+  }).join('');
+  const riskDrivers = (ini.terms || []).map(term => `<li><code>${esc(term.target)}</code>: criticality ${esc(term.criticality)}, privilege factor ${esc(term.privilege)}, graph reach factor ${esc(term.reach_probability)}</li>`).join('');
 
   let actionButton = '';
   if (rec.action !== 'monitor_only' && !ex) {
     const btnClass = rec.requires_approval ? 'danger' : 'success';
-    const label = rec.requires_approval ? 'AUTHORIZE & CONTAIN' : 'EXECUTE CONTAINMENT';
+    const label = rec.requires_approval ? 'AUTHORIZE & CONTAIN' : 'APPROVE & APPLY CONTAINMENT';
     actionButton = `<button id="contain" class="${btnClass}" style="width:100%; padding:12px; font-size:14px; justify-content:center; margin-top:14px;">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       ${label}
@@ -1459,16 +1552,22 @@ function render(data) {
   const mutationWarning = ex 
     ? `<div class="mutation-alert">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <div><b>Live Mutation Active:</b> ${esc(ex.target || ex.action)} is currently ${esc(ex.action)}. Use ROLLBACK to undo.</div>
+      <div><b>Containment is active on the synthetic graph:</b> ${esc(ex.action)} ${esc(ex.target || '')}. The change can be reversed with Rollback.</div>
       </div>`
     : '';
 
   const postRiskInfo = ex 
     ? `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px;">
-        <span style="font-size:12px; color:#A7F3D0;">Post-Containment Live Risk:</span>
-        <span style="font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:700; color:#34D399;">${ex.after} / 100 (${ex.verified ? 'VERIFIED MATCH' : 'MISMATCH'})</span>
+        <span style="font-size:12px; color:#A7F3D0;">Live risk after containment:</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:700; color:#34D399;">${ex.before} → ${ex.after} / 100</span>
       </div>`
     : '';
+
+  const verificationInfo = ex
+    ? `<div class="evidence-panel"><h4>Post-action verification</h4><p>The live graph score is ${ex.after}/100; the simulation predicted ${ex.simulated_residual}/100. ${ex.verified ? 'These scores match within the engine’s 1-point tolerance.' : 'The scores did not match. Treat the action as unverified and inspect the graph before relying on it.'}</p></div>`
+    : '';
+
+  const recommendationExplanation = describeRecommendation(rec, recRow, ini);
 
   $('decision-content').innerHTML = `
     <div class="risk-score-wrapper">
@@ -1488,8 +1587,22 @@ function render(data) {
       <div class="action-reason">${esc(rec.why)}</div>
     </div>
 
+    ${ACTION_NOTICE ? `<div class="action-notice ${ACTION_NOTICE.startsWith('CHECK') ? 'mismatch' : ''}" role="status">${esc(ACTION_NOTICE)}</div>` : ''}
+
     ${mutationWarning}
     ${postRiskInfo}
+    ${verificationInfo}
+    <div class="evidence-panel">
+      <h4>Why this response?</h4>
+      <p>${esc(recommendationExplanation)}</p>
+      <p style="margin-top:6px;">The 0–100 risk score is a deterministic heuristic over this seeded graph. It is not a probability that an attack will occur.</p>
+      <details style="margin-top:9px;">
+        <summary>Inspect graph evidence and risk inputs (${data.evidence_path_count ?? 0} route${data.evidence_path_count === 1 ? '' : 's'})</summary>
+        <p style="margin-top:8px;">Routes found from the alert-linked identity to high-criticality data stores:</p>
+        <ul>${evidencePaths || '<li>No qualifying critical-data route was found.</li>'}</ul>
+        ${riskDrivers ? `<p style="margin-top:8px;">Risk inputs by data store:</p><ul>${riskDrivers}</ul>` : ''}
+      </details>
+    </div>
     ${actionButton}
 
     <details style="margin-top:14px;">
@@ -1543,6 +1656,16 @@ async function act(url) {
   try {
     const result = await post(url, { investigation_id: INV });
     const refreshed = await (await fetch(`/api/investigations/${INV}`)).json();
+    if (url === '/api/rollback') {
+      const baseline = refreshed.initial?.score;
+      ACTION_NOTICE = result.ok && baseline === result.risk_now
+        ? `Rollback complete. Live risk returned to the baseline score of ${baseline}/100.`
+        : `CHECK rollback result: current live risk is ${result.risk_now}/100; baseline was ${baseline}/100.`;
+    } else if (url === '/api/contain') {
+      ACTION_NOTICE = result.verified
+        ? `Containment applied. Live risk changed from ${result.before}/100 to ${result.after}/100 and matches the simulated result (${result.simulated_residual}/100).`
+        : `CHECK containment applied, but live risk ${result.after}/100 did not match the simulated result (${result.simulated_residual}/100).`;
+    }
     render(refreshed);
     await drawGraph();
     // Trigger celebratory or severing shockwave!
@@ -1585,7 +1708,8 @@ async function drawGraph() {
   cy = cytoscape({
     container: $('cy'),
     elements: elements,
-    layout: initialLayout,
+    // Start in preset so the CoSE layout can be started after its stop listener is ready.
+    layout: { name: 'preset' },
     style: [
       /* --- NODE STYLES --- */
       {
@@ -1841,10 +1965,14 @@ async function drawGraph() {
     cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
   });
 
-  // Once initial un-overlapping layout settles, activate real-time Obsidian Physics!
-  cy.one('layoutstop', () => {
-    initObsidianPhysics(cy);
+  // Attach before run: CoSE with animate:false may finish synchronously.
+  const graphInstance = cy;
+  const layout = graphInstance.layout(initialLayout);
+  graphInstance.one('layoutstop', () => {
+    if (cy !== graphInstance) return;
+    initObsidianPhysics(graphInstance);
   });
+  layout.run();
 }
 
 init().catch(err => console.error(err));

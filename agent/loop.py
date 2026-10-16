@@ -53,6 +53,8 @@ def finish(trace, summary, mode, investigation_id):
         "initial": record["initial"] if record else None,
         "matrix": record["matrix"] if record else None,
         "recommendation": record["recommendation"] if record else None,
+        "evidence_paths": record["base_paths"][:3] if record else [],
+        "evidence_path_count": len(record["base_paths"]) if record else 0,
         "executed": record["executed"] if record else None,
     }
 

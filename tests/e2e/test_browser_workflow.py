@@ -23,19 +23,40 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         assert response and response.status == 200
         assert "NEXUS" in page.title()
         assert page.locator("#alert option").count() == 3
+        expect(page.locator("#mode")).to_have_value("mock")
+        expect(page.locator("#guided-demo")).to_contain_text("Run guided demo")
+        expect(page.locator(".demo-guide")).to_contain_text("no model key required")
+        assert page.locator("#matrix-card").evaluate("el => el.getBoundingClientRect().width") > page.locator("#decision-card").evaluate("el => el.getBoundingClientRect().width")
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-home-desktop.png"), full_page=True)
 
-        # 2. Select scenario & run investigation
-        page.locator("#alert").select_option("ALT-1042")
-        page.locator("#go").click()
+        # 2. Run the one-click guided investigation
+        page.locator("#guided-demo").click()
         
-        # Verify scripted trace badge and recommended action banner
-        page.locator("#mode-badge").filter(has_text="SCRIPTED TRACE").wait_for()
+        # Verify scripted mode, graph evidence, and a readable recommendation
+        page.locator("#mode-badge").filter(has_text="SCRIPTED · NO MODEL").wait_for()
         page.locator(".action-header").filter(has_text="Recommended Response Policy").wait_for()
+        expect(page.locator(".evidence-panel").first).to_contain_text("lowest-impact Pareto option")
+        expect(page.locator(".evidence-panel").first).to_contain_text("not a probability")
+        evidence_details = page.locator(".evidence-panel details")
+        expect(evidence_details.locator("summary")).to_contain_text("Inspect graph evidence")
+        evidence_details.locator("summary").click()
+        expect(evidence_details).to_contain_text("U-ALEX")
+        expect(evidence_details).to_contain_text("CUSTOMER-DB")
         page.wait_for_function("typeof cy !== 'undefined' && cy.nodes().length > 0")
 
         # 3. Verify Obsidian Force-Directed Physics Toolbar & Drawer
         page.locator("#physics-status").filter(has_text="Obsidian Force-Directed Physics Active").wait_for()
+        page.wait_for_function("typeof physicsNodeMap !== 'undefined' && physicsNodeMap.size > 0")
+        before_motion = page.evaluate("cy.nodes().map(n => n.position())")
+        page.wait_for_timeout(600)
+        after_motion = page.evaluate("cy.nodes().map(n => n.position())")
+        assert any(((a["x"] - b["x"]) ** 2 + (a["y"] - b["y"]) ** 2) ** 0.5 > 0.2 for a, b in zip(before_motion, after_motion))
+        page.locator("#relayout-btn").click()
+        page.wait_for_function("jiggleLoopId !== null && physicsNodeMap.size > 0")
+        after_layout = page.evaluate("cy.nodes().map(n => n.position())")
+        page.wait_for_timeout(500)
+        after_relayout_motion = page.evaluate("cy.nodes().map(n => n.position())")
+        assert any(((a["x"] - b["x"]) ** 2 + (a["y"] - b["y"]) ** 2) ** 0.5 > 0.2 for a, b in zip(after_layout, after_relayout_motion))
         page.locator("#fit-btn").click()
 
         # Toggle Forces control drawer
@@ -47,8 +68,14 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         # Test Physics Pause / Resume toggle
         page.locator("#physics-pause-btn").click()
         expect(page.locator("#pause-btn-text")).to_have_text("Resume")
+        paused_positions = page.evaluate("cy.nodes().map(n => n.position())")
+        page.wait_for_timeout(300)
+        assert page.evaluate("cy.nodes().map(n => n.position())") == paused_positions
         page.locator("#physics-pause-btn").click()
         expect(page.locator("#pause-btn-text")).to_have_text("Pause")
+        page.wait_for_timeout(500)
+        resumed_positions = page.evaluate("cy.nodes().map(n => n.position())")
+        assert any(((a["x"] - b["x"]) ** 2 + (a["y"] - b["y"]) ** 2) ** 0.5 > 0.2 for a, b in zip(paused_positions, resumed_positions))
 
         # Test Attack Path Spotlight toggle
         page.locator("#path-spotlight-btn").click()
@@ -83,13 +110,14 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         # 6. Execute Containment
         page.locator("#contain").click()
         page.locator(".mutation-alert").wait_for()
-        assert "VERIFIED MATCH" in page.locator("#decision-content").inner_text()
-        assert "Live Mutation Active:" in page.locator("#decision-content").inner_text()
+        assert "matches the simulated result" in page.locator(".action-notice").inner_text()
+        assert "Containment is active on the synthetic graph" in page.locator("#decision-content").inner_text()
 
         # 7. Rollback Containment
         page.locator("#rollback").click()
         page.locator("#contain").wait_for()
-        assert "Live Mutation Active:" not in page.locator("#decision-content").inner_text()
+        assert "Containment is active on the synthetic graph" not in page.locator("#decision-content").inner_text()
+        expect(page.locator(".action-notice")).to_contain_text("Rollback complete")
 
         # 8. Reset Demo Graph
         page.once("dialog", lambda dialog: dialog.accept())

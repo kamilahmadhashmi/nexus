@@ -9,6 +9,12 @@ An alert can look small while the affected identity can reach critical data thro
 - Browser screenshots: [desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png) · [mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png).
 - Video: pending recording.
 
+## First-run walkthrough
+
+Click **Run guided demo** to investigate the preselected synthetic alert with deterministic scripted tools. This path needs no model credentials and does not change the seeded graph. The result shows the traversed graph routes, the assumptions behind the 0–100 heuristic score, the response policy, and a full-width simulation matrix of candidate actions. The score is a scenario ranking, not a probability of an attack.
+
+Containment changes the synthetic graph only after you click the approval action. NEXUS then compares the live score with the simulated residual score. **Rollback** restores the demo graph and reports whether the baseline score returned. **Reset Graph** restores all seeded demo data and clears saved investigations.
+
 ### Desktop investigation
 
 ![NEXUS desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png)
