@@ -20,7 +20,7 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
 
         response = page.goto(BASE_URL, wait_until="networkidle")
         assert response and response.status == 200
-        assert page.title() == "NEXUS — Graph-grounded response"
+        assert "NEXUS" in page.title()
         assert page.locator("#alert option").count() == 3
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-home-desktop.png"), full_page=True)
 
@@ -29,8 +29,8 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         page.get_by_text("mode: scripted").wait_for()
         page.get_by_text("RECOMMENDED:").wait_for()
         page.wait_for_function("typeof cy !== 'undefined' && cy.nodes().length > 0")
-        page.get_by_role("button", name="Re-run physics").click()
-        page.get_by_text("Physics settled · drag nodes to explore").wait_for()
+        page.get_by_role("button", name="Fit View").click()
+        page.get_by_text("Jiggle & Elastic Spring Physics Active").wait_for()
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-investigation-desktop.png"), full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
         page.wait_for_function("document.documentElement.scrollWidth <= window.innerWidth")

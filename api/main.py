@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -104,4 +106,20 @@ RETURN n.id, labels(n)[0], n.name, coalesce(n.status, 'ACTIVE')"""
     }
 
 
+UI_DIR = Path(__file__).resolve().parent.parent / "ui"
+
+
+@app.get("/", response_class=HTMLResponse)
+@app.get("/index.html", response_class=HTMLResponse)
+def serve_ui():
+    index_path = UI_DIR / "index.html"
+    content = index_path.read_text(encoding="utf-8")
+    response = HTMLResponse(content=content)
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+
+
 app.mount("/", StaticFiles(directory="ui", html=True), name="ui")
+
