@@ -39,6 +39,11 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
+      width: 100%;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
@@ -48,7 +53,6 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
 
     /* Ambient background grid */
@@ -295,6 +299,41 @@
     @media (max-width: 1080px) {
       .dashboard-grid { grid-template-columns: 1fr; }
     }
+    @media (max-width: 768px) {
+      header {
+        padding: 10px 12px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-controls {
+        width: 100%;
+        justify-content: flex-start;
+      }
+      main {
+        padding: 10px;
+        max-width: 100%;
+      }
+      .card {
+        padding: 14px;
+        max-width: 100%;
+      }
+      .graph-toolbar {
+        padding: 10px 12px;
+      }
+      .graph-toolbar > div {
+        width: 100%;
+      }
+      #physics-status {
+        font-size: 10px !important;
+        flex-wrap: wrap;
+        word-break: break-word;
+      }
+      #node-inspector {
+        max-width: calc(100% - 20px);
+        right: 10px;
+        top: 10px;
+      }
+    }
 
     /* Hero Decision Card */
     .hero-card {
@@ -447,6 +486,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      flex-wrap: wrap;
       background: var(--panel);
       z-index: 2;
     }
@@ -662,12 +702,24 @@
               Obsidian Force-Directed Physics Active · Drag nodes to deform network
             </div>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Adjust Obsidian Physics Simulation Parameters">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button id="physics-pause-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Pause or Resume Live Force-Directed Physics">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <span id="pause-btn-text">Pause</span>
+            </button>
+            <button id="relayout-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Re-run Initial CoSE Global Convergence Layout">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              Re-layout
+            </button>
+            <button id="path-spotlight-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Highlight Attack Path to Crown Jewel">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Attack Path
+            </button>
+            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Adjust Obsidian Physics Simulation Parameters">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               Forces
             </button>
-            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 12px;" disabled>
+            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 10px;" disabled>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Fit View
             </button>
@@ -705,13 +757,65 @@
               </div>
               <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
             </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
+                <span>Damping</span>
+                <span id="damp-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.89</span>
+              </div>
+              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+            </div>
             <div style="display:flex; gap:6px; justify-content:flex-end;">
               <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:14px;">Reset Defaults</button>
             </div>
           </div>
         </div>
 
-        <div id="cy"></div>
+        <!-- Canvas Container with Floating Inspector and Zoom Controls -->
+        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden;">
+          <div id="cy" style="width:100%; height:100%;"></div>
+
+          <!-- Floating Node Inspector Overlay -->
+          <div id="node-inspector" style="display:none; position:absolute; top:16px; right:16px; width:280px; background:rgba(11, 17, 30, 0.94); backdrop-filter:blur(14px); border:1px solid var(--border-bright); border-radius:8px; padding:14px 16px; z-index:10; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span id="inspect-dot" style="display:inline-block; width:9px; height:9px; border-radius:2px; background:#38BDF8;"></span>
+                <span id="inspect-title" style="font-weight:700; font-size:13px; color:#fff;">Entity Inspector</span>
+              </div>
+              <button id="inspect-close" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px 6px; font-size:14px;">✕</button>
+            </div>
+            <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+                <span style="color:var(--text-dim);">Node ID</span>
+                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:#38BDF8; font-weight:600;">-</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+                <span style="color:var(--text-dim);">Entity Kind</span>
+                <span id="inspect-kind" style="color:#fff; font-weight:600;">-</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+                <span style="color:var(--text-dim);">Status</span>
+                <span id="inspect-status" class="pill-tag">-</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+                <span style="color:var(--text-dim);">Connections</span>
+                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:#fff;">-</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                <span style="color:var(--text-dim);">Position Lock</span>
+                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 8px;">Pin Node</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Canvas Zoom & Viewport Controls -->
+          <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:5;">
+            <button id="zoom-in-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom In">+</button>
+            <button id="zoom-out-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom Out">−</button>
+            <button id="fit-canvas-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+          </div>
+        </div>
 
         <div class="graph-legend">
           <span style="font-weight:600; color:var(--text-muted); margin-right:4px;">Entities:</span>
@@ -765,14 +869,135 @@ const obsidianDefaults = {
 
 let obsidianParams = { ...obsidianDefaults };
 
+let isPhysicsPaused = false;
+let isAttackPathSpotlightActive = false;
+let currentInspectedNode = null;
+let physicsNodeMap = new Map();
+let physicsEdgesList = [];
+let physicsCy = null;
+
+// Global methods exposed to UI controls
+window.togglePhysicsPause = function() {
+  isPhysicsPaused = !isPhysicsPaused;
+  const pauseBtn = $('physics-pause-btn');
+  const pauseText = $('pause-btn-text');
+  if (pauseBtn) pauseBtn.classList.toggle('active', isPhysicsPaused);
+  if (pauseText) pauseText.textContent = isPhysicsPaused ? 'Resume' : 'Pause';
+  if ($('physics-status')) {
+    $('physics-status').innerHTML = isPhysicsPaused
+      ? `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#F59E0B; box-shadow:0 0 8px #F59E0B;"></span> Physics Paused · Static Topology View`
+      : `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38BDF8; box-shadow:0 0 8px #38BDF8; animation:pulse 2s infinite;"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
+  }
+};
+
+window.rerunInitialLayout = function() {
+  const targetCy = physicsCy || cy;
+  if (!targetCy) return;
+  if (jiggleLoopId) {
+    cancelAnimationFrame(jiggleLoopId);
+    jiggleLoopId = null;
+  }
+  targetCy.layout(initialLayout).run();
+  targetCy.one('layoutstop', () => {
+    initObsidianPhysics(targetCy);
+    targetCy.animate({ fit: { padding: 40 }, duration: 400 });
+  });
+};
+
+window.toggleAttackPathSpotlight = function() {
+  const targetCy = physicsCy || cy;
+  if (!targetCy) return;
+  isAttackPathSpotlightActive = !isAttackPathSpotlightActive;
+  const pathBtn = $('path-spotlight-btn');
+  if (pathBtn) pathBtn.classList.toggle('active', isAttackPathSpotlightActive);
+  if (isAttackPathSpotlightActive) {
+    const pathNodes = targetCy.nodes().filter(n => {
+      return n.data('kind') === 'DataStore' || n.data('kind') === 'Person' || n.data('kind') === 'Device' || n.data('bad') === 1;
+    });
+    const pathEdges = pathNodes.connectedEdges();
+    targetCy.elements().addClass('obsidian-dimmed');
+    pathNodes.removeClass('obsidian-dimmed').addClass('attack-path-highlight');
+    pathEdges.removeClass('obsidian-dimmed').addClass('attack-path-highlight');
+  } else {
+    targetCy.elements().removeClass('obsidian-dimmed attack-path-highlight');
+  }
+};
+
+window.toggleCurrentNodeLock = function() {
+  if (!currentInspectedNode) return;
+  const p = physicsNodeMap.get(currentInspectedNode.id());
+  if (p) {
+    p.isLocked = !p.isLocked;
+    if (p.isLocked) {
+      p.vx = 0; p.vy = 0;
+      currentInspectedNode.addClass('node-pinned');
+    } else {
+      currentInspectedNode.removeClass('node-pinned');
+    }
+    if ($('inspect-lock-btn')) {
+      $('inspect-lock-btn').textContent = p.isLocked ? 'Unpin Node' : 'Pin Node';
+      $('inspect-lock-btn').classList.toggle('active', p.isLocked);
+    }
+  } else {
+    const isPinned = currentInspectedNode.hasClass('node-pinned');
+    if (isPinned) {
+      currentInspectedNode.removeClass('node-pinned');
+    } else {
+      currentInspectedNode.addClass('node-pinned');
+    }
+    if ($('inspect-lock-btn')) {
+      $('inspect-lock-btn').textContent = !isPinned ? 'Unpin Node' : 'Pin Node';
+      $('inspect-lock-btn').classList.toggle('active', !isPinned);
+    }
+  }
+};
+
+window.inspectNode = function(node) {
+  if (!node) return;
+  currentInspectedNode = node;
+  const p = physicsNodeMap.get(node.id());
+  if (p && !p.isLocked) {
+    const angle = Math.random() * Math.PI * 2;
+    p.vx += Math.cos(angle) * 12;
+    p.vy += Math.sin(angle) * 12;
+  }
+  
+  const kind = node.data('kind');
+  const name = node.data('label') || node.id();
+  const bad = node.data('bad');
+  const degree = node.connectedEdges().length;
+  const colorMap = {
+    Person: '#818CF8',
+    Device: '#38BDF8',
+    Server: '#34D399',
+    ServiceAccount: '#FBBF24',
+    Service: '#A78BFA',
+    DataStore: '#F43F5E'
+  };
+  $('inspect-dot').style.background = colorMap[kind] || '#38BDF8';
+  $('inspect-title').textContent = name;
+  $('inspect-id').textContent = node.id();
+  $('inspect-kind').textContent = kind || 'Entity';
+  $('inspect-status').textContent = bad ? 'CONTAINED' : 'ACTIVE';
+  $('inspect-status').className = bad ? 'pill-tag pill-dominated' : 'pill-tag pill-pareto';
+  $('inspect-degree').textContent = `${degree} active connection${degree === 1 ? '' : 's'}`;
+  const isLocked = p ? p.isLocked : node.hasClass('node-pinned');
+  $('inspect-lock-btn').textContent = isLocked ? 'Unpin Node' : 'Pin Node';
+  $('inspect-lock-btn').classList.toggle('active', isLocked);
+  $('node-inspector').style.display = 'block';
+};
+
 function initObsidianPhysics(cyInstance) {
+  physicsCy = cyInstance;
   if (jiggleLoopId) {
     cancelAnimationFrame(jiggleLoopId);
     jiggleLoopId = null;
   }
 
-  const nodeMap = new Map();
-  const edgesList = [];
+  physicsNodeMap.clear();
+  physicsEdgesList.length = 0;
+  const nodeMap = physicsNodeMap;
+  const edgesList = physicsEdgesList;
 
   // Initialize node states from current canvas coordinates
   cyInstance.nodes().forEach((n, idx) => {
@@ -790,7 +1015,8 @@ function initObsidianPhysics(cyInstance) {
       fy: 0,
       mass: mass,
       phase: idx * 1.35,
-      isGrabbed: false
+      isGrabbed: false,
+      isLocked: n.hasClass('node-pinned')
     });
   });
 
@@ -840,34 +1066,12 @@ function initObsidianPhysics(cyInstance) {
     const p = nodeMap.get(target.id());
     if (p) {
       p.isGrabbed = false;
-      p.vx = dragVel.vx * 1.4;
-      p.vy = dragVel.vy * 1.4;
+      if (!p.isLocked) {
+        p.vx = dragVel.vx * 1.4;
+        p.vy = dragVel.vy * 1.4;
+      }
     }
     lastGrabPos = null;
-  });
-
-  // Tap / click: playful radial impulse
-  cyInstance.on('tap', 'node', e => {
-    const p = nodeMap.get(e.target.id());
-    if (p) {
-      const angle = Math.random() * Math.PI * 2;
-      const power = 18;
-      p.vx += Math.cos(angle) * power;
-      p.vy += Math.sin(angle) * power;
-    }
-  });
-
-  // Obsidian Focus Spotlight on Hover
-  cyInstance.on('mouseover', 'node', e => {
-    const node = e.target;
-    const neighborhood = node.closedNeighborhood();
-    cyInstance.elements().difference(neighborhood).addClass('obsidian-dimmed');
-    neighborhood.addClass('obsidian-focused');
-    node.addClass('obsidian-active');
-  });
-
-  cyInstance.on('mouseout', 'node', e => {
-    cyInstance.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
   });
 
   // Shockwave for containment execution
@@ -899,114 +1103,116 @@ function initObsidianPhysics(cyInstance) {
   function stepPhysics() {
     time += 0.032;
 
-    // 1. Calculate dynamic center of mass
-    let sumX = 0, sumY = 0;
-    for (let i = 0; i < numNodes; i++) {
-      sumX += nodes[i].x;
-      sumY += nodes[i].y;
-      nodes[i].fx = 0;
-      nodes[i].fy = 0;
-    }
-    const cx = numNodes > 0 ? sumX / numNodes : 0;
-    const cy = numNodes > 0 ? sumY / numNodes : 0;
+    if (!isPhysicsPaused) {
+      // 1. Calculate dynamic center of mass
+      let sumX = 0, sumY = 0;
+      for (let i = 0; i < numNodes; i++) {
+        sumX += nodes[i].x;
+        sumY += nodes[i].y;
+        nodes[i].fx = 0;
+        nodes[i].fy = 0;
+      }
+      const cx = numNodes > 0 ? sumX / numNodes : 0;
+      const cy = numNodes > 0 ? sumY / numNodes : 0;
 
-    // 2. Gravitational centering + Coulomb Many-Body Repulsion
-    for (let i = 0; i < numNodes; i++) {
-      const pA = nodes[i];
+      // 2. Gravitational centering + Coulomb Many-Body Repulsion
+      for (let i = 0; i < numNodes; i++) {
+        const pA = nodes[i];
 
-      // Center force (gravity)
-      pA.fx += (cx - pA.x) * obsidianParams.gravity * pA.mass;
-      pA.fy += (cy - pA.y) * obsidianParams.gravity * pA.mass;
+        // Center force (gravity)
+        pA.fx += (cx - pA.x) * obsidianParams.gravity * pA.mass;
+        pA.fy += (cy - pA.y) * obsidianParams.gravity * pA.mass;
 
-      // Pairwise repulsion
-      for (let j = i + 1; j < numNodes; j++) {
-        const pB = nodes[j];
-        let dx = pB.x - pA.x;
-        let dy = pB.y - pA.y;
-        let distSq = dx * dx + dy * dy;
-        if (distSq < 1) {
-          dx = (Math.random() - 0.5);
-          dy = (Math.random() - 0.5);
-          distSq = 1;
-        }
-        const dist = Math.sqrt(distSq);
-        const effDist = Math.max(dist, 36);
-        const repForce = obsidianParams.repulsion / (effDist * effDist);
-        const nx = dx / dist;
-        const ny = dy / dist;
+        // Pairwise repulsion
+        for (let j = i + 1; j < numNodes; j++) {
+          const pB = nodes[j];
+          let dx = pB.x - pA.x;
+          let dy = pB.y - pA.y;
+          let distSq = dx * dx + dy * dy;
+          if (distSq < 1) {
+            dx = (Math.random() - 0.5);
+            dy = (Math.random() - 0.5);
+            distSq = 1;
+          }
+          const dist = Math.sqrt(distSq);
+          const effDist = Math.max(dist, 36);
+          const repForce = obsidianParams.repulsion / (effDist * effDist);
+          const nx = dx / dist;
+          const ny = dy / dist;
 
-        pA.fx -= nx * repForce;
-        pA.fy -= ny * repForce;
-        pB.fx += nx * repForce;
-        pB.fy -= ny * repForce;
+          pA.fx -= nx * repForce;
+          pA.fy -= ny * repForce;
+          pB.fx += nx * repForce;
+          pB.fy += ny * repForce;
 
-        // Collision avoidance cushion
-        const minSpacing = obsidianParams.collisionRadius;
-        if (dist < minSpacing) {
-          const overlap = (minSpacing - dist) * 0.45;
-          if (!pA.isGrabbed && !pB.isGrabbed) {
-            pA.x -= nx * overlap * 0.5;
-            pA.y -= ny * overlap * 0.5;
-            pB.x += nx * overlap * 0.5;
-            pB.y += ny * overlap * 0.5;
+          // Collision avoidance cushion
+          const minSpacing = obsidianParams.collisionRadius;
+          if (dist < minSpacing) {
+            const overlap = (minSpacing - dist) * 0.45;
+            if (!pA.isGrabbed && !pA.isLocked && !pB.isGrabbed && !pB.isLocked) {
+              pA.x -= nx * overlap * 0.5;
+              pA.y -= ny * overlap * 0.5;
+              pB.x += nx * overlap * 0.5;
+              pB.y += ny * overlap * 0.5;
+            }
           }
         }
       }
-    }
 
-    // 3. Hooke's Law Elastic Spring Force along Edges
-    for (let k = 0; k < numEdges; k++) {
-      const e = edgesList[k];
-      const pA = nodeMap.get(e.sourceId);
-      const pB = nodeMap.get(e.targetId);
-      if (!pA || !pB) continue;
+      // 3. Hooke's Law Elastic Spring Force along Edges
+      for (let k = 0; k < numEdges; k++) {
+        const e = edgesList[k];
+        const pA = nodeMap.get(e.sourceId);
+        const pB = nodeMap.get(e.targetId);
+        if (!pA || !pB) continue;
 
-      const dx = pB.x - pA.x;
-      const dy = pB.y - pA.y;
-      const dist = Math.hypot(dx, dy) || 1;
-      const delta = dist - obsidianParams.linkDistance;
-      const springForce = delta * obsidianParams.springK;
-      const nx = dx / dist;
-      const ny = dy / dist;
+        const dx = pB.x - pA.x;
+        const dy = pB.y - pA.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const delta = dist - obsidianParams.linkDistance;
+        const springForce = delta * obsidianParams.springK;
+        const nx = dx / dist;
+        const ny = dy / dist;
 
-      pA.fx += nx * springForce;
-      pA.fy += ny * springForce;
-      pB.fx -= nx * springForce;
-      pB.fy -= ny * springForce;
-    }
-
-    // 4. Velocity integration with damping & Obsidian zero-g ambiance
-    for (let i = 0; i < numNodes; i++) {
-      const p = nodes[i];
-      if (p.isGrabbed) continue;
-
-      p.vx = (p.vx + (p.fx / p.mass)) * obsidianParams.damping;
-      p.vy = (p.vy + (p.fy / p.mass)) * obsidianParams.damping;
-
-      // Speed clamp to prevent teleporting
-      const speed = Math.hypot(p.vx, p.vy);
-      if (speed > 24) {
-        p.vx = (p.vx / speed) * 24;
-        p.vy = (p.vy / speed) * 24;
+        pA.fx += nx * springForce;
+        pA.fy += ny * springForce;
+        pB.fx -= nx * springForce;
+        pB.fy -= ny * springForce;
       }
 
-      // Micro zero-g drift
-      const driftX = Math.sin(time * 1.8 + p.phase) * 0.22;
-      const driftY = Math.cos(time * 1.5 + p.phase) * 0.22;
-
-      p.x += p.vx + driftX;
-      p.y += p.vy + driftY;
-    }
-
-    // 5. Batch render updated node positions in Cytoscape
-    cyInstance.batch(() => {
+      // 4. Velocity integration with damping & zero-g ambiance
       for (let i = 0; i < numNodes; i++) {
         const p = nodes[i];
-        if (!p.isGrabbed) {
-          p.node.position({ x: p.x, y: p.y });
+        if (p.isGrabbed || p.isLocked) continue;
+
+        p.vx = (p.vx + (p.fx / p.mass)) * obsidianParams.damping;
+        p.vy = (p.vy + (p.fy / p.mass)) * obsidianParams.damping;
+
+        // Speed clamp to prevent teleporting
+        const speed = Math.hypot(p.vx, p.vy);
+        if (speed > 24) {
+          p.vx = (p.vx / speed) * 24;
+          p.vy = (p.vy / speed) * 24;
         }
+
+        // Micro zero-g drift
+        const driftX = Math.sin(time * 1.8 + p.phase) * 0.22;
+        const driftY = Math.cos(time * 1.5 + p.phase) * 0.22;
+
+        p.x += p.vx + driftX;
+        p.y += p.vy + driftY;
       }
-    });
+
+      // 5. Batch render updated node positions in Cytoscape
+      cyInstance.batch(() => {
+        for (let i = 0; i < numNodes; i++) {
+          const p = nodes[i];
+          if (!p.isGrabbed && !p.isLocked) {
+            p.node.position({ x: p.x, y: p.y });
+          }
+        }
+      });
+    }
 
     jiggleLoopId = requestAnimationFrame(stepPhysics);
   }
@@ -1076,6 +1282,13 @@ async function init() {
       $('grav-label').textContent = e.target.value;
     };
   }
+  const dampSlider = $('damp-slider');
+  if (dampSlider) {
+    dampSlider.oninput = e => {
+      obsidianParams.damping = parseFloat(e.target.value);
+      $('damp-label').textContent = e.target.value;
+    };
+  }
   const resetForcesBtn = $('reset-forces-btn');
   if (resetForcesBtn) {
     resetForcesBtn.onclick = () => {
@@ -1088,6 +1301,58 @@ async function init() {
       if ($('spring-label')) $('spring-label').textContent = obsidianDefaults.springK;
       if (gravSlider) gravSlider.value = obsidianDefaults.gravity;
       if ($('grav-label')) $('grav-label').textContent = obsidianDefaults.gravity;
+      if (dampSlider) dampSlider.value = obsidianDefaults.damping;
+      if ($('damp-label')) $('damp-label').textContent = obsidianDefaults.damping;
+    };
+  }
+
+  // Toolbar action buttons
+  const pauseBtn = $('physics-pause-btn');
+  if (pauseBtn) {
+    pauseBtn.onclick = () => {
+      if (window.togglePhysicsPause) window.togglePhysicsPause();
+    };
+  }
+  const relayoutBtn = $('relayout-btn');
+  if (relayoutBtn) {
+    relayoutBtn.onclick = () => {
+      if (window.rerunInitialLayout) window.rerunInitialLayout();
+    };
+  }
+  const pathBtn = $('path-spotlight-btn');
+  if (pathBtn) {
+    pathBtn.onclick = () => {
+      if (window.toggleAttackPathSpotlight) window.toggleAttackPathSpotlight();
+    };
+  }
+
+  // Floating canvas viewport & zoom buttons
+  if ($('zoom-in-btn')) {
+    $('zoom-in-btn').onclick = () => {
+      if (cy) cy.zoom({ level: cy.zoom() * 1.25, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
+    };
+  }
+  if ($('zoom-out-btn')) {
+    $('zoom-out-btn').onclick = () => {
+      if (cy) cy.zoom({ level: cy.zoom() * 0.8, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } });
+    };
+  }
+  if ($('fit-canvas-btn')) {
+    $('fit-canvas-btn').onclick = () => {
+      if (cy) cy.animate({ fit: { padding: 40 }, duration: 400 });
+    };
+  }
+
+  // Floating Inspector buttons
+  if ($('inspect-close')) {
+    $('inspect-close').onclick = () => {
+      $('node-inspector').style.display = 'none';
+      if (cy) cy.nodes().unselect();
+    };
+  }
+  if ($('inspect-lock-btn')) {
+    $('inspect-lock-btn').onclick = () => {
+      if (window.toggleCurrentNodeLock) window.toggleCurrentNodeLock();
     };
   }
 }
@@ -1149,6 +1414,13 @@ async function resetDemo() {
       jiggleLoopId = null;
     }
     if (cy) { cy.destroy(); cy = null; }
+    if ($('node-inspector')) $('node-inspector').style.display = 'none';
+    currentInspectedNode = null;
+    isPhysicsPaused = false;
+    isAttackPathSpotlightActive = false;
+    if ($('physics-pause-btn')) $('physics-pause-btn').classList.remove('active');
+    if ($('path-spotlight-btn')) $('path-spotlight-btn').classList.remove('active');
+    if ($('pause-btn-text')) $('pause-btn-text').textContent = 'Pause';
     $('fit-btn').disabled = true;
     $('inv-id').textContent = 'RESET COMPLETED';
     $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
@@ -1487,6 +1759,52 @@ async function drawGraph() {
           'shadow-color': '#67E8F9',
           'shadow-opacity': 1.0
         }
+      },
+      /* --- PINNED / LOCKED NODE STYLES --- */
+      {
+        selector: 'node.node-pinned',
+        style: {
+          'border-width': 4,
+          'border-style': 'double',
+          'border-color': '#F59E0B',
+          'shadow-blur': 18,
+          'shadow-color': '#F59E0B',
+          'shadow-opacity': 0.95
+        }
+      },
+      /* --- ATTACK PATH SPOTLIGHT STYLES --- */
+      {
+        selector: 'node.attack-path-highlight',
+        style: {
+          'opacity': 1,
+          'border-width': 4,
+          'border-color': '#38BDF8',
+          'shadow-blur': 24,
+          'shadow-color': '#38BDF8',
+          'shadow-opacity': 0.95
+        }
+      },
+      {
+        selector: 'edge.attack-path-highlight',
+        style: {
+          'opacity': 1,
+          'width': 3.5,
+          'line-color': '#38BDF8',
+          'target-arrow-color': '#38BDF8',
+          'text-background-color': '#0284C7',
+          'text-background-opacity': 1,
+          'color': '#FFFFFF'
+        }
+      },
+      {
+        selector: 'node:selected',
+        style: {
+          'border-width': 3.5,
+          'border-color': '#38BDF8',
+          'shadow-blur': 20,
+          'shadow-color': '#38BDF8',
+          'shadow-opacity': 0.85
+        }
       }
     ]
   });
@@ -1495,6 +1813,33 @@ async function drawGraph() {
   $('fit-btn').onclick = () => {
     cy.animate({ fit: { padding: 40 }, duration: 400 });
   };
+
+  // Node selection & inspection handlers
+  cy.on('tap', 'node', e => {
+    window.inspectNode(e.target);
+  });
+  cy.on('tap', e => {
+    if (e.target === cy) {
+      $('node-inspector').style.display = 'none';
+      currentInspectedNode = null;
+    }
+  });
+  cy.on('dbltap', 'node', e => {
+    window.inspectNode(e.target);
+    window.toggleCurrentNodeLock();
+  });
+  cy.on('mouseover', 'node', e => {
+    if (isAttackPathSpotlightActive) return;
+    const node = e.target;
+    const neighborhood = node.closedNeighborhood();
+    cy.elements().difference(neighborhood).addClass('obsidian-dimmed');
+    neighborhood.addClass('obsidian-focused');
+    node.addClass('obsidian-active');
+  });
+  cy.on('mouseout', 'node', () => {
+    if (isAttackPathSpotlightActive) return;
+    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+  });
 
   // Once initial un-overlapping layout settles, activate real-time Obsidian Physics!
   cy.one('layoutstop', () => {

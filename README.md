@@ -32,7 +32,22 @@ flowchart LR
 
 In real mode, the LLM orchestrates the investigation; FalkorDB provides the graph evidence, and deterministic analysis constrains the action. In scripted mode, the application calls the same tools in a fixed order without an LLM. Scripted mode proves engine behavior; it is not AI tool selection.
 
-The attack graph uses Cytoscape.js's built-in CoSE force-directed physics layout. It animates into position, supports dragging nodes, and provides a **Re-run physics** control. See the [Cytoscape.js layout docs](https://js.cytoscape.org/index.html).
+The attack graph uses **Cytoscape.js** paired with an integrated **60 FPS Euler-Verlet Force-Directed Physics Engine** (inspired by Obsidian Graph View and Barnes-Hut mechanics), providing live elastic spring dragging, node-node Coulomb repulsion, centroid centering gravity, and instant edge tracking. See the [Graph Architecture Evaluation](docs/graph-architecture-evaluation.md) for the complete 4-repository investigation matrix and technical deep dive.
+
+Key attack graph capabilities:
+- **Interactive Physics Toolbar**:
+  - **Pause / Resume**: Freeze or resume the 60 FPS physics simulation on demand.
+  - **Re-layout**: Re-converges the network using Cytoscape's CoSE algorithm.
+  - **Attack Path Spotlight**: Instantly isolates and illuminates the end-to-end traversal leading to the Crown Jewel, dimming peripheral assets.
+  - **Forces Control Drawer**: Real-time sliders for **Repulsion** ($1000 - 25000$), **Link Distance** ($50 - 250\text{ px}$), **Spring Force** ($0.01 - 0.12$), **Centroid Gravity** ($0.0002 - 0.005$), and **Velocity Damping** ($0.70 - 0.97$), with one-click default resets.
+  - **Zoom & Nav Controls**: Dedicated floating zoom-in (`+`), zoom-out (`−`), and `Fit View` buttons.
+- **Node Pinning & Dragging**:
+  - Dragging any node elastically tugs incident connected nodes in real-time.
+  - Double-clicking any node toggles position pinning (`.node-pinned` with high-contrast amber border), preventing force displacement.
+- **Floating Node Details Inspector**:
+  - Clicking any node opens a floating HUD inspector displaying entity ID, node kind badge, status (Active / Contained), degree centrality, and one-click pin/unpin action.
+- **High-Contrast Dark SOC Theme**:
+  - Color-coded entity badges (`Person`, `Device`, `Server`, `ServiceAccount`, `Service`, `DataStore`, `Vulnerability`), contrast relationship label pills, and high-visibility directional arrows.
 
 Use **Reset demo graph** to restore the seeded synthetic graph and clear saved investigations after a containment demo. Containment state is also shown with a rollback reminder; the header identifies whether the latest investigation used scripted or live-agent mode.
 
