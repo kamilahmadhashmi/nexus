@@ -6,8 +6,16 @@ An alert can look small while the affected identity can reach critical data thro
 
 ## Demo
 
+- Browser screenshots: [desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png) · [mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png).
 - Video: pending recording.
-- Screenshots: pending capture from the running application.
+
+### Desktop investigation
+
+![NEXUS desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png)
+
+### Mobile investigation
+
+![NEXUS mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png)
 
 ## How it works
 
@@ -58,17 +66,37 @@ docker compose up --build
 
 Open [http://localhost:8080](http://localhost:8080). Compose starts FalkorDB and the NEXUS app, then seeds the synthetic graph on application startup. The default `.env.example` setting is `MOCK_LLM=1`, which runs the fixed scripted workflow and does not need an API key. For real LLM tool selection, set `MOCK_LLM=0` and supply `ANTHROPIC_API_KEY` in `.env`. The agent always calls execute tools with `approved=False`; the human-facing CONTAIN endpoint is the approval action.
 
+### Browser checks (development only)
+
+With Docker Compose running, install the optional browser-test dependencies and Chromium, then run the end-to-end workflow:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m playwright install chromium
+.\.venv\Scripts\python.exe -m pytest tests/e2e -q
+```
+
+The test exercises investigation, force-layout rerun, containment, rollback, reset, and a 390px mobile viewport. It writes reproducible screenshots under `artifacts/screenshots/`. It uses scripted mode and needs no model API key. See [the tooling evaluation](docs/tooling-evaluation.md) for repository decisions and constraints.
+
 The local development setup can also use the project `.venv`: start FalkorDB on port 6379, then run `python -m seed.generate`, `uvicorn api.main:app --port 8000`.
 
 ## Tests and benchmark
 
-Run the automated scenario and API checks against the synthetic demo database:
+The automated suite contains engine/API and browser workflow checks. Keep the demo stack running at http://localhost:8080, and install Chromium as described above. The engine/API tests use FALKOR_HOST and FALKOR_PORT. For the full suite, start a disposable local FalkorDB and point tests at it:
+
+~~~powershell
+docker run -d --rm --name nexus-pytest-db -p 127.0.0.1:16379:6379 falkordb/falkordb:latest
+$env:FALKOR_HOST = "localhost"
+$env:FALKOR_PORT = "16379"
+~~~
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 ```
 
 Run the benchmark with `python -m bench.run_benchmark`. It records whether deterministic execution matched simulated residual risk. When a real API key is configured and `MOCK_LLM=0`, it also records whether the LLM-selected action agrees with the deterministic policy. Agreement measures consistency with this policy on synthetic data, not real-world correctness. Benchmark results are generated evidence in `bench/results.md`; do not present unrun or mock results as real-agent performance.
+
+The browser workflow resets the Compose demo graph when it finishes. After pytest completes, stop the temporary test database with `docker stop nexus-pytest-db`.
 
 Current measured local run: **30 of 30** deterministic executions matched the simulated residual risk. No real LLM agreement result is reported because no Anthropic key was configured; all 30 were engine-only synthetic alerts.
 
