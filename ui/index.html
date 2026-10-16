@@ -437,7 +437,7 @@
     .graph-card {
       display: flex;
       flex-direction: column;
-      height: 580px;
+      height: 620px;
       padding: 0;
     }
     .graph-toolbar {
@@ -450,11 +450,16 @@
       background: var(--panel);
       z-index: 2;
     }
+    #forces-toggle-btn.active {
+      border-color: #38BDF8;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+    }
     #cy {
       flex: 1;
       width: 100%;
       height: 100%;
-      background: #090D15;
+      background: radial-gradient(circle at center, #0B1220 0%, #060910 100%);
       position: relative;
       cursor: grab;
     }
@@ -654,14 +659,55 @@
             <div style="font-size:14px; font-weight:600; color:#fff;">Attack Path Traversal Topology</div>
             <div id="physics-status" style="font-size:11px; color:#38BDF8; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
               <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38BDF8; box-shadow:0 0 8px #38BDF8; animation:pulse 2s infinite;"></span>
-              Jiggle & Elastic Spring Physics Active · Drag or tap nodes to jiggle
+              Obsidian Force-Directed Physics Active · Drag nodes to deform network
             </div>
           </div>
           <div style="display:flex; gap:8px;">
+            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Adjust Obsidian Physics Simulation Parameters">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              Forces
+            </button>
             <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 12px;" disabled>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Fit View
             </button>
+          </div>
+        </div>
+
+        <!-- Obsidian-Style Force Controls Drawer -->
+        <div id="forces-drawer" style="display:none; background:#0B111E; border-bottom:1px solid var(--border); padding:12px 18px; font-size:11px;">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; align-items:center;">
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
+                <span>Repulsion</span>
+                <span id="repel-label" style="color:#38BDF8; font-family:'JetBrains Mono';">9500</span>
+              </div>
+              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
+                <span>Link Distance</span>
+                <span id="link-dist-label" style="color:#38BDF8; font-family:'JetBrains Mono';">130</span>
+              </div>
+              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
+                <span>Spring Force</span>
+                <span id="spring-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.045</span>
+              </div>
+              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
+                <span>Gravity</span>
+                <span id="grav-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.0012</span>
+              </div>
+              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+            </div>
+            <div style="display:flex; gap:6px; justify-content:flex-end;">
+              <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:14px;">Reset Defaults</button>
+            </div>
           </div>
         </div>
 
@@ -705,179 +751,273 @@ const initialLayout = {
   numIter: 600
 };
 
-// ==========================================
-// JIGGLE & ELASTIC SPRING PHYSICS ENGINE
-// ==========================================
-function initJigglePhysics(cyInstance) {
+// ==============================================================
+// OBSIDIAN FORCE-DIRECTED DYNAMIC PHYSICS ENGINE
+// ==============================================================
+const obsidianDefaults = {
+  repulsion: 9500,
+  linkDistance: 130,
+  springK: 0.045,
+  gravity: 0.0012,
+  damping: 0.89,
+  collisionRadius: 52
+};
+
+let obsidianParams = { ...obsidianDefaults };
+
+function initObsidianPhysics(cyInstance) {
   if (jiggleLoopId) {
     cancelAnimationFrame(jiggleLoopId);
     jiggleLoopId = null;
   }
 
-  const nodePhysics = new Map();
+  const nodeMap = new Map();
+  const edgesList = [];
 
-  // Initialize node physics states
+  // Initialize node states from current canvas coordinates
   cyInstance.nodes().forEach((n, idx) => {
     const pos = n.position();
-    nodePhysics.set(n.id(), {
+    const kind = n.data('kind');
+    const mass = kind === 'DataStore' ? 2.4 : (kind === 'Server' ? 1.7 : 1.0);
+    nodeMap.set(n.id(), {
+      id: n.id(),
       node: n,
-      anchorX: pos.x,
-      anchorY: pos.y,
       x: pos.x,
       y: pos.y,
       vx: 0,
       vy: 0,
-      phase: idx * 1.4,
+      fx: 0,
+      fy: 0,
+      mass: mass,
+      phase: idx * 1.35,
       isGrabbed: false
+    });
+  });
+
+  cyInstance.edges().forEach(e => {
+    edgesList.push({
+      sourceId: e.source().id(),
+      targetId: e.target().id(),
+      edge: e
     });
   });
 
   let lastGrabPos = null;
   let dragVel = { vx: 0, vy: 0 };
 
-  // On grab: start tracking drag velocity
+  // On grab: lock dragged node to mouse
   cyInstance.on('grab', 'node', e => {
-    const p = nodePhysics.get(e.target.id());
+    const p = nodeMap.get(e.target.id());
     if (p) {
       p.isGrabbed = true;
       p.vx = 0;
       p.vy = 0;
       lastGrabPos = { ...e.target.position() };
+      p.x = lastGrabPos.x;
+      p.y = lastGrabPos.y;
     }
   });
 
-  // On drag: pull connected neighbors with elastic spring tension!
+  // On drag: update node position and track mouse velocity
   cyInstance.on('drag', 'node', e => {
     const target = e.target;
-    const p = nodePhysics.get(target.id());
-    const curr = target.position();
-
-    if (p && lastGrabPos) {
-      dragVel.vx = (curr.x - lastGrabPos.x);
-      dragVel.vy = (curr.y - lastGrabPos.y);
-      lastGrabPos = { ...curr };
-      p.x = curr.x;
-      p.y = curr.y;
-
-      // Elastic rubber-band spring pull on connected neighbors
-      target.neighborhood('node').forEach(nbr => {
-        const np = nodePhysics.get(nbr.id());
-        if (np && !np.isGrabbed) {
-          const dx = curr.x - np.x;
-          const dy = curr.y - np.y;
-          np.vx += dx * 0.035;
-          np.vy += dy * 0.035;
-        }
-      });
+    const p = nodeMap.get(target.id());
+    if (p) {
+      const cur = target.position();
+      if (lastGrabPos) {
+        dragVel.vx = cur.x - lastGrabPos.x;
+        dragVel.vy = cur.y - lastGrabPos.y;
+      }
+      lastGrabPos = { ...cur };
+      p.x = cur.x;
+      p.y = cur.y;
     }
   });
 
-  // On release: inject release inertia + harmonic damped bounce
+  // On release: impart fling inertia so node glides and springs settle
   cyInstance.on('free', 'node', e => {
     const target = e.target;
-    const p = nodePhysics.get(target.id());
+    const p = nodeMap.get(target.id());
     if (p) {
       p.isGrabbed = false;
-      // Throw inertia
-      p.vx = dragVel.vx * 1.8;
-      p.vy = dragVel.vy * 1.8;
-
-      // Update resting anchor slightly toward drop position
-      p.anchorX = p.x * 0.65 + p.anchorX * 0.35;
-      p.anchorY = p.y * 0.65 + p.anchorY * 0.35;
-
-      // Ripple jiggle shockwave to neighbors
-      target.neighborhood('node').forEach(nbr => {
-        const np = nodePhysics.get(nbr.id());
-        if (np) {
-          np.vx += (Math.random() - 0.5) * 16;
-          np.vy += (Math.random() - 0.5) * 16;
-        }
-      });
+      p.vx = dragVel.vx * 1.4;
+      p.vy = dragVel.vy * 1.4;
     }
     lastGrabPos = null;
   });
 
-  // Tap or click on a node: lively jelly jiggle!
+  // Tap / click: playful radial impulse
   cyInstance.on('tap', 'node', e => {
-    const target = e.target;
-    const p = nodePhysics.get(target.id());
+    const p = nodeMap.get(e.target.id());
     if (p) {
       const angle = Math.random() * Math.PI * 2;
-      const power = 22;
+      const power = 18;
       p.vx += Math.cos(angle) * power;
       p.vy += Math.sin(angle) * power;
-
-      target.neighborhood('node').forEach(nbr => {
-        const np = nodePhysics.get(nbr.id());
-        if (np) {
-          const a = Math.random() * Math.PI * 2;
-          np.vx += Math.cos(a) * (power * 0.65);
-          np.vy += Math.sin(a) * (power * 0.65);
-        }
-      });
     }
   });
 
-  // Hover pop
+  // Obsidian Focus Spotlight on Hover
   cyInstance.on('mouseover', 'node', e => {
-    const p = nodePhysics.get(e.target.id());
-    if (p && !p.isGrabbed) {
-      p.vy -= 7; // gentle elastic bounce up
-    }
+    const node = e.target;
+    const neighborhood = node.closedNeighborhood();
+    cyInstance.elements().difference(neighborhood).addClass('obsidian-dimmed');
+    neighborhood.addClass('obsidian-focused');
+    node.addClass('obsidian-active');
   });
 
-  // Trigger high-intensity shockwave (for containment execution)
+  cyInstance.on('mouseout', 'node', e => {
+    cyInstance.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+  });
+
+  // Shockwave for containment execution
   window.triggerGraphShockwave = function(targetId) {
-    nodePhysics.forEach((p, id) => {
-      const isTarget = id === targetId;
-      const power = isTarget ? 36 : 18;
-      const angle = Math.random() * Math.PI * 2;
+    const origin = targetId ? nodeMap.get(targetId) : null;
+    nodeMap.forEach((p, id) => {
+      let angle, power;
+      if (origin && id !== targetId) {
+        const dx = p.x - origin.x;
+        const dy = p.y - origin.y;
+        angle = Math.atan2(dy, dx);
+        const dist = Math.hypot(dx, dy) || 1;
+        power = Math.max(14, 48 - dist * 0.08);
+      } else {
+        angle = Math.random() * Math.PI * 2;
+        power = 28;
+      }
       p.vx += Math.cos(angle) * power;
       p.vy += Math.sin(angle) * power;
     });
   };
 
-  // 60FPS Jiggle Animation Loop
+  // 60 FPS Obsidian Force-Directed Physics Simulation Loop
   let time = 0;
-  function updatePhysics() {
-    time += 0.038;
+  const nodes = Array.from(nodeMap.values());
+  const numNodes = nodes.length;
+  const numEdges = edgesList.length;
 
+  function stepPhysics() {
+    time += 0.032;
+
+    // 1. Calculate dynamic center of mass
+    let sumX = 0, sumY = 0;
+    for (let i = 0; i < numNodes; i++) {
+      sumX += nodes[i].x;
+      sumY += nodes[i].y;
+      nodes[i].fx = 0;
+      nodes[i].fy = 0;
+    }
+    const cx = numNodes > 0 ? sumX / numNodes : 0;
+    const cy = numNodes > 0 ? sumY / numNodes : 0;
+
+    // 2. Gravitational centering + Coulomb Many-Body Repulsion
+    for (let i = 0; i < numNodes; i++) {
+      const pA = nodes[i];
+
+      // Center force (gravity)
+      pA.fx += (cx - pA.x) * obsidianParams.gravity * pA.mass;
+      pA.fy += (cy - pA.y) * obsidianParams.gravity * pA.mass;
+
+      // Pairwise repulsion
+      for (let j = i + 1; j < numNodes; j++) {
+        const pB = nodes[j];
+        let dx = pB.x - pA.x;
+        let dy = pB.y - pA.y;
+        let distSq = dx * dx + dy * dy;
+        if (distSq < 1) {
+          dx = (Math.random() - 0.5);
+          dy = (Math.random() - 0.5);
+          distSq = 1;
+        }
+        const dist = Math.sqrt(distSq);
+        const effDist = Math.max(dist, 36);
+        const repForce = obsidianParams.repulsion / (effDist * effDist);
+        const nx = dx / dist;
+        const ny = dy / dist;
+
+        pA.fx -= nx * repForce;
+        pA.fy -= ny * repForce;
+        pB.fx += nx * repForce;
+        pB.fy -= ny * repForce;
+
+        // Collision avoidance cushion
+        const minSpacing = obsidianParams.collisionRadius;
+        if (dist < minSpacing) {
+          const overlap = (minSpacing - dist) * 0.45;
+          if (!pA.isGrabbed && !pB.isGrabbed) {
+            pA.x -= nx * overlap * 0.5;
+            pA.y -= ny * overlap * 0.5;
+            pB.x += nx * overlap * 0.5;
+            pB.y += ny * overlap * 0.5;
+          }
+        }
+      }
+    }
+
+    // 3. Hooke's Law Elastic Spring Force along Edges
+    for (let k = 0; k < numEdges; k++) {
+      const e = edgesList[k];
+      const pA = nodeMap.get(e.sourceId);
+      const pB = nodeMap.get(e.targetId);
+      if (!pA || !pB) continue;
+
+      const dx = pB.x - pA.x;
+      const dy = pB.y - pA.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const delta = dist - obsidianParams.linkDistance;
+      const springForce = delta * obsidianParams.springK;
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      pA.fx += nx * springForce;
+      pA.fy += ny * springForce;
+      pB.fx -= nx * springForce;
+      pB.fy -= ny * springForce;
+    }
+
+    // 4. Velocity integration with damping & Obsidian zero-g ambiance
+    for (let i = 0; i < numNodes; i++) {
+      const p = nodes[i];
+      if (p.isGrabbed) continue;
+
+      p.vx = (p.vx + (p.fx / p.mass)) * obsidianParams.damping;
+      p.vy = (p.vy + (p.fy / p.mass)) * obsidianParams.damping;
+
+      // Speed clamp to prevent teleporting
+      const speed = Math.hypot(p.vx, p.vy);
+      if (speed > 24) {
+        p.vx = (p.vx / speed) * 24;
+        p.vy = (p.vy / speed) * 24;
+      }
+
+      // Micro zero-g drift
+      const driftX = Math.sin(time * 1.8 + p.phase) * 0.22;
+      const driftY = Math.cos(time * 1.5 + p.phase) * 0.22;
+
+      p.x += p.vx + driftX;
+      p.y += p.vy + driftY;
+    }
+
+    // 5. Batch render updated node positions in Cytoscape
     cyInstance.batch(() => {
-      nodePhysics.forEach(p => {
-        if (p.isGrabbed) return;
-
-        // 1. Hooke's Law Spring Force toward anchor
-        const dx = p.anchorX - p.x;
-        const dy = p.anchorY - p.y;
-        const springK = 0.082;  // Spring stiffness
-        const damping = 0.835;  // Elastic bounce decay (high spring wobble)
-
-        p.vx = (p.vx + dx * springK) * damping;
-        p.vy = (p.vy + dy * springK) * damping;
-
-        // 2. Continuous Organic Zero-G Buoyancy / Micro-Jiggle
-        const microJiggleX = Math.sin(time * 2.4 + p.phase) * 0.65;
-        const microJiggleY = Math.cos(time * 1.9 + p.phase) * 0.65;
-
-        p.x += p.vx + microJiggleX;
-        p.y += p.vy + microJiggleY;
-
-        // Apply updated position
-        p.node.position({ x: p.x, y: p.y });
-      });
+      for (let i = 0; i < numNodes; i++) {
+        const p = nodes[i];
+        if (!p.isGrabbed) {
+          p.node.position({ x: p.x, y: p.y });
+        }
+      }
     });
 
-    jiggleLoopId = requestAnimationFrame(updatePhysics);
+    jiggleLoopId = requestAnimationFrame(stepPhysics);
   }
 
-  // Initial burst: let nodes bounce and settle smoothly into view
-  nodePhysics.forEach(p => {
-    p.vx = (Math.random() - 0.5) * 16;
-    p.vy = (Math.random() - 0.5) * 16;
-  });
+  // Initial gentle dispersion
+  for (let i = 0; i < numNodes; i++) {
+    nodes[i].vx = (Math.random() - 0.5) * 8;
+    nodes[i].vy = (Math.random() - 0.5) * 8;
+  }
 
-  jiggleLoopId = requestAnimationFrame(updatePhysics);
+  jiggleLoopId = requestAnimationFrame(stepPhysics);
 }
 
 async function post(url, body) {
@@ -896,6 +1036,60 @@ async function init() {
   $('alert').innerHTML = alerts.map(a => `<option value="${esc(a.id)}">${esc(a.id)} — ${esc(a.type)}</option>`).join('');
   $('go').onclick = run;
   $('reset').onclick = resetDemo;
+
+  // Obsidian Force-Directed Controls Drawer Wireup
+  const forcesDrawer = $('forces-drawer');
+  const forcesBtn = $('forces-toggle-btn');
+  if (forcesBtn && forcesDrawer) {
+    forcesBtn.onclick = () => {
+      const isHidden = forcesDrawer.style.display === 'none';
+      forcesDrawer.style.display = isHidden ? 'block' : 'none';
+      forcesBtn.classList.toggle('active', isHidden);
+    };
+  }
+
+  const repelSlider = $('repel-slider');
+  if (repelSlider) {
+    repelSlider.oninput = e => {
+      obsidianParams.repulsion = parseFloat(e.target.value);
+      $('repel-label').textContent = e.target.value;
+    };
+  }
+  const linkDistSlider = $('link-dist-slider');
+  if (linkDistSlider) {
+    linkDistSlider.oninput = e => {
+      obsidianParams.linkDistance = parseFloat(e.target.value);
+      $('link-dist-label').textContent = e.target.value;
+    };
+  }
+  const springSlider = $('spring-slider');
+  if (springSlider) {
+    springSlider.oninput = e => {
+      obsidianParams.springK = parseFloat(e.target.value);
+      $('spring-label').textContent = e.target.value;
+    };
+  }
+  const gravSlider = $('grav-slider');
+  if (gravSlider) {
+    gravSlider.oninput = e => {
+      obsidianParams.gravity = parseFloat(e.target.value);
+      $('grav-label').textContent = e.target.value;
+    };
+  }
+  const resetForcesBtn = $('reset-forces-btn');
+  if (resetForcesBtn) {
+    resetForcesBtn.onclick = () => {
+      obsidianParams = { ...obsidianDefaults };
+      if (repelSlider) repelSlider.value = obsidianDefaults.repulsion;
+      if ($('repel-label')) $('repel-label').textContent = obsidianDefaults.repulsion;
+      if (linkDistSlider) linkDistSlider.value = obsidianDefaults.linkDistance;
+      if ($('link-dist-label')) $('link-dist-label').textContent = obsidianDefaults.linkDistance;
+      if (springSlider) springSlider.value = obsidianDefaults.springK;
+      if ($('spring-label')) $('spring-label').textContent = obsidianDefaults.springK;
+      if (gravSlider) gravSlider.value = obsidianDefaults.gravity;
+      if ($('grav-label')) $('grav-label').textContent = obsidianDefaults.gravity;
+    };
+  }
 }
 
 async function run() {
@@ -1242,6 +1436,57 @@ async function drawGraph() {
           'color': '#F87171',
           'opacity': 0.6
         }
+      },
+
+      /* --- OBSIDIAN FOCUS SPOTLIGHT & DIMMING STYLES --- */
+      {
+        selector: '.obsidian-dimmed',
+        style: {
+          'opacity': 0.15,
+          'text-opacity': 0.05
+        }
+      },
+      {
+        selector: 'edge.obsidian-dimmed',
+        style: {
+          'opacity': 0.06,
+          'text-opacity': 0
+        }
+      },
+      {
+        selector: 'node.obsidian-focused',
+        style: {
+          'opacity': 1,
+          'border-width': 3.5,
+          'border-color': '#38BDF8',
+          'shadow-blur': 22,
+          'shadow-color': '#38BDF8',
+          'shadow-opacity': 0.85
+        }
+      },
+      {
+        selector: 'edge.obsidian-focused',
+        style: {
+          'opacity': 1,
+          'width': 3,
+          'line-color': '#38BDF8',
+          'target-arrow-color': '#38BDF8',
+          'text-background-color': '#0284C7',
+          'text-background-opacity': 1,
+          'color': '#FFFFFF'
+        }
+      },
+      {
+        selector: 'node.obsidian-active',
+        style: {
+          'width': 44,
+          'height': 44,
+          'border-width': 4,
+          'border-color': '#67E8F9',
+          'shadow-blur': 28,
+          'shadow-color': '#67E8F9',
+          'shadow-opacity': 1.0
+        }
       }
     ]
   });
@@ -1251,9 +1496,9 @@ async function drawGraph() {
     cy.animate({ fit: { padding: 40 }, duration: 400 });
   };
 
-  // Once initial un-overlapping layout settles, activate real-time Jiggle Physics!
+  // Once initial un-overlapping layout settles, activate real-time Obsidian Physics!
   cy.one('layoutstop', () => {
-    initJigglePhysics(cy);
+    initObsidianPhysics(cy);
   });
 }
 

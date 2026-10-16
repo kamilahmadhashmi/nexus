@@ -30,7 +30,7 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         page.get_by_text("RECOMMENDED:").wait_for()
         page.wait_for_function("typeof cy !== 'undefined' && cy.nodes().length > 0")
         page.get_by_role("button", name="Fit View").click()
-        page.get_by_text("Jiggle & Elastic Spring Physics Active").wait_for()
+        page.get_by_text("Obsidian Force-Directed Physics Active").wait_for()
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-investigation-desktop.png"), full_page=True)
         page.set_viewport_size({"width": 390, "height": 844})
         page.wait_for_function("document.documentElement.scrollWidth <= window.innerWidth")
