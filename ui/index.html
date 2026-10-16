@@ -453,6 +453,10 @@
       height: 100%;
       background: #090D15;
       position: relative;
+      cursor: grab;
+    }
+    #cy:active {
+      cursor: grabbing;
     }
 
     /* Graph Legend */
@@ -645,14 +649,13 @@
         <div class="graph-toolbar">
           <div>
             <div style="font-size:14px; font-weight:600; color:#fff;">Attack Path Traversal Topology</div>
-            <div id="physics-status" style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono', monospace;">CoSE Force-directed spring physics</div>
+            <div id="physics-status" style="font-size:11px; color:#38BDF8; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38BDF8; box-shadow:0 0 8px #38BDF8; animation:pulse 2s infinite;"></span>
+              Jiggle & Elastic Spring Physics Active · Drag or tap nodes to jiggle
+            </div>
           </div>
           <div style="display:flex; gap:8px;">
-            <button id="physics-btn" class="secondary" style="font-size:11px; padding:6px 10px;" disabled>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              Settle Physics
-            </button>
-            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 10px;" disabled>
+            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 12px;" disabled>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Fit View
             </button>
@@ -682,28 +685,197 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 
 let INV = null;
 let cy = null;
+let jiggleLoopId = null;
 
-// Cytoscape CoSE Physics Configuration
-const physicsLayout = {
+// Cytoscape initial CoSE layout for clean un-overlapped topology
+const initialLayout = {
   name: 'cose',
-  animate: true,
-  animationDuration: 850,
-  animationEasing: 'ease-out-cubic',
-  randomize: false,
+  animate: false,
   fit: true,
   padding: 40,
   componentSpacing: 80,
-  nodeRepulsion: node => 7000,
-  nodeOverlap: 20,
+  nodeRepulsion: node => 7500,
+  nodeOverlap: 25,
   idealEdgeLength: edge => 110,
   edgeElasticity: edge => 100,
-  nestingFactor: 1.2,
   gravity: 0.25,
-  numIter: 700,
-  initialTemp: 250,
-  coolingFactor: 0.95,
-  minTemp: 1.0
+  numIter: 600
 };
+
+// ==========================================
+// JIGGLE & ELASTIC SPRING PHYSICS ENGINE
+// ==========================================
+function initJigglePhysics(cyInstance) {
+  if (jiggleLoopId) {
+    cancelAnimationFrame(jiggleLoopId);
+    jiggleLoopId = null;
+  }
+
+  const nodePhysics = new Map();
+
+  // Initialize node physics states
+  cyInstance.nodes().forEach((n, idx) => {
+    const pos = n.position();
+    nodePhysics.set(n.id(), {
+      node: n,
+      anchorX: pos.x,
+      anchorY: pos.y,
+      x: pos.x,
+      y: pos.y,
+      vx: 0,
+      vy: 0,
+      phase: idx * 1.4,
+      isGrabbed: false
+    });
+  });
+
+  let lastGrabPos = null;
+  let dragVel = { vx: 0, vy: 0 };
+
+  // On grab: start tracking drag velocity
+  cyInstance.on('grab', 'node', e => {
+    const p = nodePhysics.get(e.target.id());
+    if (p) {
+      p.isGrabbed = true;
+      p.vx = 0;
+      p.vy = 0;
+      lastGrabPos = { ...e.target.position() };
+    }
+  });
+
+  // On drag: pull connected neighbors with elastic spring tension!
+  cyInstance.on('drag', 'node', e => {
+    const target = e.target;
+    const p = nodePhysics.get(target.id());
+    const curr = target.position();
+
+    if (p && lastGrabPos) {
+      dragVel.vx = (curr.x - lastGrabPos.x);
+      dragVel.vy = (curr.y - lastGrabPos.y);
+      lastGrabPos = { ...curr };
+      p.x = curr.x;
+      p.y = curr.y;
+
+      // Elastic rubber-band spring pull on connected neighbors
+      target.neighborhood('node').forEach(nbr => {
+        const np = nodePhysics.get(nbr.id());
+        if (np && !np.isGrabbed) {
+          const dx = curr.x - np.x;
+          const dy = curr.y - np.y;
+          np.vx += dx * 0.035;
+          np.vy += dy * 0.035;
+        }
+      });
+    }
+  });
+
+  // On release: inject release inertia + harmonic damped bounce
+  cyInstance.on('free', 'node', e => {
+    const target = e.target;
+    const p = nodePhysics.get(target.id());
+    if (p) {
+      p.isGrabbed = false;
+      // Throw inertia
+      p.vx = dragVel.vx * 1.8;
+      p.vy = dragVel.vy * 1.8;
+
+      // Update resting anchor slightly toward drop position
+      p.anchorX = p.x * 0.65 + p.anchorX * 0.35;
+      p.anchorY = p.y * 0.65 + p.anchorY * 0.35;
+
+      // Ripple jiggle shockwave to neighbors
+      target.neighborhood('node').forEach(nbr => {
+        const np = nodePhysics.get(nbr.id());
+        if (np) {
+          np.vx += (Math.random() - 0.5) * 16;
+          np.vy += (Math.random() - 0.5) * 16;
+        }
+      });
+    }
+    lastGrabPos = null;
+  });
+
+  // Tap or click on a node: lively jelly jiggle!
+  cyInstance.on('tap', 'node', e => {
+    const target = e.target;
+    const p = nodePhysics.get(target.id());
+    if (p) {
+      const angle = Math.random() * Math.PI * 2;
+      const power = 22;
+      p.vx += Math.cos(angle) * power;
+      p.vy += Math.sin(angle) * power;
+
+      target.neighborhood('node').forEach(nbr => {
+        const np = nodePhysics.get(nbr.id());
+        if (np) {
+          const a = Math.random() * Math.PI * 2;
+          np.vx += Math.cos(a) * (power * 0.65);
+          np.vy += Math.sin(a) * (power * 0.65);
+        }
+      });
+    }
+  });
+
+  // Hover pop
+  cyInstance.on('mouseover', 'node', e => {
+    const p = nodePhysics.get(e.target.id());
+    if (p && !p.isGrabbed) {
+      p.vy -= 7; // gentle elastic bounce up
+    }
+  });
+
+  // Trigger high-intensity shockwave (for containment execution)
+  window.triggerGraphShockwave = function(targetId) {
+    nodePhysics.forEach((p, id) => {
+      const isTarget = id === targetId;
+      const power = isTarget ? 36 : 18;
+      const angle = Math.random() * Math.PI * 2;
+      p.vx += Math.cos(angle) * power;
+      p.vy += Math.sin(angle) * power;
+    });
+  };
+
+  // 60FPS Jiggle Animation Loop
+  let time = 0;
+  function updatePhysics() {
+    time += 0.038;
+
+    cyInstance.batch(() => {
+      nodePhysics.forEach(p => {
+        if (p.isGrabbed) return;
+
+        // 1. Hooke's Law Spring Force toward anchor
+        const dx = p.anchorX - p.x;
+        const dy = p.anchorY - p.y;
+        const springK = 0.082;  // Spring stiffness
+        const damping = 0.835;  // Elastic bounce decay (high spring wobble)
+
+        p.vx = (p.vx + dx * springK) * damping;
+        p.vy = (p.vy + dy * springK) * damping;
+
+        // 2. Continuous Organic Zero-G Buoyancy / Micro-Jiggle
+        const microJiggleX = Math.sin(time * 2.4 + p.phase) * 0.65;
+        const microJiggleY = Math.cos(time * 1.9 + p.phase) * 0.65;
+
+        p.x += p.vx + microJiggleX;
+        p.y += p.vy + microJiggleY;
+
+        // Apply updated position
+        p.node.position({ x: p.x, y: p.y });
+      });
+    });
+
+    jiggleLoopId = requestAnimationFrame(updatePhysics);
+  }
+
+  // Initial burst: let nodes bounce and settle smoothly into view
+  nodePhysics.forEach(p => {
+    p.vx = (Math.random() - 0.5) * 16;
+    p.vy = (Math.random() - 0.5) * 16;
+  });
+
+  jiggleLoopId = requestAnimationFrame(updatePhysics);
+}
 
 async function post(url, body) {
   const response = await fetch(url, {
@@ -740,7 +912,6 @@ async function run() {
     $('inv-id').textContent = INV;
     $('mode-badge').textContent = data.mode === 'scripted' ? '● SCRIPTED TRACE' : '● LIVE AGENT (MCP)';
     
-    // Render trace sequentially for visual feedback
     $('trace-step-count').textContent = `${data.trace.length} tool calls`;
     for (const step of data.trace) {
       const cypherBlock = step.cypher 
@@ -776,8 +947,11 @@ async function resetDemo() {
   try {
     const result = await post('/api/reset', {});
     INV = null;
+    if (jiggleLoopId) {
+      cancelAnimationFrame(jiggleLoopId);
+      jiggleLoopId = null;
+    }
     if (cy) { cy.destroy(); cy = null; }
-    $('physics-btn').disabled = true;
     $('fit-btn').disabled = true;
     $('inv-id').textContent = 'RESET COMPLETED';
     $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
@@ -902,6 +1076,10 @@ async function act(url) {
     const refreshed = await (await fetch(`/api/investigations/${INV}`)).json();
     render(refreshed);
     await drawGraph();
+    // Trigger celebratory or severing shockwave!
+    if (window.triggerGraphShockwave) {
+      window.triggerGraphShockwave(refreshed.executed?.target);
+    }
   } catch (error) {
     alert('Action execution failed: ' + error.message);
   }
@@ -912,7 +1090,6 @@ async function drawGraph() {
   const data = await (await fetch(`/api/graph/${INV}`)).json();
   const inactive = new Set(data.nodes.filter(n => n.status !== 'ACTIVE').map(n => n.id));
 
-  // Build Cytoscape elements with clean metadata
   const elements = data.nodes.map(n => ({
     data: {
       id: n.id,
@@ -930,12 +1107,16 @@ async function drawGraph() {
     }
   })));
 
+  if (jiggleLoopId) {
+    cancelAnimationFrame(jiggleLoopId);
+    jiggleLoopId = null;
+  }
   if (cy) cy.destroy();
 
   cy = cytoscape({
     container: $('cy'),
     elements: elements,
-    layout: physicsLayout,
+    layout: initialLayout,
     style: [
       /* --- NODE STYLES --- */
       {
@@ -961,7 +1142,6 @@ async function drawGraph() {
           'transition-duration': '0.3s'
         }
       },
-      /* Specific node types */
       {
         selector: 'node[kind = "Person"]',
         style: {
@@ -1015,7 +1195,6 @@ async function drawGraph() {
           'border-width': 3
         }
       },
-      /* Blocked/Quarantined Node */
       {
         selector: 'node[bad = 1]',
         style: {
@@ -1026,32 +1205,31 @@ async function drawGraph() {
         }
       },
 
-      /* --- EDGE STYLES (CRYSTAL CLEAR HIGH CONTRAST) --- */
+      /* --- EDGE STYLES (HIGH CONTRAST & VISIBILITY) --- */
       {
         selector: 'edge',
         style: {
           'label': 'data(label)',
-          'color': '#38BDF8', // Vivid electric cyan text
+          'color': '#38BDF8', // High-contrast electric cyan
           'font-size': '10px',
           'font-weight': 600,
           'font-family': 'JetBrains Mono, monospace',
-          'text-background-color': '#0B111E', // Dark slate background pill
+          'text-background-color': '#0B111E', // Dark contrast background pill
           'text-background-opacity': 0.95,
           'text-background-padding': '4px',
           'text-background-shape': 'roundrectangle',
           'text-border-color': '#1E293B',
           'text-border-width': 1,
           'text-border-opacity': 0.9,
-          'text-rotation': 'autorotate', // Aligns along edge direction
+          'text-rotation': 'autorotate',
           'curve-style': 'bezier',
-          'line-color': '#334155', // Slate edge line
+          'line-color': '#334155',
           'width': 2,
           'target-arrow-shape': 'triangle',
           'target-arrow-color': '#64748B',
           'arrow-scale': 1.15
         }
       },
-      /* Severed/Broken Edge */
       {
         selector: 'edge[bad = 1]',
         style: {
@@ -1065,22 +1243,14 @@ async function drawGraph() {
     ]
   });
 
-  // Enable controls
-  $('physics-btn').disabled = false;
   $('fit-btn').disabled = false;
-
-  $('physics-btn').onclick = () => {
-    $('physics-status').textContent = 'Simulating force vectors...';
-    const layout = cy.layout({ ...physicsLayout, randomize: false });
-    layout.run();
-  };
-
   $('fit-btn').onclick = () => {
     cy.animate({ fit: { padding: 40 }, duration: 400 });
   };
 
-  cy.on('layoutstop', () => {
-    $('physics-status').textContent = 'Physics settled · drag nodes to explore';
+  // Once initial un-overlapping layout settles, activate real-time Jiggle Physics!
+  cy.one('layoutstop', () => {
+    initJigglePhysics(cy);
   });
 }
 
