@@ -16,6 +16,7 @@
       color-scheme: dark;
       --bg: #07090E;
       --panel: #0D111A;
+      --panel-card: rgba(13, 17, 26, 0.88);
       --panel-hover: #121824;
       --panel-subtle: #0A0E15;
       --border: #1C2433;
@@ -26,6 +27,7 @@
       --blue: #3B82F6;
       --blue-glow: rgba(59, 130, 246, 0.25);
       --cyan: #06B6D4;
+      --cyan-glow: rgba(6, 182, 212, 0.25);
       --green: #10B981;
       --green-glow: rgba(16, 185, 129, 0.2);
       --red: #EF4444;
@@ -55,7 +57,15 @@
       flex-direction: column;
     }
 
-    /* Ambient background grid */
+    /* Ambient background canvas and grid */
+    #ambient-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
     body::before {
       content: '';
       position: fixed;
@@ -233,19 +243,44 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    button:active:not(:disabled) {
+      transform: translateY(1px) scale(0.985);
     }
     button.primary {
       background: linear-gradient(135deg, #2563EB, #1D4ED8);
       color: #fff;
       box-shadow: 0 2px 10px var(--blue-glow);
     }
+    button.primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 35%;
+      height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+    button.primary:hover:not(:disabled)::after {
+      animation: btnShimmer 1.2s ease-in-out;
+    }
+    @keyframes btnShimmer {
+      0% { left: -60%; }
+      100% { left: 140%; }
+    }
     button.primary:hover:not(:disabled) {
       background: linear-gradient(135deg, #3B82F6, #2563EB);
-      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 4px 18px rgba(59, 130, 246, 0.5);
       transform: translateY(-1px);
     }
     button.secondary {
-      background: var(--panel);
+      background: rgba(13, 17, 26, 0.85);
       color: var(--text-muted);
       border: 1px solid var(--border);
     }
@@ -253,16 +288,25 @@
       background: var(--panel-hover);
       color: var(--text);
       border-color: var(--border-bright);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    button.secondary.active {
+      border-color: #38BDF8 !important;
+      color: #38BDF8 !important;
+      background: rgba(56, 189, 248, 0.12) !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
     }
     button.danger {
       background: rgba(239, 68, 68, 0.15);
       color: #F87171;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      border: 1px solid rgba(239, 68, 68, 0.35);
     }
     button.danger:hover:not(:disabled) {
       background: rgba(239, 68, 68, 0.25);
       border-color: #EF4444;
       color: #fff;
+      box-shadow: 0 4px 16px var(--red-glow);
+      transform: translateY(-1px);
     }
     button.success {
       background: linear-gradient(135deg, #059669, #047857);
@@ -271,7 +315,7 @@
     }
     button.success:hover:not(:disabled) {
       background: linear-gradient(135deg, #10B981, #059669);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.5);
       transform: translateY(-1px);
     }
     button:disabled {
@@ -295,13 +339,29 @@
 
     /* Cards */
     .card {
-      background: var(--panel);
+      background: var(--panel-card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 20px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.35), rgba(139, 92, 246, 0.25), transparent);
+      pointer-events: none;
+    }
+    .card:hover {
+      border-color: var(--border-bright);
     }
     .card-header {
       display: flex;
@@ -586,16 +646,45 @@
       overflow-y: auto;
       padding-right: 4px;
     }
+    @keyframes traceSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
     .trace-item {
       background: var(--panel-subtle);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
       font-size: 12px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, background 0.2s;
+      animation: traceSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+    }
+    .trace-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      border-radius: 2px;
+      background: #38BDF8;
+      opacity: 0.3;
+      transition: opacity 0.2s, box-shadow 0.2s;
+    }
+    .trace-item:hover::before {
+      opacity: 1;
+      box-shadow: 0 0 8px #38BDF8;
     }
     .trace-item:hover {
       border-color: var(--border-bright);
+      background: rgba(18, 24, 36, 0.6);
     }
     .trace-meta {
       display: flex;
@@ -616,6 +705,41 @@
       color: var(--text-muted);
     }
     
+    /* Cyber Range Sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #1C2433;
+      height: 5px;
+      border-radius: 4px;
+      outline: none;
+      transition: background 0.2s;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 1);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38BDF8;
+      border: none;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+      cursor: pointer;
+    }
+
     details {
       margin-top: 6px;
     }
@@ -645,9 +769,22 @@
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Motion Safety and Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      #ambient-canvas {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
+<canvas id="ambient-canvas"></canvas>
 
 <header>
   <div class="brand">
@@ -896,6 +1033,141 @@ let INV = null;
 let ACTION_NOTICE = '';
 let cy = null;
 let jiggleLoopId = null;
+
+// ==============================================================
+// AMBIENT CYBER CONSTELLATION CANVAS
+// ==============================================================
+(function initAmbientCanvas() {
+  const canvas = document.getElementById('ambient-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let width = 0, height = 0;
+  let animationId = null;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  const numParticles = 36;
+  const particles = [];
+  const mouse = { x: -1000, y: -1000, radius: 110 };
+
+  function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  }, { passive: true });
+  window.addEventListener('mouseleave', () => {
+    mouse.x = -1000;
+    mouse.y = -1000;
+  }, { passive: true });
+
+  for (let i = 0; i < numParticles; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.32,
+      vy: (Math.random() - 0.5) * 0.32,
+      radius: Math.random() * 1.5 + 1,
+      alpha: Math.random() * 0.35 + 0.15
+    });
+  }
+
+  function step() {
+    if (prefersReduced.matches || document.hidden) {
+      animationId = requestAnimationFrame(step);
+      return;
+    }
+    ctx.clearRect(0, 0, width, height);
+
+    // Connective mesh lines
+    for (let i = 0; i < numParticles; i++) {
+      const p1 = particles[i];
+      for (let j = i + 1; j < numParticles; j++) {
+        const p2 = particles[j];
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < 110) {
+          const alpha = (1 - dist / 110) * 0.12;
+          ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // Drifting particles with subtle cursor deflection
+    for (let i = 0; i < numParticles; i++) {
+      const p = particles[i];
+      const mdx = p.x - mouse.x;
+      const mdy = p.y - mouse.y;
+      const mDist = Math.hypot(mdx, mdy);
+      if (mDist < mouse.radius && mDist > 0) {
+        const force = (mouse.radius - mDist) / mouse.radius;
+        p.vx += (mdx / mDist) * force * 0.22;
+        p.vy += (mdy / mDist) * force * 0.22;
+      }
+
+      p.vx *= 0.98;
+      p.vy *= 0.98;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
+      if (p.y < 0) p.y = height;
+      if (p.y > height) p.y = 0;
+
+      ctx.fillStyle = `rgba(148, 163, 184, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    animationId = requestAnimationFrame(step);
+  }
+
+  animationId = requestAnimationFrame(step);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && !prefersReduced.matches) {
+      if (!animationId) animationId = requestAnimationFrame(step);
+    }
+  });
+})();
+
+// Smooth score counter animation helper
+function animateScoreCounter(el, targetScore, duration = 650) {
+  if (!el) return;
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    el.textContent = targetScore;
+    return;
+  }
+  const start = parseInt(el.textContent, 10) || 0;
+  if (start === targetScore) return;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(start + (targetScore - start) * eased);
+    el.textContent = current;
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      el.textContent = targetScore;
+    }
+  }
+  requestAnimationFrame(update);
+}
 
 // Cytoscape initial CoSE layout for clean un-overlapped topology
 const initialLayout = {
@@ -1571,7 +1843,7 @@ function render(data) {
 
   $('decision-content').innerHTML = `
     <div class="risk-score-wrapper">
-      <div class="risk-score ${esc(ini.label)}">${ini.score}</div>
+      <div id="score-counter" class="risk-score ${esc(ini.label)}">${ini.score}</div>
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(ini.label)}-bg">${esc(ini.label)} RISK</span>
         <span style="font-size:12px; color:var(--text-dim);">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</span>
@@ -1610,6 +1882,11 @@ function render(data) {
       <pre style="margin-top:8px;">${esc(JSON.stringify(ini, null, 2))}</pre>
     </details>
   `;
+
+  const scoreCounter = $('score-counter');
+  if (scoreCounter) {
+    animateScoreCounter(scoreCounter, ini.score);
+  }
 
   // Render Containment Matrix Table
   const rows = data.matrix.map(row => {
@@ -1772,7 +2049,7 @@ async function drawGraph() {
       {
         selector: 'node[kind = "Service"]',
         style: {
-          'shape': 'round-rectangle',
+          'shape': 'round-hexagon',
           'border-color': '#A78BFA',
           'background-color': '#2E1065'
         }
@@ -1780,12 +2057,15 @@ async function drawGraph() {
       {
         selector: 'node[kind = "DataStore"]',
         style: {
-          'shape': 'barrel',
-          'width': 42,
-          'height': 42,
+          'shape': 'star',
+          'width': 44,
+          'height': 44,
           'border-color': '#F43F5E',
           'background-color': '#4C0519',
-          'border-width': 3
+          'border-width': 3,
+          'shadow-blur': 18,
+          'shadow-color': '#F43F5E',
+          'shadow-opacity': 0.75
         }
       },
       {
