@@ -1,0 +1,27 @@
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: nexus-falkordb
+    volumes:
+      - falkordb_data:/var/lib/falkordb/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  app:
+    build: .
+    ports:
+      - "8080:8000"
+    environment:
+      FALKOR_HOST: falkordb
+      FALKOR_PORT: "6379"
+      MOCK_LLM: ${MOCK_LLM:-1}
+      NEXUS_MODEL: ${NEXUS_MODEL:-claude-sonnet-5-5}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    command: ["sh", "-c", "python -m seed.generate && uvicorn api.main:app --host 0.0.0.0 --port 8000"]
+volumes:
+  falkordb_data:

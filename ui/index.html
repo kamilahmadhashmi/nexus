@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NEXUS — Graph-grounded response</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+  <style>
+    :root{color-scheme:dark;--bg:#0f1419;--panel:#161d26;--line:#2a323c;--muted:#9aa6b4;--blue:#2f6df6;--green:#4cd98a;--red:#ff5c5c;--amber:#ff9f43}
+    *{box-sizing:border-box}body{font:15px system-ui,sans-serif;margin:0;background:var(--bg);color:#e6e6e6}
+    header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;background:#0f1419f2;z-index:2}
+    header b{letter-spacing:2px;font-size:19px}main{max-width:1100px;margin:auto;padding:16px;display:grid;gap:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .big{font-size:56px;font-weight:700;line-height:1}.CRITICAL{color:var(--red)}.HIGH{color:var(--amber)}.MEDIUM{color:#f7d154}.LOW{color:var(--green)}
+    button,select{font:inherit;border-radius:6px;padding:9px 12px}button{background:var(--blue);color:white;border:0;cursor:pointer}button.warn{background:#c0392b}button:disabled{opacity:.55;cursor:wait}
+    select{background:#0b0f14;color:inherit;border:1px solid var(--line)}label,.muted,.dom{color:var(--muted)}.tag{font-size:11px;padding:3px 7px;border-radius:20px;background:#2a323c;color:#c8d0d9}
+    h2,h3{margin:0 0 12px}h3{font-size:16px}table{width:100%;border-collapse:collapse;font-size:13px;overflow-wrap:anywhere}td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left}tr.pick{background:#1f3a2a}
+    pre{background:#0b0f14;padding:9px;overflow:auto;font-size:12px;white-space:pre-wrap;border-radius:5px}.step{padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}#cy{height:380px;background:#0b0f14;border-radius:8px}#summary{white-space:pre-wrap;font-size:14px;line-height:1.55;margin-top:12px}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}header{position:static}table{font-size:11px}td,th{padding:5px}}
+  </style>
+</head>
+<body>
+<header><b>NEXUS</b><span class="tag">SYNTHETIC DATA</span><select id="alert"></select><select id="mode"><option value="auto">Real agent (needs key)</option><option value="mock">Scripted tools (no AI)</option></select><label><input type="checkbox" id="auto"> Autonomous mode</label><button id="go">Investigate</button><span id="status" class="muted"></span></header>
+<main>
+  <section class="card" id="decision">Pick an alert and press Investigate.</section>
+  <section class="card"><h3>Containment matrix</h3><div id="matrix" class="muted">No simulation yet.</div></section>
+  <div class="grid"><section class="card"><h3>Agent trace</h3><div id="trace"></div><div id="summary"></div></section><section class="card"><h3>Attack graph</h3><div id="cy"></div></section></div>
+</main>
+<script>
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let INV=null,cy=null;
+async function post(url,body){const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await response.json();if(!response.ok)throw new Error(data.detail||data.error||response.statusText);return data}
+async function init(){const alerts=await(await fetch('/api/alerts')).json();$('alert').innerHTML=alerts.map(a=>`<option value="${esc(a.id)}">${esc(a.id)} — ${esc(a.type)}</option>`).join('');$('go').onclick=run}
+async function run(){const button=$('go');button.disabled=true;$('status').textContent='Investigating…';$('trace').innerHTML='';$('summary').textContent='';try{const data=await post('/api/investigate',{alert_id:$('alert').value,mode:$('mode').value,autonomous:$('auto').checked});INV=data.investigation_id;for(const step of data.trace){const query=step.cypher?`<details><summary>Show Cypher</summary><pre>${esc(step.cypher)}</pre></details>`:'';$('trace').insertAdjacentHTML('beforeend',`<div class="step"><span class="tag">${step.step}</span> <b>${esc(step.tool)}</b> ${esc(JSON.stringify(step.args))}<br>${esc(step.summary)} <span class="dom">${step.ms} ms</span>${query}</div>`);await new Promise(resolve=>setTimeout(resolve,100))}$('summary').textContent=data.summary;render(data);await drawGraph();$('status').textContent=`mode: ${data.mode}`}catch(error){$('status').textContent=error.message}finally{button.disabled=false}}
+function render(data){if(!data.initial){$('decision').textContent='No simulation result.';return}const rec=data.recommendation,ini=data.initial,ex=data.executed,action=rec.action==='monitor_only'?'MONITOR ONLY':`${rec.action} ${rec.target}`.toUpperCase();let control='';if(rec.action!=='monitor_only'&&!ex)control=`<button id="contain" class="${rec.requires_approval?'warn':''}">${rec.requires_approval?'APPROVE AND CONTAIN':'CONTAIN'}</button>`;if(ex)control='<button id="rollback" class="warn">ROLLBACK</button>';$('decision').innerHTML=`<div class="dom">${esc(data.investigation_id)}</div><div class="big ${esc(ini.label)}">${ini.score}<span style="font-size:20px"> / 100 ${esc(ini.label)}</span></div><div>${data.matrix[0]?.paths_before??0} attack paths found</div><p>RECOMMENDED: <b>${esc(action)}</b><br><span class="dom">${esc(rec.why)}</span></p>${ex?`<div>After containment: <b>${ex.after}</b> (verified: ${ex.verified})</div>`:''}${control}<details><summary>How was this score computed?</summary><pre>${esc(JSON.stringify(ini,null,2))}</pre></details>`;const rows=data.matrix.map(row=>{const selected=row.action===rec.action&&row.target===rec.target?'pick':'',badge=row.dominated_by?`<span class="dom">dominated by ${esc(row.dominated_by)}</span>`:'<span class="tag">Pareto</span>';return `<tr class="${selected}"><td>${esc(row.action)}</td><td>${esc(row.target||'')}</td><td>${row.residual_risk}</td><td>${row.paths_broken}/${row.paths_before}</td><td class="${esc(row.impact_label)}">${esc(row.impact_label)} (${row.impact})</td><td>${badge}</td></tr>`}).join('');$('matrix').innerHTML=`<table><thead><tr><th>Action</th><th>Target</th><th>Residual risk</th><th>Paths broken</th><th>Business impact</th><th>Pareto</th></tr></thead><tbody>${rows}</tbody></table>`;const contain=$('contain');if(contain)contain.onclick=()=>act('/api/contain');const rollback=$('rollback');if(rollback)rollback.onclick=()=>act('/api/rollback')}
+async function act(url){$('status').textContent='Applying action…';try{const result=await post(url,{investigation_id:INV});$('status').textContent=result.ok?`risk ${result.before} → ${result.after}, verified ${result.verified}`:result.error;const data=await(await fetch(`/api/investigations/${INV}`)).json();render(data);await drawGraph()}catch(error){$('status').textContent=error.message}}
+async function drawGraph(){if(!INV||!window.cytoscape)return;const data=await(await fetch(`/api/graph/${INV}`)).json(),inactive=new Set(data.nodes.filter(n=>n.status!=='ACTIVE').map(n=>n.id)),elements=data.nodes.map(n=>({data:{id:n.id,label:n.id,bad:inactive.has(n.id)?1:0}})).concat(data.edges.map(e=>({data:{source:e.source,target:e.target,label:e.type,bad:inactive.has(e.source)||inactive.has(e.target)?1:0}})));if(cy)cy.destroy();cy=cytoscape({container:$('cy'),elements,layout:{name:'breadthfirst',directed:true,padding:12},style:[{selector:'node',style:{label:'data(label)',color:'#e6e6e6','font-size':10,'background-color':'#2f6df6'}},{selector:'node[bad = 1]',style:{'background-color':'#c0392b'}},{selector:'edge',style:{width:2,'line-color':'#ff9f43','target-arrow-shape':'triangle','target-arrow-color':'#ff9f43','curve-style':'bezier','font-size':7,label:'data(label)'}}]})}
+init().catch(error=>$('status').textContent=error.message);
+</script>
+</body>
+</html>
