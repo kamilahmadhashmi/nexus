@@ -6,58 +6,103 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXUS — Autonomous Graph-Grounded Cyber Defense</title>
+  <title>NEXUS — Autonomous Graph-Grounded Cyber Defense Cockpit</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <!-- 1. Cytoscape Graph Visualization Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+  
+  <!-- 2. GSAP 3 Core Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <!-- 3. Lenis Smooth Scroll Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
+  
+  <!-- 4. Three.js & Vanta.js for Atmospheric 3D Cockpit Depth -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
   <style>
     :root {
       color-scheme: dark;
-      --bg: #07090E;
-      --panel: #0D111A;
-      --panel-card: rgba(13, 17, 26, 0.88);
-      --panel-hover: #121824;
-      --panel-subtle: #0A0E15;
-      --border: #1C2433;
-      --border-bright: #2B374E;
-      --text: #F1F5F9;
+      --bg: #05070B;
+      --bg-alt: #080C14;
+      --panel: #0D121F;
+      --panel-card: rgba(13, 18, 31, 0.88);
+      --panel-hover: #141B2D;
+      --panel-subtle: #090E17;
+      --border: #161F30;
+      --border-bright: #25334E;
+      --border-glow: rgba(56, 189, 248, 0.28);
+      
+      --text: #F8FAFC;
       --text-muted: #94A3B8;
       --text-dim: #64748B;
-      --blue: #3B82F6;
-      --blue-glow: rgba(59, 130, 246, 0.25);
+      
+      --blue: #38BDF8;
+      --blue-glow: rgba(56, 189, 248, 0.35);
       --cyan: #06B6D4;
-      --cyan-glow: rgba(6, 182, 212, 0.25);
+      --cyan-glow: rgba(6, 182, 212, 0.3);
       --green: #10B981;
-      --green-glow: rgba(16, 185, 129, 0.2);
-      --red: #EF4444;
-      --red-glow: rgba(239, 68, 68, 0.25);
+      --green-glow: rgba(16, 185, 129, 0.35);
+      --red: #F43F5E;
+      --red-glow: rgba(244, 63, 94, 0.4);
       --amber: #F59E0B;
-      --amber-glow: rgba(245, 158, 11, 0.2);
+      --amber-glow: rgba(245, 158, 11, 0.35);
       --purple: #8B5CF6;
-      --radius-sm: 6px;
-      --radius-md: 10px;
-      --radius-lg: 14px;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      
+      --radius-xs: 4px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      --hud-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.08);
+      --card-highlight: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.45), rgba(139, 92, 246, 0.35), transparent);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     html, body {
       overflow-x: hidden;
       max-width: 100vw;
       width: 100%;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.5;
       font-size: 14px;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Ambient background canvas and grid */
+    /* Lenis Smooth Scroll Standard Rules */
+    html.lenis, html.lenis body {
+      height: auto;
+    }
+    .lenis.lenis-smooth {
+      scroll-behavior: auto !important;
+    }
+    .lenis.lenis-smooth [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+
+    /* 3D Atmospheric Background Layers */
+    #vanta-background {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+      transition: opacity 1s ease;
+    }
+
     #ambient-canvas {
       position: fixed;
       inset: 0;
@@ -66,257 +111,201 @@
       pointer-events: none;
       z-index: 0;
     }
+
+    /* Tactical CRT/Radar Scanline & Vignette Grid */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
+        linear-gradient(to right, rgba(56, 189, 248, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(5, 7, 11, 0.82) 100%);
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Header */
+    /* Top Command Header */
     header {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(7, 9, 14, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(9, 14, 23, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 24px;
+      padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      flex-wrap: wrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+      text-decoration: none;
     }
     .brand-logo {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      background: linear-gradient(135deg, #0284C7, #38BDF8 60%, #818CF8);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 16px;
+      font-size: 18px;
       color: #fff;
-      box-shadow: 0 0 15px var(--blue-glow);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .brand-text b {
-      font-size: 17px;
-      letter-spacing: 1.5px;
-      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 2px;
+      font-weight: 800;
       color: #fff;
+      display: block;
+      line-height: 1.1;
+      text-shadow: 0 0 16px rgba(255, 255, 255, 0.25);
     }
     .brand-text span {
       display: block;
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-dim);
+      letter-spacing: 1.4px;
+      color: var(--blue);
       font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
-    /* Badges & Pills */
+    /* Badges & Status Indicators */
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: var(--panel-subtle);
+      background: rgba(13, 18, 31, 0.7);
       color: var(--text-muted);
       font-weight: 500;
+      backdrop-filter: blur(10px);
+      letter-spacing: 0.4px;
+      user-select: none;
+      transition: all 0.2s ease;
     }
     .badge.pulse::before {
       content: '';
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px var(--green);
+      animation: statusPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
     .badge.synth {
-      border-color: rgba(139, 92, 246, 0.4);
-      background: rgba(139, 92, 246, 0.08);
-      color: #C4B5FD;
+      border-color: rgba(139, 92, 246, 0.45);
+      background: rgba(139, 92, 246, 0.1);
+      color: #DDD6FE;
     }
-    .demo-guide {
-      max-width: 1440px;
-      width: calc(100% - 32px);
-      margin: 16px auto 0;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: var(--radius-md);
-      background: linear-gradient(110deg, rgba(37, 99, 235, 0.12), rgba(13, 17, 26, 0.94) 55%);
-      position: relative;
-      z-index: 1;
-    }
-    .demo-guide-copy { min-width: 0; }
-    .demo-guide-title { color: #DBEAFE; font-weight: 700; margin-bottom: 3px; }
-    .demo-guide-steps { color: var(--text-muted); font-size: 12px; }
-    .demo-guide-note { color: var(--text-dim); font-size: 11px; margin-top: 3px; }
-    .evidence-panel, .action-notice {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--panel-subtle);
-      padding: 12px 14px;
-      margin-top: 12px;
-    }
-    .evidence-panel h4 { font-size: 12px; color: #BFDBFE; margin-bottom: 5px; }
-    .evidence-panel p, .evidence-panel li { color: var(--text-muted); font-size: 12px; }
-    .evidence-panel ul { padding-left: 18px; margin-top: 6px; }
-    .evidence-panel li + li { margin-top: 4px; }
-    .evidence-panel code { color: #BAE6FD; overflow-wrap: anywhere; }
-    .action-notice { color: #A7F3D0; border-color: rgba(16,185,129,0.35); }
-    .action-notice.mismatch { color: #FCD34D; border-color: rgba(245,158,11,0.35); }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
+    #mode-badge {
+      border-color: rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.08);
+      color: #BAE6FD;
+      font-weight: 600;
     }
 
-    /* Inputs & Selects */
-    select, button {
-      font-family: inherit;
-      font-size: 13px;
-      border-radius: var(--radius-sm);
-      padding: 8px 14px;
-      transition: all 0.2s ease;
-      outline: none;
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px var(--green); }
+      50% { opacity: 0.35; transform: scale(0.8); box-shadow: 0 0 4px var(--green); }
     }
+
+    /* Form Controls: Select & Checkboxes */
     select {
-      background: var(--panel);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      padding: 7px 14px;
+      background: rgba(13, 18, 31, 0.9);
       color: var(--text);
       border: 1px solid var(--border);
       cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     select:hover, select:focus {
-      border-color: var(--border-bright);
-      background: var(--panel-hover);
+      border-color: var(--blue);
+      box-shadow: 0 0 12px var(--blue-glow);
+      background: #141B2D;
     }
     
     .checkbox-label {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
       color: var(--text-muted);
       cursor: pointer;
       user-select: none;
+      background: rgba(13, 18, 31, 0.6);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .checkbox-label:hover {
+      border-color: var(--border-bright);
     }
     .checkbox-label input {
       accent-color: var(--blue);
       cursor: pointer;
+      width: 14px;
+      height: 14px;
     }
 
-    /* Buttons */
+    /* Tactile Cockpit Buttons */
     button {
+      font-family: inherit;
       font-weight: 600;
+      font-size: 13px;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
       border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       user-select: none;
       position: relative;
       overflow: hidden;
+      outline: none;
       transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
     button:active:not(:disabled) {
       transform: translateY(1px) scale(0.985);
-    }
-    button.primary {
-      background: linear-gradient(135deg, #2563EB, #1D4ED8);
-      color: #fff;
-      box-shadow: 0 2px 10px var(--blue-glow);
-    }
-    button.primary::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -60%;
-      width: 35%;
-      height: 200%;
-      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-      transform: rotate(25deg);
-      pointer-events: none;
-    }
-    button.primary:hover:not(:disabled)::after {
-      animation: btnShimmer 1.2s ease-in-out;
-    }
-    @keyframes btnShimmer {
-      0% { left: -60%; }
-      100% { left: 140%; }
-    }
-    button.primary:hover:not(:disabled) {
-      background: linear-gradient(135deg, #3B82F6, #2563EB);
-      box-shadow: 0 4px 18px rgba(59, 130, 246, 0.5);
-      transform: translateY(-1px);
-    }
-    button.secondary {
-      background: rgba(13, 17, 26, 0.85);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-    }
-    button.secondary:hover:not(:disabled) {
-      background: var(--panel-hover);
-      color: var(--text);
-      border-color: var(--border-bright);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-    button.secondary.active {
-      border-color: #38BDF8 !important;
-      color: #38BDF8 !important;
-      background: rgba(56, 189, 248, 0.12) !important;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
-    }
-    button.danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: #F87171;
-      border: 1px solid rgba(239, 68, 68, 0.35);
-    }
-    button.danger:hover:not(:disabled) {
-      background: rgba(239, 68, 68, 0.25);
-      border-color: #EF4444;
-      color: #fff;
-      box-shadow: 0 4px 16px var(--red-glow);
-      transform: translateY(-1px);
-    }
-    button.success {
-      background: linear-gradient(135deg, #059669, #047857);
-      color: #fff;
-      box-shadow: 0 2px 10px var(--green-glow);
-    }
-    button.success:hover:not(:disabled) {
-      background: linear-gradient(135deg, #10B981, #059669);
-      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.5);
-      transform: translateY(-1px);
     }
     button:disabled {
       opacity: 0.45;
@@ -325,30 +314,171 @@
       box-shadow: none !important;
     }
 
-    /* Main Container */
-    main {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 24px;
-      width: 100%;
-      display: grid;
-      gap: 20px;
-      position: relative;
-      z-index: 1;
+    button.primary {
+      background: linear-gradient(135deg, #0284C7 0%, #2563EB 50%, #1D4ED8 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--blue-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+    }
+    button.primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: rotate(25deg);
+      pointer-events: none;
+    }
+    button.primary:hover:not(:disabled)::after {
+      animation: btnShimmer 1.2s ease-in-out;
+    }
+    button.primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #38BDF8 0%, #3B82F6 50%, #2563EB 100%);
+      box-shadow: 0 6px 24px rgba(56, 189, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
     }
 
-    /* Cards */
+    @keyframes btnShimmer {
+      0% { left: -60%; }
+      100% { left: 140%; }
+    }
+
+    button.secondary {
+      background: rgba(13, 18, 31, 0.85);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    button.secondary:hover:not(:disabled) {
+      background: var(--panel-hover);
+      color: var(--text);
+      border-color: var(--border-bright);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+    button.secondary.active {
+      border-color: #38BDF8 !important;
+      color: #38BDF8 !important;
+      background: rgba(56, 189, 248, 0.15) !important;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+    }
+
+    button.danger {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(185, 28, 28, 0.4));
+      color: #FECDD3;
+      border: 1px solid rgba(244, 63, 94, 0.5);
+      box-shadow: 0 4px 16px var(--red-glow);
+    }
+    button.danger:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.6));
+      color: #fff;
+      border-color: #F43F5E;
+      box-shadow: 0 6px 24px rgba(244, 63, 94, 0.6);
+      transform: translateY(-1px);
+    }
+
+    button.success {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      color: #fff;
+      box-shadow: 0 4px 16px var(--green-glow);
+      border: 1px solid rgba(16, 185, 129, 0.5);
+    }
+    button.success:hover:not(:disabled) {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+
+    /* Guided Demo Command Strip (StarBorder & Specular Highlight) */
+    .demo-guide {
+      max-width: 1480px;
+      width: calc(100% - 40px);
+      margin: 20px auto 0;
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(110deg, rgba(2, 132, 199, 0.14) 0%, rgba(13, 18, 31, 0.95) 55%);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      box-shadow: var(--hud-shadow);
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+    }
+    .demo-guide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--card-highlight);
+      pointer-events: none;
+    }
+    .demo-guide-copy { min-width: 0; }
+    .demo-guide-title {
+      color: #E0F2FE;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-guide-steps {
+      color: #94A3B8;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.2px;
+    }
+    .demo-guide-note {
+      color: var(--text-dim);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* Main Cockpit Layout */
+    main {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 460px minmax(0, 1fr);
+      grid-template-areas:
+        "decision graph"
+        "matrix matrix"
+        "trace trace";
+      gap: 22px;
+      align-items: start;
+    }
+    .analysis-stack { display: contents; }
+    #decision-card { grid-area: decision; }
+    #matrix-card { grid-area: matrix; min-width: 0; }
+    #trace-card { grid-area: trace; min-width: 0; }
+    #graph-card { grid-area: graph; min-width: 0; }
+
+    /* Tactical HUD Cards (React Bits Spotlight Inspired) */
     .card {
       background: var(--panel-card);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 22px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--hud-shadow);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
     }
     .card::before {
       content: '';
@@ -357,47 +487,419 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.35), rgba(139, 92, 246, 0.25), transparent);
+      background: var(--card-highlight);
       pointer-events: none;
     }
     .card:hover {
       border-color: var(--border-bright);
     }
+    
+    /* Interactive Spotlight Layer */
+    .spotlight-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(450px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(56, 189, 248, 0.1), transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+    .spotlight-card:hover::after {
+      opacity: 1;
+    }
+
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       gap: 12px;
+      position: relative;
+      z-index: 3;
     }
     .card-title {
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       color: #fff;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
     .card-title svg {
       color: var(--blue);
+      filter: drop-shadow(0 0 6px var(--blue-glow));
     }
 
-    /* Grid Layouts */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 440px minmax(0, 1fr);
-      grid-template-areas:
-        "decision graph"
-        "matrix matrix"
-        "trace trace";
-      gap: 20px;
-      align-items: start;
+    /* Hero Decision Card */
+    .hero-card {
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 70%), var(--panel-card);
+      border: 1px solid rgba(56, 189, 248, 0.28);
     }
-    .analysis-stack { display: contents; }
-    #decision-card { grid-area: decision; }
-    #matrix-card { grid-area: matrix; min-width: 0; }
-    #trace-card { grid-area: trace; min-width: 0; }
-    #graph-card { grid-area: graph; min-width: 0; }
+    .risk-score-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin: 14px 0 18px;
+      position: relative;
+      z-index: 3;
+    }
+    .risk-score {
+      font-size: 68px;
+      font-weight: 800;
+      line-height: 1;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -2px;
+      transition: color 0.3s ease;
+    }
+    .CRITICAL { color: #FF4757; text-shadow: 0 0 24px rgba(255, 71, 87, 0.45); }
+    .HIGH { color: #FFA502; text-shadow: 0 0 24px rgba(255, 165, 2, 0.4); }
+    .MEDIUM { color: #ECCC68; text-shadow: 0 0 16px rgba(236, 204, 104, 0.3); }
+    .LOW { color: #2ED573; text-shadow: 0 0 24px rgba(46, 213, 115, 0.45); }
+
+    .risk-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .risk-band-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      width: fit-content;
+    }
+    .CRITICAL-bg { background: rgba(255, 71, 87, 0.18); color: #FF6B81; border: 1px solid rgba(255, 71, 87, 0.4); }
+    .HIGH-bg { background: rgba(255, 165, 2, 0.18); color: #FFA502; border: 1px solid rgba(255, 165, 2, 0.4); }
+    .LOW-bg { background: rgba(46, 213, 115, 0.18); color: #2ED573; border: 1px solid rgba(46, 213, 115, 0.4); }
+
+    .action-banner {
+      background: rgba(9, 14, 23, 0.85);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin: 16px 0;
+      position: relative;
+      z-index: 3;
+    }
+    .action-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--blue);
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 6px;
+    }
+    .action-name {
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.4px;
+    }
+    .action-reason {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .mutation-alert {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 12px;
+      color: #FDE68A;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+      position: relative;
+      z-index: 3;
+    }
+
+    .evidence-panel, .action-notice {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel-subtle);
+      padding: 14px 16px;
+      margin-top: 14px;
+      position: relative;
+      z-index: 3;
+    }
+    .evidence-panel h4 { font-size: 12px; color: #BAE6FD; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.3px; }
+    .evidence-panel p, .evidence-panel li { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+    .evidence-panel ul { padding-left: 20px; margin-top: 6px; }
+    .evidence-panel li + li { margin-top: 5px; }
+    .evidence-panel code { color: #BAE6FD; overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: rgba(56, 189, 248, 0.08); padding: 1px 4px; border-radius: 3px; }
+    .action-notice { color: #A7F3D0; border-color: rgba(16,185,129,0.4); background: rgba(16, 185, 129, 0.08); font-weight: 500; }
+    .action-notice.mismatch { color: #FCD34D; border-color: rgba(245,158,11,0.4); background: rgba(245, 158, 11, 0.08); }
+
+    /* Containment Simulation Matrix */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      position: relative;
+      z-index: 3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+    th {
+      background: rgba(9, 14, 23, 0.95);
+      color: var(--text-dim);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 1px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--panel-hover); }
+    tr.recommended-row td {
+      background: rgba(16, 185, 129, 0.09);
+      font-weight: 600;
+    }
+    tr.recommended-row td:first-child {
+      border-left: 3px solid var(--green);
+    }
+
+    .pill-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .pill-pareto {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    }
+    .pill-dominated {
+      color: var(--text-dim);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Attack Graph Panel Workspace */
+    .graph-card {
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+      padding: 0;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+    .graph-toolbar {
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: rgba(9, 14, 23, 0.95);
+      z-index: 10;
+    }
+    #forces-toggle-btn.active {
+      border-color: #38BDF8 !important;
+      color: #38BDF8 !important;
+      background: rgba(56, 189, 248, 0.15) !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+    }
+    #cy {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, #0A111F 0%, #05070B 100%);
+      position: relative;
+      cursor: grab;
+    }
+    #cy:active {
+      cursor: grabbing;
+    }
+
+    /* Graph Legend */
+    .graph-legend {
+      padding: 10px 20px;
+      border-top: 1px solid var(--border);
+      background: rgba(9, 14, 23, 0.95);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      z-index: 5;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    /* Forensic Trace Log Deck */
+    .trace-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 290px;
+      overflow-y: auto;
+      padding-right: 6px;
+      position: relative;
+      z-index: 3;
+    }
+    @keyframes traceSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .trace-item {
+      background: rgba(9, 14, 23, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: 12px;
+      transition: border-color 0.2s, background 0.2s;
+      animation: traceSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+    }
+    .trace-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      border-radius: 2px;
+      background: #38BDF8;
+      opacity: 0.3;
+      transition: opacity 0.2s, box-shadow 0.2s;
+    }
+    .trace-item:hover::before {
+      opacity: 1;
+      box-shadow: 0 0 10px #38BDF8;
+    }
+    .trace-item:hover {
+      border-color: var(--border-bright);
+      background: rgba(20, 27, 45, 0.6);
+    }
+    .trace-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+    .trace-tool {
+      font-weight: 700;
+      color: #38BDF8;
+    }
+    .trace-time {
+      color: var(--text-dim);
+    }
+    .trace-summary {
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    
+    /* Cyber Range Sliders in Forces Drawer */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #162032;
+      height: 5px;
+      border-radius: 4px;
+      outline: none;
+      transition: background 0.2s;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38BDF8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 1);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #38BDF8;
+      border: none;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      cursor: pointer;
+    }
+
+    details { margin-top: 8px; }
+    summary {
+      cursor: pointer;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    summary:hover { color: var(--blue); }
+    pre {
+      background: #05070B;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #CBD5E1;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Responsive Mobile & Tablet Rules */
     @media (max-width: 1080px) {
       .dashboard-grid {
         grid-template-columns: minmax(0, 1fr);
@@ -406,7 +908,7 @@
     }
     @media (max-width: 768px) {
       header {
-        padding: 10px 12px;
+        padding: 12px 14px;
         flex-direction: column;
         align-items: flex-start;
       }
@@ -415,11 +917,11 @@
         justify-content: flex-start;
       }
       main {
-        padding: 10px;
+        padding: 12px 10px 30px;
         max-width: 100%;
       }
       .card {
-        padding: 14px;
+        padding: 16px;
         max-width: 100%;
       }
       .graph-toolbar {
@@ -438,362 +940,44 @@
         right: 10px;
         top: 10px;
       }
-      .demo-guide { width: calc(100% - 20px); margin-top: 10px; padding: 12px; align-items: stretch; flex-direction: column; }
+      .demo-guide {
+        width: calc(100% - 20px);
+        margin-top: 12px;
+        padding: 14px;
+        align-items: stretch;
+        flex-direction: column;
+      }
       .demo-guide button { justify-content: center; }
     }
 
-    /* Hero Decision Card */
-    .hero-card {
-      background: radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 70%), var(--panel);
-      border: 1px solid var(--border-bright);
-    }
-    .risk-score-wrapper {
-      display: flex;
-      align-items: baseline;
-      gap: 16px;
-      margin: 12px 0 16px;
-    }
-    .risk-score {
-      font-size: 64px;
-      font-weight: 800;
-      line-height: 1;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: -2px;
-    }
-    .CRITICAL { color: #FF4757; text-shadow: 0 0 20px rgba(255, 71, 87, 0.3); }
-    .HIGH { color: #FFA502; text-shadow: 0 0 20px rgba(255, 165, 2, 0.3); }
-    .MEDIUM { color: #ECCC68; }
-    .LOW { color: #2ED573; text-shadow: 0 0 20px rgba(46, 213, 115, 0.3); }
-
-    .risk-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .risk-band-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      text-transform: uppercase;
-      width: fit-content;
-    }
-    .CRITICAL-bg { background: rgba(255, 71, 87, 0.15); color: #FF6B81; border: 1px solid rgba(255, 71, 87, 0.3); }
-    .HIGH-bg { background: rgba(255, 165, 2, 0.15); color: #FFA502; border: 1px solid rgba(255, 165, 2, 0.3); }
-    .LOW-bg { background: rgba(46, 213, 115, 0.15); color: #2ED573; border: 1px solid rgba(46, 213, 115, 0.3); }
-
-    .action-banner {
-      background: var(--panel-subtle);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin: 16px 0;
-    }
-    .action-header {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-dim);
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .action-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .action-reason {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .mutation-alert {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      font-size: 12px;
-      color: #FCD34D;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 12px 0;
-    }
-
-    /* Containment Table */
-    .table-container {
-      overflow-x: auto;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-      text-align: left;
-    }
-    th {
-      background: var(--panel-subtle);
-      color: var(--text-dim);
-      font-weight: 600;
-      text-transform: uppercase;
-      font-size: 10px;
-      letter-spacing: 0.8px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-    td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-    }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--panel-hover); }
-    tr.recommended-row td {
-      background: rgba(16, 185, 129, 0.08);
-      font-weight: 600;
-    }
-    tr.recommended-row td:first-child {
-      border-left: 3px solid var(--green);
-    }
-
-    .pill-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .pill-pareto {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34D399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-    .pill-dominated {
-      color: var(--text-dim);
-    }
-
-    /* Graph Panel */
-    .graph-card {
-      display: flex;
-      flex-direction: column;
-      height: 620px;
-      padding: 0;
-    }
-    .graph-toolbar {
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      background: var(--panel);
-      z-index: 2;
-    }
-    #forces-toggle-btn.active {
-      border-color: #38BDF8;
-      color: #38BDF8;
-      background: rgba(56, 189, 248, 0.12);
-    }
-    #cy {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, #0B1220 0%, #060910 100%);
-      position: relative;
-      cursor: grab;
-    }
-    #cy:active {
-      cursor: grabbing;
-    }
-
-    /* Graph Legend */
-    .graph-legend {
-      padding: 8px 16px;
-      border-top: 1px solid var(--border);
-      background: var(--panel-subtle);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .legend-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 2px;
-    }
-
-    /* Trace Details */
-    .trace-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 280px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-    @keyframes traceSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .trace-item {
-      background: var(--panel-subtle);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      font-size: 12px;
-      transition: border-color 0.2s, background 0.2s;
-      animation: traceSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
-      position: relative;
-    }
-    .trace-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 6px;
-      bottom: 6px;
-      width: 2px;
-      border-radius: 2px;
-      background: #38BDF8;
-      opacity: 0.3;
-      transition: opacity 0.2s, box-shadow 0.2s;
-    }
-    .trace-item:hover::before {
-      opacity: 1;
-      box-shadow: 0 0 8px #38BDF8;
-    }
-    .trace-item:hover {
-      border-color: var(--border-bright);
-      background: rgba(18, 24, 36, 0.6);
-    }
-    .trace-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-    }
-    .trace-tool {
-      font-weight: 600;
-      color: #38BDF8;
-    }
-    .trace-time {
-      color: var(--text-dim);
-    }
-    .trace-summary {
-      color: var(--text-muted);
-    }
-    
-    /* Cyber Range Sliders */
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      background: #1C2433;
-      height: 5px;
-      border-radius: 4px;
-      outline: none;
-      transition: background 0.2s;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #38BDF8;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.25);
-      box-shadow: 0 0 14px rgba(56, 189, 248, 1);
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #38BDF8;
-      border: none;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
-      cursor: pointer;
-    }
-
-    details {
-      margin-top: 6px;
-    }
-    summary {
-      cursor: pointer;
-      font-size: 11px;
-      color: var(--text-dim);
-      font-family: 'JetBrains Mono', monospace;
-      user-select: none;
-    }
-    summary:hover { color: var(--text-muted); }
-    pre {
-      background: #05070A;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: #CBD5E1;
-      white-space: pre-wrap;
-      overflow-x: auto;
-      margin-top: 6px;
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-    /* Motion Safety and Accessibility */
+    /* Reduced Motion Safety */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      #ambient-canvas {
+      #vanta-background, #ambient-canvas {
         display: none !important;
       }
     }
   </style>
 </head>
 <body>
+
+<!-- Atmospheric Background Canvas Layers -->
+<div id="vanta-background"></div>
 <canvas id="ambient-canvas"></canvas>
 
+<!-- Top Tactical Header -->
 <header>
-  <div class="brand">
+  <a href="#" class="brand">
     <div class="brand-logo">N</div>
     <div class="brand-text">
       <b>NEXUS</b>
-      <span>Cyber Attack-Path Agent</span>
+      <span>Tactical Attack-Path Agent</span>
     </div>
-  </div>
+  </a>
 
   <div class="header-controls">
     <div class="badge pulse">FalkorDB Connected</div>
@@ -811,37 +995,42 @@
       <input type="checkbox" id="auto"> Auto
     </label>
 
-    <button id="go" class="primary">
+    <button id="go" class="primary magnet-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Investigate selected alert
     </button>
 
-    <button id="reset" class="secondary" title="Restore pristine synthetic graph and drop mutated nodes">
+    <button id="reset" class="secondary magnet-btn" title="Restore pristine synthetic graph and drop mutated nodes">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       Reset Graph
     </button>
   </div>
 </header>
 
+<!-- Guided Demo Command Strip -->
 <aside class="demo-guide" aria-label="Guided demo instructions">
   <div class="demo-guide-copy">
-    <div class="demo-guide-title">Start here · guided synthetic demo</div>
+    <div class="demo-guide-title">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      Start here · guided synthetic demo
+    </div>
     <div class="demo-guide-steps">1. Trace an alert to critical data · 2. Compare simulated responses · 3. Approve containment, verify the result, then roll it back</div>
     <div class="demo-guide-note">Uses deterministic scripted tools; no model key required. The graph changes only after you approve a containment action.</div>
   </div>
-  <button id="guided-demo" class="primary">Run guided demo</button>
+  <button id="guided-demo" class="primary magnet-btn">Run guided demo</button>
 </aside>
 
+<!-- Main Tactical Cockpit -->
 <main>
   <div class="dashboard-grid">
     <!-- Left Column: Decision & Simulation Matrix -->
-      <div class="analysis-stack">
+    <div class="analysis-stack">
       
       <!-- Decision Card -->
-      <section class="card hero-card" id="decision-card">
+      <section class="card hero-card spotlight-card" id="decision-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Threat Analysis & Containment
           </span>
           <span id="inv-id" class="badge" style="font-size:10px;">AWAITING RUN</span>
@@ -853,66 +1042,66 @@
       </section>
 
       <!-- Containment Matrix Card -->
-      <section class="card" id="matrix-card">
+      <section class="card spotlight-card" id="matrix-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             Pareto Action Simulation Matrix
           </span>
-          <span style="font-size:11px; color:var(--text-dim);">GRAPH.COPY sandboxes</span>
+          <span style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
         </div>
 
-        <div id="matrix-container" class="table-container">
+        <div id="matrix-container" class="table-container" data-lenis-prevent>
           <p style="color:var(--text-dim); padding:20px; text-align:center;">No simulations run yet.</p>
         </div>
       </section>
 
       <!-- Agent Trace Card -->
-      <section class="card" id="trace-card">
+      <section class="card spotlight-card" id="trace-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             Investigation Execution Trace
           </span>
-          <span id="trace-step-count" style="font-size:11px; color:var(--text-dim);">0 steps</span>
+          <span id="trace-step-count" style="font-size:11px; color:var(--text-dim); font-family:'JetBrains Mono';">0 steps</span>
         </div>
 
-        <div id="trace" class="trace-list">
+        <div id="trace" class="trace-list" data-lenis-prevent>
           <p style="color:var(--text-dim); font-size:12px; padding:8px 0;">Awaiting investigation dispatch...</p>
         </div>
       </section>
 
     </div>
 
-    <!-- Right Column: Interactive Attack Graph -->
+    <!-- Right Column: Interactive Attack Graph Workspace -->
     <div id="graph-card" style="display:flex; flex-direction:column; gap:20px;">
-      <section class="card graph-card">
+      <section class="card graph-card spotlight-card">
         <div class="graph-toolbar">
           <div>
-            <div style="font-size:14px; font-weight:600; color:#fff;">Attack Path Traversal Topology</div>
-            <div id="physics-status" style="font-size:11px; color:#38BDF8; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
-              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38BDF8; box-shadow:0 0 8px #38BDF8; animation:pulse 2s infinite;"></span>
+            <div style="font-size:14px; font-weight:700; color:#fff; letter-spacing:0.3px;">Attack Path Traversal Topology</div>
+            <div id="physics-status" style="font-size:11px; color:#38BDF8; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#38BDF8; box-shadow:0 0 10px #38BDF8; animation:statusPulse 2s infinite;"></span>
               Obsidian Force-Directed Physics Active · Drag nodes to deform network
             </div>
           </div>
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button id="physics-pause-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Pause or Resume Live Force-Directed Physics">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button id="physics-pause-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Pause or Resume Live Force-Directed Physics">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
               <span id="pause-btn-text">Pause</span>
             </button>
-            <button id="relayout-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Re-run Initial CoSE Global Convergence Layout">
+            <button id="relayout-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Re-run Initial CoSE Global Convergence Layout">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
               Re-layout
             </button>
-            <button id="path-spotlight-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Highlight Attack Path to Crown Jewel">
+            <button id="path-spotlight-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Highlight Attack Path to Crown Jewel">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Attack Path
             </button>
-            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:6px 10px;" title="Adjust Obsidian Physics Simulation Parameters">
+            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:6px 12px;" title="Adjust Obsidian Physics Simulation Parameters">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               Forces
             </button>
-            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 10px;" disabled>
+            <button id="fit-btn" class="secondary" style="font-size:11px; padding:6px 12px;" disabled>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Fit View
             </button>
@@ -920,98 +1109,98 @@
         </div>
 
         <!-- Obsidian-Style Force Controls Drawer -->
-        <div id="forces-drawer" style="display:none; background:#0B111E; border-bottom:1px solid var(--border); padding:12px 18px; font-size:11px;">
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; align-items:center;">
+        <div id="forces-drawer" data-lenis-prevent style="display:none; background:#0A0F1A; border-bottom:1px solid var(--border); padding:14px 22px; font-size:11px;">
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:16px; align-items:center;">
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
                 <span>Repulsion</span>
                 <span id="repel-label" style="color:#38BDF8; font-family:'JetBrains Mono';">9500</span>
               </div>
-              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500" style="width:100%;">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
                 <span>Link Distance</span>
                 <span id="link-dist-label" style="color:#38BDF8; font-family:'JetBrains Mono';">130</span>
               </div>
-              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130" style="width:100%;">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
                 <span>Spring Force</span>
                 <span id="spring-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.045</span>
               </div>
-              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045" style="width:100%;">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
                 <span>Gravity</span>
                 <span id="grav-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.0012</span>
               </div>
-              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%;">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
                 <span>Damping</span>
                 <span id="damp-label" style="color:#38BDF8; font-family:'JetBrains Mono';">0.89</span>
               </div>
-              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89" style="width:100%; accent-color:#38BDF8; cursor:pointer;">
+              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89" style="width:100%;">
             </div>
             <div style="display:flex; gap:6px; justify-content:flex-end;">
-              <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:14px;">Reset Defaults</button>
+              <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:5px 12px; margin-top:14px;">Reset Defaults</button>
             </div>
           </div>
         </div>
 
         <!-- Canvas Container with Floating Inspector and Zoom Controls -->
-        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden;">
+        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden;" data-lenis-prevent>
           <div id="cy" style="width:100%; height:100%;"></div>
 
-          <!-- Floating Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none; position:absolute; top:16px; right:16px; width:280px; background:rgba(11, 17, 30, 0.94); backdrop-filter:blur(14px); border:1px solid var(--border-bright); border-radius:8px; padding:14px 16px; z-index:10; box-shadow:0 8px 32px rgba(0,0,0,0.6);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <!-- Floating Tactical Node Inspector Overlay -->
+          <div id="node-inspector" style="display:none; position:absolute; top:18px; right:18px; width:290px; background:rgba(9, 14, 25, 0.94); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(56, 189, 248, 0.35); border-radius:var(--radius-md); padding:16px 18px; z-index:15; box-shadow:0 12px 36px rgba(0,0,0,0.7), 0 0 20px rgba(56, 189, 248, 0.1);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span id="inspect-dot" style="display:inline-block; width:9px; height:9px; border-radius:2px; background:#38BDF8;"></span>
-                <span id="inspect-title" style="font-weight:700; font-size:13px; color:#fff;">Entity Inspector</span>
+                <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:#38BDF8; box-shadow:0 0 8px #38BDF8;"></span>
+                <span id="inspect-title" style="font-weight:700; font-size:13px; color:#fff; letter-spacing:0.3px;">Entity Inspector</span>
               </div>
               <button id="inspect-close" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px 6px; font-size:14px;">✕</button>
             </div>
-            <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+            <div style="font-size:11px; display:flex; flex-direction:column; gap:9px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Node ID</span>
                 <span id="inspect-id" style="font-family:'JetBrains Mono'; color:#38BDF8; font-weight:600;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Entity Kind</span>
                 <span id="inspect-kind" style="color:#fff; font-weight:600;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Status</span>
                 <span id="inspect-status" class="pill-tag">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Connections</span>
                 <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:#fff;">-</span>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
                 <span style="color:var(--text-dim);">Position Lock</span>
-                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 8px;">Pin Node</button>
+                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:4px 10px;">Pin Node</button>
               </div>
             </div>
           </div>
 
           <!-- Floating Canvas Zoom & Viewport Controls -->
-          <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:5;">
-            <button id="zoom-in-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom In">+</button>
-            <button id="zoom-out-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom Out">−</button>
-            <button id="fit-canvas-btn" class="secondary" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div style="position:absolute; bottom:18px; right:18px; display:flex; flex-direction:column; gap:8px; z-index:10;">
+            <button id="zoom-in-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;" title="Zoom In">+</button>
+            <button id="zoom-out-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;" title="Zoom Out">−</button>
+            <button id="fit-canvas-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
           </div>
         </div>
 
         <div class="graph-legend">
-          <span style="font-weight:600; color:var(--text-muted); margin-right:4px;">Entities:</span>
+          <span style="font-weight:700; color:var(--text-muted); margin-right:4px;">Entities:</span>
           <div class="legend-item"><div class="legend-dot" style="background:#6366F1;"></div> Person</div>
           <div class="legend-item"><div class="legend-dot" style="background:#0EA5E9;"></div> Device</div>
           <div class="legend-item"><div class="legend-dot" style="background:#10B981;"></div> Server</div>
@@ -1035,7 +1224,34 @@ let cy = null;
 let jiggleLoopId = null;
 
 // ==============================================================
-// AMBIENT CYBER CONSTELLATION CANVAS
+// 1. VANTA.JS 3D BACKGROUND WITH ROBUST FALLBACK
+// ==============================================================
+let vantaEffect = null;
+try {
+  if (window.VANTA && window.THREE) {
+    vantaEffect = VANTA.NET({
+      el: "#vanta-background",
+      mouseControls: true,
+      touchControls: false,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x0284c7,
+      backgroundColor: 0x05070b,
+      points: 9.00,
+      maxDistance: 22.00,
+      spacing: 18.00,
+      showDots: false
+    });
+  }
+} catch (e) {
+  console.warn("Vanta initialization fallback to canvas:", e);
+}
+
+// ==============================================================
+// 2. AMBIENT CYBER CONSTELLATION CANVAS
 // ==============================================================
 (function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
@@ -1045,9 +1261,9 @@ let jiggleLoopId = null;
   let animationId = null;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const numParticles = 36;
+  const numParticles = 38;
   const particles = [];
-  const mouse = { x: -1000, y: -1000, radius: 110 };
+  const mouse = { x: -1000, y: -1000, radius: 120 };
 
   function resize() {
     width = canvas.width = window.innerWidth;
@@ -1069,8 +1285,8 @@ let jiggleLoopId = null;
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.32,
-      vy: (Math.random() - 0.5) * 0.32,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
       radius: Math.random() * 1.5 + 1,
       alpha: Math.random() * 0.35 + 0.15
     });
@@ -1083,7 +1299,7 @@ let jiggleLoopId = null;
     }
     ctx.clearRect(0, 0, width, height);
 
-    // Connective mesh lines
+    // Subtle connective mesh
     for (let i = 0; i < numParticles; i++) {
       const p1 = particles[i];
       for (let j = i + 1; j < numParticles; j++) {
@@ -1103,7 +1319,7 @@ let jiggleLoopId = null;
       }
     }
 
-    // Drifting particles with subtle cursor deflection
+    // Drifting particles with gentle cursor deflection
     for (let i = 0; i < numParticles; i++) {
       const p = particles[i];
       const mdx = p.x - mouse.x;
@@ -1111,8 +1327,8 @@ let jiggleLoopId = null;
       const mDist = Math.hypot(mdx, mdy);
       if (mDist < mouse.radius && mDist > 0) {
         const force = (mouse.radius - mDist) / mouse.radius;
-        p.vx += (mdx / mDist) * force * 0.22;
-        p.vy += (mdy / mDist) * force * 0.22;
+        p.vx += (mdx / mDist) * force * 0.25;
+        p.vy += (mdy / mDist) * force * 0.25;
       }
 
       p.vx *= 0.98;
@@ -1143,8 +1359,68 @@ let jiggleLoopId = null;
   });
 })();
 
-// Smooth score counter animation helper
-function animateScoreCounter(el, targetScore, duration = 650) {
+// ==============================================================
+// 3. REACT BITS ADAPTATIONS: SPOTLIGHT CARD & MAGNET BUTTONS
+// ==============================================================
+function initReactBitsAdaptations() {
+  // SpotlightCard: Track cursor position on cards
+  document.querySelectorAll('.spotlight-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    }, { passive: true });
+  });
+
+  // Magnet Buttons: Gentle spring pull toward pointer
+  document.querySelectorAll('.magnet-btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - (rect.left + rect.width / 2);
+      const y = e.clientY - (rect.top + rect.height / 2);
+      if (window.gsap) {
+        gsap.to(btn, { x: x * 0.25, y: y * 0.25, duration: 0.3, ease: 'power2.out' });
+      } else {
+        btn.style.transform = `translate(${x * 0.25}px, ${y * 0.25}px)`;
+      }
+    }, { passive: true });
+    btn.addEventListener('mouseleave', () => {
+      if (window.gsap) {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+      } else {
+        btn.style.transform = 'translate(0, 0)';
+      }
+    }, { passive: true });
+  });
+}
+document.addEventListener('DOMContentLoaded', initReactBitsAdaptations);
+
+// ==============================================================
+// 4. LENIS SMOOTH SCROLL INTEGRATION
+// ==============================================================
+let lenis = null;
+try {
+  if (window.Lenis) {
+    lenis = new Lenis({
+      duration: 1.1,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+      smoothTouch: false
+    });
+    function lenisRaf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(lenisRaf);
+    }
+    requestAnimationFrame(lenisRaf);
+  }
+} catch (e) {
+  console.warn("Lenis initialization skipped:", e);
+}
+
+// Smooth numeric score animation helper with GSAP or ease-out cubic
+function animateScoreCounter(el, targetScore, duration = 0.8) {
   if (!el) return;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) {
@@ -1153,20 +1429,34 @@ function animateScoreCounter(el, targetScore, duration = 650) {
   }
   const start = parseInt(el.textContent, 10) || 0;
   if (start === targetScore) return;
-  const startTime = performance.now();
-  function update(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = Math.round(start + (targetScore - start) * eased);
-    el.textContent = current;
-    if (progress < 1) {
-      requestAnimationFrame(update);
-    } else {
-      el.textContent = targetScore;
+
+  if (window.gsap) {
+    const obj = { val: start };
+    gsap.to(obj, {
+      val: targetScore,
+      duration: duration,
+      ease: 'power2.out',
+      onUpdate: () => {
+        el.textContent = Math.round(obj.val);
+      }
+    });
+  } else {
+    const startTime = performance.now();
+    const durMs = duration * 1000;
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / durMs, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (targetScore - start) * eased);
+      el.textContent = current;
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = targetScore;
+      }
     }
+    requestAnimationFrame(update);
   }
-  requestAnimationFrame(update);
 }
 
 // Cytoscape initial CoSE layout for clean un-overlapped topology
@@ -1185,7 +1475,7 @@ const initialLayout = {
 };
 
 // ==============================================================
-// OBSIDIAN FORCE-DIRECTED DYNAMIC PHYSICS ENGINE
+// 5. OBSIDIAN FORCE-DIRECTED DYNAMIC PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
   repulsion: 9500,
@@ -1214,8 +1504,8 @@ window.togglePhysicsPause = function() {
   if (pauseText) pauseText.textContent = isPhysicsPaused ? 'Resume' : 'Pause';
   if ($('physics-status')) {
     $('physics-status').innerHTML = isPhysicsPaused
-      ? `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#F59E0B; box-shadow:0 0 8px #F59E0B;"></span> Physics Paused · Static Topology View`
-      : `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#38BDF8; box-shadow:0 0 8px #38BDF8; animation:pulse 2s infinite;"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
+      ? `<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#F59E0B; box-shadow:0 0 10px #F59E0B;"></span> Physics Paused · Static Topology View`
+      : `<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#38BDF8; box-shadow:0 0 10px #38BDF8; animation:statusPulse 2s infinite;"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
   }
 };
 
@@ -1316,6 +1606,31 @@ window.inspectNode = function(node) {
   $('inspect-lock-btn').textContent = isLocked ? 'Unpin Node' : 'Pin Node';
   $('inspect-lock-btn').classList.toggle('active', isLocked);
   $('node-inspector').style.display = 'block';
+
+  if (window.gsap) {
+    gsap.fromTo('#node-inspector', { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.25, ease: 'power2.out' });
+  }
+};
+
+window.triggerGraphShockwave = function(targetId) {
+  const targetMap = (physicsCy && physicsNodeMap.size > 0) ? physicsNodeMap : null;
+  if (!targetMap) return;
+  const origin = targetId ? targetMap.get(targetId) : null;
+  targetMap.forEach((p, id) => {
+    let angle, power;
+    if (origin && id !== targetId) {
+      const dx = p.x - origin.x;
+      const dy = p.y - origin.y;
+      angle = Math.atan2(dy, dx);
+      const dist = Math.hypot(dx, dy) || 1;
+      power = Math.max(16, 52 - dist * 0.07);
+    } else {
+      angle = Math.random() * Math.PI * 2;
+      power = 28;
+    }
+    p.vx += Math.cos(angle) * power;
+    p.vy += Math.sin(angle) * power;
+  });
 };
 
 function initObsidianPhysics(cyInstance) {
@@ -1405,26 +1720,6 @@ function initObsidianPhysics(cyInstance) {
     lastGrabPos = null;
   });
 
-  // Shockwave for containment execution
-  window.triggerGraphShockwave = function(targetId) {
-    const origin = targetId ? nodeMap.get(targetId) : null;
-    nodeMap.forEach((p, id) => {
-      let angle, power;
-      if (origin && id !== targetId) {
-        const dx = p.x - origin.x;
-        const dy = p.y - origin.y;
-        angle = Math.atan2(dy, dx);
-        const dist = Math.hypot(dx, dy) || 1;
-        power = Math.max(14, 48 - dist * 0.08);
-      } else {
-        angle = Math.random() * Math.PI * 2;
-        power = 28;
-      }
-      p.vx += Math.cos(angle) * power;
-      p.vy += Math.sin(angle) * power;
-    });
-  };
-
   // 60 FPS Obsidian Force-Directed Physics Simulation Loop
   let time = 0;
   const nodes = Array.from(nodeMap.values());
@@ -1435,7 +1730,7 @@ function initObsidianPhysics(cyInstance) {
     time += 0.032;
 
     if (!isPhysicsPaused) {
-      // 1. Calculate dynamic center of mass
+      // 1. Dynamic Center of Mass
       let sumX = 0, sumY = 0;
       for (let i = 0; i < numNodes; i++) {
         sumX += nodes[i].x;
@@ -1446,7 +1741,7 @@ function initObsidianPhysics(cyInstance) {
       const cx = numNodes > 0 ? sumX / numNodes : 0;
       const cy = numNodes > 0 ? sumY / numNodes : 0;
 
-      // 2. Gravitational centering + Coulomb Many-Body Repulsion
+      // 2. Gravitational Centering + Coulomb Pairwise Repulsion
       for (let i = 0; i < numNodes; i++) {
         const pA = nodes[i];
 
@@ -1474,7 +1769,7 @@ function initObsidianPhysics(cyInstance) {
           pA.fx -= nx * repForce;
           pA.fy -= ny * repForce;
           pB.fx += nx * repForce;
-          pB.fy += ny * repForce;
+          pB.fy -= ny * repForce;
 
           // Collision avoidance cushion
           const minSpacing = obsidianParams.collisionRadius;
@@ -1583,6 +1878,9 @@ async function init() {
       const isHidden = forcesDrawer.style.display === 'none';
       forcesDrawer.style.display = isHidden ? 'block' : 'none';
       forcesBtn.classList.toggle('active', isHidden);
+      if (isHidden && window.gsap) {
+        gsap.fromTo('#forces-drawer', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' });
+      }
     };
   }
 
@@ -1686,6 +1984,11 @@ async function init() {
     $('inspect-lock-btn').onclick = () => {
       if (window.toggleCurrentNodeLock) window.toggleCurrentNodeLock();
     };
+  }
+
+  // GSAP Initial Cockpit Stagger
+  if (window.gsap) {
+    gsap.from('.card', { opacity: 0, y: 16, stagger: 0.08, duration: 0.65, ease: 'power3.out' });
   }
 }
 
@@ -1810,28 +2113,28 @@ function render(data) {
   if (rec.action !== 'monitor_only' && !ex) {
     const btnClass = rec.requires_approval ? 'danger' : 'success';
     const label = rec.requires_approval ? 'AUTHORIZE & CONTAIN' : 'APPROVE & APPLY CONTAINMENT';
-    actionButton = `<button id="contain" class="${btnClass}" style="width:100%; padding:12px; font-size:14px; justify-content:center; margin-top:14px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    actionButton = `<button id="contain" class="${btnClass} magnet-btn" style="width:100%; padding:14px; font-size:14px; justify-content:center; margin-top:16px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       ${label}
     </button>`;
   } else if (ex) {
-    actionButton = `<button id="rollback" class="danger" style="width:100%; padding:12px; font-size:14px; justify-content:center; margin-top:14px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    actionButton = `<button id="rollback" class="danger magnet-btn" style="width:100%; padding:14px; font-size:14px; justify-content:center; margin-top:16px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       ROLLBACK CONTAINMENT (RESTORE GRAPH)
     </button>`;
   }
 
   const mutationWarning = ex 
     ? `<div class="mutation-alert">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div><b>Containment is active on the synthetic graph:</b> ${esc(ex.action)} ${esc(ex.target || '')}. The change can be reversed with Rollback.</div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div><b>Containment is active on the synthetic graph:</b> ${esc(ex.action)} ${esc(ex.target || '')}. The change can be reversed with Rollback.</div>
       </div>`
     : '';
 
   const postRiskInfo = ex 
-    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px;">
-        <span style="font-size:12px; color:#A7F3D0;">Live risk after containment:</span>
-        <span style="font-family:'JetBrains Mono', monospace; font-size:18px; font-weight:700; color:#34D399;">${ex.before} → ${ex.after} / 100</span>
+    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); border-radius:var(--radius-sm); padding:12px 16px; margin-top:14px;">
+        <span style="font-size:12px; color:#A7F3D0; font-weight:600;">Live risk after containment:</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:19px; font-weight:800; color:#34D399;">${ex.before} → ${ex.after} / 100</span>
       </div>`
     : '';
 
@@ -1846,14 +2149,14 @@ function render(data) {
       <div id="score-counter" class="risk-score ${esc(ini.label)}">${ini.score}</div>
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(ini.label)}-bg">${esc(ini.label)} RISK</span>
-        <span style="font-size:12px; color:var(--text-dim);">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</span>
+        <span style="font-size:12px; color:var(--text-dim); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</span>
       </div>
     </div>
 
     <div class="action-banner">
       <div class="action-header">Recommended Response Policy</div>
       <div class="action-name">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--green);"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--green);"><polyline points="20 6 9 17 4 12"/></svg>
         ${esc(actionText)}
       </div>
       <div class="action-reason">${esc(rec.why)}</div>
@@ -1868,7 +2171,7 @@ function render(data) {
       <h4>Why this response?</h4>
       <p>${esc(recommendationExplanation)}</p>
       <p style="margin-top:6px;">The 0–100 risk score is a deterministic heuristic over this seeded graph. It is not a probability that an attack will occur.</p>
-      <details style="margin-top:9px;">
+      <details style="margin-top:10px;">
         <summary>Inspect graph evidence and risk inputs (${data.evidence_path_count ?? 0} route${data.evidence_path_count === 1 ? '' : 's'})</summary>
         <p style="margin-top:8px;">Routes found from the alert-linked identity to high-criticality data stores:</p>
         <ul>${evidencePaths || '<li>No qualifying critical-data route was found.</li>'}</ul>
@@ -1877,7 +2180,7 @@ function render(data) {
     </div>
     ${actionButton}
 
-    <details style="margin-top:14px;">
+    <details style="margin-top:16px;">
       <summary>View Deterministic Risk Formula Proof</summary>
       <pre style="margin-top:8px;">${esc(JSON.stringify(ini, null, 2))}</pre>
     </details>
@@ -1898,9 +2201,9 @@ function render(data) {
     return `
       <tr class="${isRecommended ? 'recommended-row' : ''}">
         <td><b>${esc(row.action)}</b></td>
-        <td><code style="color:#93C5FD; font-size:11px;">${esc(row.target || '—')}</code></td>
-        <td style="font-family:'JetBrains Mono', monospace; font-weight:700;">${row.residual_risk}</td>
-        <td>${row.paths_broken} / ${row.paths_before}</td>
+        <td><code style="color:#93C5FD; font-size:11px; font-family:'JetBrains Mono';">${esc(row.target || '—')}</code></td>
+        <td style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F8FAFC;">${row.residual_risk}</td>
+        <td style="font-family:'JetBrains Mono';">${row.paths_broken} / ${row.paths_before}</td>
         <td><span class="${esc(row.impact_label)}">${esc(row.impact_label)} (${row.impact})</span></td>
         <td>${badge}</td>
       </tr>
@@ -1923,10 +2226,12 @@ function render(data) {
     </table>
   `;
 
+  // Re-wire dynamic buttons and re-apply magnet interactions
   const containBtn = $('contain');
   if (containBtn) containBtn.onclick = () => act('/api/contain');
   const rollbackBtn = $('rollback');
   if (rollbackBtn) rollbackBtn.onclick = () => act('/api/rollback');
+  initReactBitsAdaptations();
 }
 
 async function act(url) {
@@ -1999,15 +2304,15 @@ async function drawGraph() {
           'font-family': 'Inter, sans-serif',
           'text-valign': 'bottom',
           'text-margin-y': 7,
-          'text-background-color': '#07090E',
-          'text-background-opacity': 0.8,
-          'text-background-padding': '2px',
+          'text-background-color': '#05070B',
+          'text-background-opacity': 0.88,
+          'text-background-padding': '3px',
           'text-background-shape': 'roundrectangle',
           'width': 36,
           'height': 36,
           'border-width': 2,
-          'border-color': '#3B82F6',
-          'background-color': '#0F172A',
+          'border-color': '#38BDF8',
+          'background-color': '#0C1220',
           'transition-property': 'background-color, border-color, width, height',
           'transition-duration': '0.3s'
         }
@@ -2063,9 +2368,9 @@ async function drawGraph() {
           'border-color': '#F43F5E',
           'background-color': '#4C0519',
           'border-width': 3,
-          'shadow-blur': 18,
+          'shadow-blur': 20,
           'shadow-color': '#F43F5E',
-          'shadow-opacity': 0.75
+          'shadow-opacity': 0.8
         }
       },
       {
@@ -2074,7 +2379,7 @@ async function drawGraph() {
           'border-color': '#EF4444',
           'background-color': '#7F1D1D',
           'border-style': 'dashed',
-          'border-width': 3
+          'border-width': 3.5
         }
       },
 
@@ -2087,7 +2392,7 @@ async function drawGraph() {
           'font-size': '10px',
           'font-weight': 600,
           'font-family': 'JetBrains Mono, monospace',
-          'text-background-color': '#0B111E', // Dark contrast background pill
+          'text-background-color': '#070B14', // Deep obsidian background pill
           'text-background-opacity': 0.95,
           'text-background-padding': '4px',
           'text-background-shape': 'roundrectangle',
@@ -2183,7 +2488,7 @@ async function drawGraph() {
           'opacity': 1,
           'border-width': 4,
           'border-color': '#38BDF8',
-          'shadow-blur': 24,
+          'shadow-blur': 26,
           'shadow-color': '#38BDF8',
           'shadow-opacity': 0.95
         }
