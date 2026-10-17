@@ -61,6 +61,39 @@ Use **Reset demo graph** to restore the seeded synthetic graph and clear saved i
 
 The deterministic seed creates synthetic `Person`, `Device`, `Server`, `ServiceAccount`, `Service`, `DataStore`, `Vulnerability`, `IPAddress`, and `Alert` nodes. Typed relationships model ownership, logins, access, credentials, authentication, reads, dependencies, usage, and alert attribution. Cypher traverses up to seven hops to critical data stores and filters inactive nodes and edges. `GRAPH.COPY` creates disposable what-if graphs; executed containment writes status fields rather than deleting graph entities.
 
+### Core Cypher Queries & Graph Operations (Hackathon Rule 10)
+
+1. **Multi-Hop Critical-Data Path Traversal (Up to 7 Hops)**:
+```cypher
+MATCH p=(s {id:$start})-[r:OWNS|LOGS_INTO|HAS_ACCESS_TO|HOSTS_CREDENTIAL|AUTHENTICATES_TO|READS*1..7]->(t:DataStore)
+WHERE ALL(n IN nodes(p) WHERE coalesce(n.status, 'ACTIVE') = 'ACTIVE')
+  AND ALL(rel IN relationships(p) WHERE coalesce(rel.status, 'ACTIVE') = 'ACTIVE')
+RETURN p, length(p) AS hops, t.criticality AS criticality
+ORDER BY hops ASC
+LIMIT 10
+```
+
+2. **Ephemeral Simulation Sandboxes via FalkorDB `GRAPH.COPY`**:
+```cypher
+GRAPH.COPY nexus-live nexus-sandbox-action-1042
+```
+*Executed candidate actions are simulated inside disposable, cloned in-memory graph sandboxes to measure residual risk without mutating the live graph.*
+
+3. **Live Containment Mutation**:
+```cypher
+MATCH (n {id: $target})
+SET n.status = 'QUARANTINED', n.contained_at = timestamp()
+RETURN n.id, n.status
+```
+
+4. **Blast Radius & Business Disruption Calculation**:
+```cypher
+MATCH (a {id: $target})-[:AUTHENTICATES_TO|HOSTS_CREDENTIAL]->(s:Service)
+MATCH (d:Service)-[:DEPENDS_ON*1..2]->(s)
+MATCH (u:Person)-[:USES]->(d)
+RETURN count(DISTINCT d) AS affected_services, count(DISTINCT u) AS affected_users
+```
+
 ## Scoring and policy
 
 - Risk: noisy-OR combination of path exploitability, target criticality and maximum privilege, scaled as `round(100 * (1 - exp(-sum(terms) / 4.0)))`. `K=4.0` follows the supplied spec's Part B precedence.
@@ -129,9 +162,11 @@ Run `python -m mcp_server.server` from the project root. It exposes the same eig
 
 All graph data is synthetic and results are not production-calibrated. Risk uses assumptions `K=4.0`, `IP_FACTOR=0.6`, and `REVOKE_FACTOR=0.7`; these are model constants, not validated probabilities. Choke points use attack-path coverage, not betweenness. Vulnerability nodes are seeded as evidence, but the supplied Part B risk code does not adjust scores based on vulnerability relationships. NEXUS describes next-move risk analysis, not attacker prediction. No latency or real-world effectiveness claim is made.
 
-## AI assistance and track
+Built for the WeMakeDevs & FalkorDB Graph Hacks Hackathon:
+- **Primary Track**: **Agents That Act on Connected Data** (autonomous SOC agent discovering and neutralizing multi-hop attack graphs)
+- **Secondary Track**: **Company Brain** (deep relational model of enterprise identities, devices, service accounts, and crown jewels)
 
-Built for Graph Hacks Track 1, Graph Hacks. AI coding assistance was used to implement and review this project; contributors must understand and verify the submitted code.
+AI coding assistance was used to implement and review this project; contributors understand and can verify the submitted code.
 
 ## What comes next
 
