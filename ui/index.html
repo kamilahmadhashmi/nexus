@@ -6,11 +6,11 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXUS — Threat Intelligence & Cyber Defense Cockpit</title>
+  <title>NEXUS — Ethereal Intelligence & Cyber Defense Cockpit</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   
   <!-- 1. Cytoscape Graph Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
@@ -23,78 +23,71 @@
 
   <style>
     /* ==========================================================================
-       DESIGN SYSTEM TOKENS: Radix Colors, Open Props & Tremor Analytics (Light)
+       ETHEREAL DESIGN SYSTEM TOKENS
+       Synthesizing: Auroral (GPU Transforms), CSS Mesh (Organic Blended Blobs),
+       Glassmorphism Theme (Measured Tiers & Specular Edges), Gradient Backdrops
        ========================================================================== */
     :root {
       color-scheme: light;
 
-      /* Canvas & Warm Ivory/Neutral Backgrounds */
-      --color-canvas: #F8F9FA;
-      --color-canvas-subtle: #F1F3F5;
-      
-      /* Pure White Surface Cards & Elevations */
-      --color-surface-card: #FFFFFF;
-      --color-surface-hover: #F8FAFC;
-      --color-surface-active: #F1F5F9;
-      --color-surface-muted: #F8F9FA;
-      --color-surface-code: #F1F5F9;
+      /* Atmospheric Foundation: Warm Pearl & Soft Ivory */
+      --ethereal-pearl-base: #FAF9F6;
+      --ethereal-ivory: #F5F3EF;
+      --ethereal-mist-grey: #ECEEF2;
+      --ethereal-canvas-grid: rgba(148, 163, 184, 0.22);
 
-      /* Deep Navy & Slate Typography Hierarchy */
-      --color-text-primary: #0F172A;     /* Slate-12 / Deep Navy: authoritative headings */
-      --color-text-secondary: #334155;   /* Slate-11: body text */
-      --color-text-muted: #64748B;       /* Slate-9: labels, captions, metadata */
-      --color-text-dim: #94A3B8;         /* Slate-7: subtle timestamps, hints */
-      --color-text-inverse: #FFFFFF;
+      /* Ethereal Tints */
+      --ethereal-glacier: #E0F2FE;      /* Pale glacier sky */
+      --ethereal-lavender: #EDE9FE;     /* Muted ethereal violet */
+      --ethereal-sage: #E6F4EA;         /* Soft celestial mist-green */
+      --ethereal-rose: #FFE4E6;         /* Delicate threat tint */
+      --ethereal-amber: #FEF3C7;        /* Soft warning champagne */
 
-      /* Precision Borders & Dividers */
-      --color-border-subtle: #E2E8F0;    /* Slate-6: calm 1px borders */
-      --color-border-default: #CBD5E1;   /* Slate-7: interactive controls */
-      --color-border-strong: #94A3B8;    /* Slate-8: hover/focus rings */
-      --color-divider: #F1F5F9;          /* Slate-3: table row separators */
+      /* Translucency Tiers (RampStack Glassmorphism Architecture) */
+      --glass-surface-tier-1: rgba(255, 255, 255, 0.80);   /* Primary cards with backdrop blur */
+      --glass-surface-tier-2: rgba(255, 255, 255, 0.92);   /* Elevated modals, floating inspector */
+      --glass-surface-tier-3: rgba(248, 250, 252, 0.68);   /* Inset evidence panels & drawers */
+      --glass-blur: 20px;
 
-      /* Semantic Accents (Muted Teal, Forest Green, Deep Navy, Restrained Slate-Blue) */
-      --color-teal-base: #0D9488;        /* Teal-9 */
-      --color-teal-hover: #0F766E;       /* Teal-10 */
-      --color-teal-subtle: #F0FDFA;      /* Teal-1 */
-      --color-teal-border: #CCFBF1;      /* Teal-3 */
-      
-      --color-forest-base: #15803D;      /* Emerald-9 / Forest Green */
-      --color-forest-hover: #166534;     /* Emerald-10 */
-      --color-forest-subtle: #F0FDF4;    /* Emerald-1 */
-      --color-forest-border: #DCFCE7;    /* Emerald-3 */
+      /* Specular Edge Highlights */
+      --glass-border-specular: rgba(255, 255, 255, 0.95); /* Top & left light catch */
+      --glass-border-subtle: rgba(226, 232, 240, 0.75);   /* Clean boundary */
+      --glass-border-inner: rgba(255, 255, 255, 0.6);
 
-      --color-navy-base: #0F172A;        /* Slate-12 */
-      --color-navy-hover: #1E293B;       /* Slate-11 */
+      /* Typography: Deep Navy & Ethereal Slate */
+      --text-primary: #0F172A;          /* Slate-12: Deep navy headings */
+      --text-secondary: #334155;        /* Slate-11: High-readability body */
+      --text-muted: #64748B;            /* Slate-9: Metadata, captions */
+      --text-ethereal: #94A3B8;         /* Slate-7: Delicate timestamps */
 
-      --color-blue-base: #2563EB;        /* Slate-Blue */
-      --color-blue-subtle: #EFF6FF;      /* Blue-50 */
-      --color-blue-border: #DBEAFE;      /* Blue-200 */
+      /* Semantic Security Statuses */
+      --status-critical-text: #DC2626;  /* Muted ruby */
+      --status-critical-bg: #FEF2F2;
+      --status-critical-border: #FECACA;
+      --status-critical-halo: rgba(220, 38, 38, 0.18);
 
-      /* Severity Tokens (Muted Red, Sophisticated Amber, Calm Forest Green) */
-      --color-critical-text: #DC2626;    /* Ruby / Red */
-      --color-critical-bg: #FEF2F2;      /* Rose-50 */
-      --color-critical-border: #FECACA;  /* Rose-200 */
+      --status-warning-text: #D97706;   /* Amber */
+      --status-warning-bg: #FFFBEB;
+      --status-warning-border: #FDE68A;
 
-      --color-high-text: #D97706;        /* Amber */
-      --color-high-bg: #FFFBEB;          /* Amber-50 */
-      --color-high-border: #FDE68A;      /* Amber-200 */
+      --status-success-text: #15803D;   /* Forest green */
+      --status-success-bg: #F0FDF4;
+      --status-success-border: #BBF7D0;
 
-      --color-low-text: #15803D;         /* Forest Green */
-      --color-low-bg: #F0FDF4;           /* Green-50 */
-      --color-low-border: #BBF7D0;       /* Green-200 */
+      --status-accent-teal: #0D9488;
+      --status-accent-teal-subtle: #F0FDFA;
 
-      /* Natural Layered Diffuse Shadows (Open Props Inspired) */
-      --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-      --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
-      --shadow-card-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-      --shadow-dropdown: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
-      --shadow-drawer: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+      /* Ethereal Diffuse Shadows (Open Props Layered Light Shadows) */
+      --shadow-ethereal-sm: 0 1px 3px rgba(148, 163, 184, 0.08);
+      --shadow-ethereal-card: 0 4px 20px rgba(148, 163, 184, 0.09), 0 1px 3px rgba(148, 163, 184, 0.05);
+      --shadow-ethereal-hover: 0 8px 30px rgba(148, 163, 184, 0.14), 0 2px 6px rgba(148, 163, 184, 0.06);
+      --shadow-ethereal-dropdown: 0 14px 40px rgba(148, 163, 184, 0.18);
 
       /* Border Radii */
       --radius-xs: 4px;
       --radius-sm: 6px;
-      --radius-md: 8px;
-      --radius-lg: 10px;
+      --radius-md: 9px;
+      --radius-lg: 12px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -103,8 +96,8 @@
       overflow-x: hidden;
       max-width: 100vw;
       width: 100%;
-      background-color: var(--color-canvas);
-      color: var(--color-text-secondary);
+      background-color: var(--ethereal-pearl-base);
+      color: var(--text-secondary);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.5;
       font-size: 13.5px;
@@ -113,16 +106,98 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Subtle architectural micro-grid on the canvas */
+    /* ==========================================================================
+       LIVING ETHEREAL AURORA & MESH GRADIENT BACKDROP (Auroral & CSS Mesh)
+       Zero layout repaints; pure GPU composited translate3d & scale transforms
+       ========================================================================== */
+    .ethereal-backdrop {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      background: linear-gradient(135deg, #FAF9F6 0%, #F5F3EF 50%, #FAF8F5 100%);
+    }
+    .ethereal-diffuser {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(80px);
+      -webkit-backdrop-filter: blur(80px);
+      z-index: 1;
+    }
+    .ethereal-orb {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform;
+      opacity: 0.65;
+      mix-blend-mode: multiply;
+    }
+    .orb-glacier {
+      width: 65vw;
+      height: 65vw;
+      background: radial-gradient(circle, rgba(186, 230, 253, 0.7) 0%, rgba(186, 230, 253, 0) 70%);
+      top: -15%;
+      left: -10%;
+      animation: etherealFloat1 28s ease-in-out infinite alternate;
+    }
+    .orb-lavender {
+      width: 58vw;
+      height: 58vw;
+      background: radial-gradient(circle, rgba(233, 213, 255, 0.6) 0%, rgba(233, 213, 255, 0) 70%);
+      top: 15%;
+      right: -10%;
+      animation: etherealFloat2 34s ease-in-out infinite alternate;
+    }
+    .orb-sage {
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(209, 250, 229, 0.65) 0%, rgba(209, 250, 229, 0) 70%);
+      bottom: -15%;
+      left: 15%;
+      animation: etherealFloat3 30s ease-in-out infinite alternate;
+    }
+    .orb-pearl {
+      width: 48vw;
+      height: 48vw;
+      background: radial-gradient(circle, rgba(254, 243, 199, 0.5) 0%, rgba(254, 243, 199, 0) 70%);
+      bottom: 10%;
+      right: 15%;
+      animation: etherealFloat4 26s ease-in-out infinite alternate;
+    }
+
+    @keyframes etherealFloat1 {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(80px, 60px, 0) scale(1.08); }
+      100% { transform: translate3d(-40px, 90px, 0) scale(0.95); }
+    }
+    @keyframes etherealFloat2 {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(-90px, 70px, 0) scale(1.1); }
+      100% { transform: translate3d(50px, 100px, 0) scale(0.92); }
+    }
+    @keyframes etherealFloat3 {
+      0% { transform: translate3d(0, 0, 0) scale(0.95); }
+      50% { transform: translate3d(70px, -80px, 0) scale(1.08); }
+      100% { transform: translate3d(-60px, -40px, 0) scale(1); }
+    }
+    @keyframes etherealFloat4 {
+      0% { transform: translate3d(0, 0, 0) scale(1.05); }
+      50% { transform: translate3d(-70px, -60px, 0) scale(0.95); }
+      100% { transform: translate3d(40px, -90px, 0) scale(1.1); }
+    }
+
+    /* Subtle architectural micro-grid on top of atmosphere */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background-image: radial-gradient(var(--color-border-subtle) 1px, transparent 1px);
+      background-image: radial-gradient(var(--ethereal-canvas-grid) 1px, transparent 1px);
       background-size: 24px 24px;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0.65;
+      z-index: 1;
+      opacity: 0.75;
     }
 
     /* Lenis Smooth Scroll Rules */
@@ -137,22 +212,23 @@
     }
 
     /* ==========================================================================
-       TOP NAVIGATION & MISSION HEADER
+       TOP NAVIGATION & ETHEREAL MISSION CONTROLS
        ========================================================================== */
     header {
       position: sticky;
       top: 0;
       z-index: 60;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--color-border-subtle);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
       padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-ethereal-sm);
     }
 
     .brand {
@@ -162,23 +238,24 @@
       text-decoration: none;
     }
     .brand-logo {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       border-radius: var(--radius-sm);
-      background: var(--color-navy-base);
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
       font-size: 16px;
       color: #FFFFFF;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
     .brand-text b {
       font-size: 17px;
       letter-spacing: 0.5px;
       font-weight: 800;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
       display: block;
       line-height: 1.1;
     }
@@ -187,22 +264,22 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
     }
 
-    /* Telemetry indicator in header */
+    /* Live Telemetry Ticker */
     .telemetry-ticker {
       display: flex;
       align-items: center;
       gap: 14px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
     }
     .telemetry-time {
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       font-weight: 600;
     }
 
@@ -213,7 +290,7 @@
       flex-wrap: wrap;
     }
 
-    /* Refined Light-Mode Badges */
+    /* Refined Frosted-Glass Badges */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -222,29 +299,33 @@
       font-family: 'JetBrains Mono', monospace;
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid var(--color-border-subtle);
-      background: var(--color-surface-card);
-      color: var(--color-text-secondary);
+      border: 1px solid var(--glass-border-subtle);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text-secondary);
       font-weight: 500;
       user-select: none;
       transition: all 0.15s ease;
+      box-shadow: var(--shadow-ethereal-sm);
     }
     .badge.pulse::before {
       content: '';
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--color-forest-base);
+      background: var(--status-success-text);
+      box-shadow: 0 0 6px rgba(21, 128, 61, 0.5);
     }
     .badge.synth {
-      border-color: var(--color-border-subtle);
-      background: var(--color-canvas-subtle);
-      color: var(--color-text-secondary);
+      border-color: rgba(233, 213, 255, 0.6);
+      background: rgba(237, 233, 254, 0.5);
+      color: #6B21A8;
     }
     #mode-badge {
-      border-color: var(--color-teal-border);
-      background: var(--color-teal-subtle);
-      color: var(--color-teal-hover);
+      border-color: rgba(186, 230, 253, 0.8);
+      background: rgba(224, 242, 254, 0.65);
+      color: #0369A1;
       font-weight: 600;
     }
 
@@ -255,17 +336,19 @@
       font-weight: 500;
       border-radius: var(--radius-sm);
       padding: 6px 12px;
-      background: var(--color-surface-card);
-      color: var(--color-text-primary);
-      border: 1px solid var(--color-border-default);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border-subtle);
       cursor: pointer;
       outline: none;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-ethereal-sm);
     }
     select:hover, select:focus {
-      border-color: var(--color-text-muted);
-      box-shadow: 0 0 0 2px var(--color-canvas-subtle);
+      border-color: var(--text-muted);
+      box-shadow: 0 0 0 2px rgba(224, 242, 254, 0.5);
     }
     
     .checkbox-label {
@@ -274,26 +357,29 @@
       gap: 6px;
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       cursor: pointer;
       user-select: none;
-      background: var(--color-surface-card);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 5px 9px;
       border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border-subtle);
+      border: 1px solid var(--glass-border-subtle);
       transition: border-color 0.15s;
+      box-shadow: var(--shadow-ethereal-sm);
     }
     .checkbox-label:hover {
-      border-color: var(--color-border-default);
+      border-color: rgba(203, 213, 225, 0.9);
     }
     .checkbox-label input {
-      accent-color: var(--color-teal-base);
+      accent-color: var(--status-accent-teal);
       cursor: pointer;
       width: 14px;
       height: 14px;
     }
 
-    /* High-Precision Buttons */
+    /* Refined Buttons with Specular Edge Bevels */
     button {
       font-family: inherit;
       font-weight: 600;
@@ -321,57 +407,61 @@
     }
 
     button.primary {
-      background: var(--color-navy-base);
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
       color: #FFFFFF;
-      border-color: var(--color-navy-base);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
     }
     button.primary:hover:not(:disabled) {
-      background: var(--color-navy-hover);
-      border-color: var(--color-navy-hover);
-      box-shadow: var(--shadow-card);
+      background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
     }
 
     button.secondary {
-      background: var(--color-surface-card);
-      color: var(--color-text-secondary);
-      border: 1px solid var(--color-border-default);
-      box-shadow: var(--shadow-sm);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text-secondary);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      box-shadow: var(--shadow-ethereal-sm);
     }
     button.secondary:hover:not(:disabled) {
-      background: var(--color-surface-hover);
-      color: var(--color-text-primary);
-      border-color: var(--color-border-strong);
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--text-primary);
+      border-color: rgba(203, 213, 225, 0.9);
+      box-shadow: var(--shadow-ethereal-card);
     }
     button.secondary.active {
-      border-color: var(--color-teal-base) !important;
-      color: var(--color-teal-hover) !important;
-      background: var(--color-teal-subtle) !important;
+      border-color: var(--status-accent-teal) !important;
+      color: #0F766E !important;
+      background: rgba(240, 253, 250, 0.9) !important;
     }
 
     button.danger {
-      background: var(--color-critical-text);
+      background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
       color: #FFFFFF;
-      border-color: var(--color-critical-text);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid #DC2626;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
     }
     button.danger:hover:not(:disabled) {
-      background: #B91C1C;
-      border-color: #B91C1C;
+      background: linear-gradient(135deg, #B91C1C 0%, #991B1B 100%);
     }
 
     button.success {
-      background: var(--color-forest-base);
+      background: linear-gradient(135deg, #15803D 0%, #166534 100%);
       color: #FFFFFF;
-      border-color: var(--color-forest-base);
-      box-shadow: var(--shadow-sm);
+      border: 1px solid #15803D;
+      border-top: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 2px 8px rgba(21, 128, 61, 0.2);
     }
     button.success:hover:not(:disabled) {
-      background: var(--color-forest-hover);
-      border-color: var(--color-forest-hover);
+      background: linear-gradient(135deg, #166534 0%, #14532D 100%);
     }
 
-    /* Guided Demo Callout Banner (Tremor Pattern) */
+    /* Guided Demo Ethereal Callout Banner */
     .demo-guide {
       max-width: 1520px;
       width: calc(100% - 40px);
@@ -382,16 +472,19 @@
       justify-content: space-between;
       gap: 18px;
       border-radius: var(--radius-md);
-      background: var(--color-surface-card);
-      border: 1px solid var(--color-border-subtle);
-      border-left: 4px solid var(--color-teal-base);
-      box-shadow: var(--shadow-card);
+      background: var(--glass-surface-tier-1);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      border-left: 4px solid var(--status-accent-teal);
+      box-shadow: var(--shadow-ethereal-card);
       position: relative;
       z-index: 10;
     }
     .demo-guide-copy { min-width: 0; }
     .demo-guide-title {
-      color: var(--color-text-primary);
+      color: var(--text-primary);
       font-weight: 700;
       font-size: 13.5px;
       letter-spacing: 0.2px;
@@ -401,12 +494,12 @@
       gap: 7px;
     }
     .demo-guide-steps {
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
     }
     .demo-guide-note {
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-size: 11px;
       margin-top: 3px;
     }
@@ -439,19 +532,23 @@
     #trace-card { grid-area: trace; min-width: 0; }
     #graph-card { grid-area: graph; min-width: 0; }
 
-    /* Surface Cards (Tremor & Radix Design System) */
+    /* Frosted-Glass Cards with Specular Edge Highlights */
     .card {
-      background: var(--color-surface-card);
-      border: 1px solid var(--color-border-subtle);
+      background: var(--glass-surface-tier-1);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      border-left: 1px solid var(--glass-border-specular);
       border-radius: var(--radius-lg);
       padding: 22px;
       position: relative;
-      box-shadow: var(--shadow-card);
-      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      box-shadow: var(--shadow-ethereal-card);
+      transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
     }
     .card:hover {
-      box-shadow: var(--shadow-card-hover);
-      border-color: var(--color-border-default);
+      box-shadow: var(--shadow-ethereal-hover);
+      border-color: rgba(203, 213, 225, 0.9);
     }
 
     .card-header {
@@ -467,17 +564,17 @@
       font-size: 14.5px;
       font-weight: 700;
       letter-spacing: -0.1px;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .card-title svg {
-      color: var(--color-teal-base);
+      color: var(--status-accent-teal);
     }
 
     /* ==========================================================================
-       THREAT DECISION DECK & CIRCULAR RISK GAUGE
+       ETHEREAL THREAT DECISION DECK & CIRCULAR RISK GAUGE
        ========================================================================== */
     .risk-instrument-row {
       display: flex;
@@ -485,9 +582,13 @@
       gap: 18px;
       margin: 12px 0 18px;
       padding: 16px;
-      background: var(--color-canvas);
-      border: 1px solid var(--color-border-subtle);
+      background: var(--glass-surface-tier-3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
       border-radius: var(--radius-md);
+      box-shadow: var(--shadow-ethereal-sm);
     }
     
     .risk-gauge-container {
@@ -506,7 +607,7 @@
     }
     .risk-gauge-bg {
       fill: none;
-      stroke: var(--color-border-subtle);
+      stroke: rgba(226, 232, 240, 0.8);
       stroke-width: 8;
     }
     .risk-gauge-bar {
@@ -517,10 +618,10 @@
       stroke-dashoffset: 55;
       transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s;
     }
-    .risk-gauge-bar.CRITICAL { stroke: var(--color-critical-text); }
-    .risk-gauge-bar.HIGH { stroke: var(--color-high-text); }
+    .risk-gauge-bar.CRITICAL { stroke: var(--status-critical-text); filter: drop-shadow(0 0 4px rgba(220, 38, 38, 0.25)); }
+    .risk-gauge-bar.HIGH { stroke: var(--status-warning-text); filter: drop-shadow(0 0 4px rgba(217, 119, 6, 0.25)); }
     .risk-gauge-bar.MEDIUM { stroke: #CA8A04; }
-    .risk-gauge-bar.LOW { stroke: var(--color-forest-base); }
+    .risk-gauge-bar.LOW { stroke: var(--status-success-text); filter: drop-shadow(0 0 4px rgba(21, 128, 61, 0.25)); }
 
     .risk-gauge-content {
       position: absolute;
@@ -535,16 +636,16 @@
       line-height: 1;
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: -1.5px;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
     }
-    .CRITICAL { color: var(--color-critical-text); }
-    .HIGH { color: var(--color-high-text); }
+    .CRITICAL { color: var(--status-critical-text); }
+    .HIGH { color: var(--status-warning-text); }
     .MEDIUM { color: #CA8A04; }
-    .LOW { color: var(--color-forest-base); }
+    .LOW { color: var(--status-success-text); }
 
     .risk-gauge-unit {
       font-size: 10px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
       margin-top: 2px;
@@ -564,25 +665,30 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       width: fit-content;
+      box-shadow: var(--shadow-ethereal-sm);
     }
-    .CRITICAL-bg { background: var(--color-critical-bg); color: var(--color-critical-text); border: 1px solid var(--color-critical-border); }
-    .HIGH-bg { background: var(--color-high-bg); color: var(--color-high-text); border: 1px solid var(--color-high-border); }
-    .LOW-bg { background: var(--color-low-bg); color: var(--color-low-text); border: 1px solid var(--color-low-border); }
+    .CRITICAL-bg { background: var(--status-critical-bg); color: var(--status-critical-text); border: 1px solid var(--status-critical-border); }
+    .HIGH-bg { background: var(--status-warning-bg); color: var(--status-warning-text); border: 1px solid var(--status-warning-border); }
+    .LOW-bg { background: var(--status-success-bg); color: var(--status-success-text); border: 1px solid var(--status-success-border); }
 
     /* Recommended Action Callout */
     .action-banner {
-      background: var(--color-canvas);
-      border: 1px solid var(--color-border-subtle);
-      border-left: 4px solid var(--color-forest-base);
+      background: var(--glass-surface-tier-3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      border-left: 4px solid var(--status-success-text);
       border-radius: var(--radius-md);
       padding: 16px 18px;
       margin: 16px 0;
+      box-shadow: var(--shadow-ethereal-sm);
     }
     .action-header {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 4px;
@@ -590,7 +696,7 @@
     .action-name {
       font-size: 18px;
       font-weight: 800;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -598,39 +704,44 @@
     }
     .action-reason {
       font-size: 12.5px;
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       margin-top: 6px;
       line-height: 1.5;
     }
 
     .mutation-alert {
-      background: var(--color-high-bg);
-      border: 1px solid var(--color-high-border);
+      background: var(--status-warning-bg);
+      border: 1px solid var(--status-warning-border);
       border-radius: var(--radius-sm);
       padding: 12px 14px;
       font-size: 12px;
-      color: var(--color-high-text);
+      color: var(--status-warning-text);
       display: flex;
       align-items: center;
       gap: 10px;
       margin: 12px 0;
+      box-shadow: var(--shadow-ethereal-sm);
     }
 
     .evidence-panel, .action-notice {
-      border: 1px solid var(--color-border-subtle);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
       border-radius: var(--radius-sm);
-      background: var(--color-canvas);
+      background: var(--glass-surface-tier-3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       padding: 14px 16px;
       margin-top: 12px;
+      box-shadow: var(--shadow-ethereal-sm);
     }
-    .evidence-panel h4 { font-size: 12px; color: var(--color-text-primary); margin-bottom: 6px; font-weight: 700; }
-    .evidence-panel p, .evidence-panel li { color: var(--color-text-secondary); font-size: 12px; line-height: 1.5; }
+    .evidence-panel h4 { font-size: 12px; color: var(--text-primary); margin-bottom: 6px; font-weight: 700; }
+    .evidence-panel p, .evidence-panel li { color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
     .evidence-panel ul { padding-left: 18px; margin-top: 6px; }
     .evidence-panel li + li { margin-top: 4px; }
-    .evidence-panel code { color: var(--color-text-primary); overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: var(--color-surface-card); border: 1px solid var(--color-border-subtle); padding: 2px 5px; border-radius: 4px; }
+    .evidence-panel code { color: var(--text-primary); overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: rgba(255, 255, 255, 0.9); border: 1px solid var(--glass-border-subtle); padding: 2px 5px; border-radius: 4px; }
     
-    .action-notice { color: var(--color-forest-base); border-color: var(--color-low-border); background: var(--color-low-bg); font-weight: 600; font-size: 12.5px; }
-    .action-notice.mismatch { color: var(--color-high-text); border-color: var(--color-high-border); background: var(--color-high-bg); }
+    .action-notice { color: var(--status-success-text); border-color: var(--status-success-border); background: var(--status-success-bg); font-weight: 600; font-size: 12.5px; }
+    .action-notice.mismatch { color: var(--status-warning-text); border-color: var(--status-warning-border); background: var(--status-warning-bg); }
 
     /* ==========================================================================
        CONTAINMENT SIMULATION MATRIX (TREMOR DATA TABLE)
@@ -638,8 +749,12 @@
     .table-container {
       overflow-x: auto;
       border-radius: var(--radius-md);
-      border: 1px solid var(--color-border-subtle);
-      background: var(--color-surface-card);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-ethereal-sm);
     }
     table {
       width: 100%;
@@ -648,29 +763,29 @@
       text-align: left;
     }
     th {
-      background: var(--color-canvas);
-      color: var(--color-text-muted);
+      background: rgba(248, 250, 252, 0.8);
+      color: var(--text-muted);
       font-weight: 700;
       text-transform: uppercase;
       font-size: 10px;
       letter-spacing: 0.8px;
       padding: 11px 16px;
-      border-bottom: 1px solid var(--color-border-subtle);
+      border-bottom: 1px solid var(--glass-border-subtle);
       font-family: 'JetBrains Mono', monospace;
     }
     td {
       padding: 11px 16px;
-      border-bottom: 1px solid var(--color-divider);
-      color: var(--color-text-secondary);
+      border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+      color: var(--text-secondary);
     }
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--color-surface-hover); }
+    tr:hover td { background: rgba(248, 250, 252, 0.9); }
     tr.recommended-row td {
-      background: var(--color-low-bg);
+      background: rgba(240, 253, 244, 0.7);
       font-weight: 600;
     }
     tr.recommended-row td:first-child {
-      border-left: 3px solid var(--color-forest-base);
+      border-left: 3px solid var(--status-success-text);
     }
 
     .pill-tag {
@@ -681,22 +796,23 @@
       font-weight: 700;
       letter-spacing: 0.4px;
       display: inline-block;
+      box-shadow: var(--shadow-ethereal-sm);
     }
     .pill-pareto {
-      background: var(--color-low-bg);
-      color: var(--color-forest-base);
-      border: 1px solid var(--color-low-border);
+      background: var(--status-success-bg);
+      color: var(--status-success-text);
+      border: 1px solid var(--status-success-border);
     }
     .pill-dominated {
-      color: var(--color-text-muted);
-      background: var(--color-canvas-subtle);
-      border: 1px solid var(--color-border-subtle);
+      color: var(--text-muted);
+      background: rgba(241, 245, 249, 0.8);
+      border: 1px solid var(--glass-border-subtle);
     }
 
     .mini-risk-bar {
       width: 55px;
       height: 4px;
-      background: var(--color-border-subtle);
+      background: rgba(226, 232, 240, 0.8);
       border-radius: 2px;
       overflow: hidden;
       margin-top: 3px;
@@ -707,7 +823,7 @@
     }
 
     /* ==========================================================================
-       ATTACK GRAPH WORKSPACE (NATIVE LIGHT-MODE CYTOSCAPE CANVAS)
+       ATTACK GRAPH WORKSPACE (CELESTIAL SUSPENDED GRAPH)
        ========================================================================== */
     .graph-card {
       display: flex;
@@ -718,26 +834,29 @@
     }
     .graph-toolbar {
       padding: 12px 20px;
-      border-bottom: 1px solid var(--color-border-subtle);
+      border-bottom: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      background: var(--color-surface-card);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       z-index: 10;
     }
     #forces-toggle-btn.active {
-      border-color: var(--color-teal-base) !important;
-      color: var(--color-teal-hover) !important;
-      background: var(--color-teal-subtle) !important;
+      border-color: var(--status-accent-teal) !important;
+      color: #0F766E !important;
+      background: rgba(240, 253, 250, 0.9) !important;
     }
     #cy {
       flex: 1;
       width: 100%;
       height: 100%;
-      background-color: #F8FAFC;
-      background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+      background-color: rgba(248, 250, 252, 0.65);
+      background-image: radial-gradient(var(--ethereal-canvas-grid) 1px, transparent 1px);
       background-size: 24px 24px;
       position: relative;
       cursor: grab;
@@ -749,14 +868,16 @@
     /* Graph Legend */
     .graph-legend {
       padding: 10px 18px;
-      border-top: 1px solid var(--color-border-subtle);
-      background: var(--color-surface-card);
+      border-top: 1px solid var(--glass-border-subtle);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       display: flex;
       align-items: center;
       gap: 16px;
       flex-wrap: wrap;
       font-size: 11px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
       z-index: 5;
     }
@@ -785,17 +906,21 @@
       z-index: 3;
     }
     .trace-item {
-      background: var(--color-canvas);
-      border: 1px solid var(--color-border-subtle);
-      border-left: 3px solid var(--color-teal-base);
+      background: var(--glass-surface-tier-3);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border-subtle);
+      border-top: 1px solid var(--glass-border-specular);
+      border-left: 3px solid var(--status-accent-teal);
       border-radius: var(--radius-sm);
       padding: 10px 14px;
       font-size: 12px;
       transition: background 0.15s;
+      box-shadow: var(--shadow-ethereal-sm);
     }
     .trace-item:hover {
-      background: var(--color-surface-hover);
-      border-color: var(--color-border-default);
+      background: rgba(255, 255, 255, 0.95);
+      border-color: rgba(203, 213, 225, 0.9);
     }
     .trace-meta {
       display: flex;
@@ -807,13 +932,13 @@
     }
     .trace-tool {
       font-weight: 700;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
     }
     .trace-time {
-      color: var(--color-text-muted);
+      color: var(--text-muted);
     }
     .trace-summary {
-      color: var(--color-text-secondary);
+      color: var(--text-secondary);
       line-height: 1.4;
     }
 
@@ -821,7 +946,7 @@
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      background: var(--color-border-default);
+      background: rgba(203, 213, 225, 0.8);
       height: 4px;
       border-radius: 2px;
       outline: none;
@@ -832,9 +957,9 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: var(--color-teal-base);
+      background: var(--status-accent-teal);
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 1px 4px rgba(13, 148, 136, 0.4);
       transition: transform 0.1s ease;
     }
     input[type="range"]::-webkit-slider-thumb:hover {
@@ -844,30 +969,30 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: var(--color-teal-base);
+      background: var(--status-accent-teal);
       border: none;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 1px 4px rgba(13, 148, 136, 0.4);
     }
 
     details { margin-top: 6px; }
     summary {
       cursor: pointer;
       font-size: 11px;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
       user-select: none;
       transition: color 0.15s;
     }
-    summary:hover { color: var(--color-text-primary); }
+    summary:hover { color: var(--text-primary); }
     pre {
-      background: var(--color-canvas);
-      border: 1px solid var(--color-border-subtle);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--glass-border-subtle);
       border-radius: var(--radius-sm);
       padding: 10px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      color: var(--color-text-primary);
+      color: var(--text-primary);
       white-space: pre-wrap;
       overflow-x: auto;
       margin-top: 6px;
@@ -876,9 +1001,9 @@
 
     /* Subtle clean scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: var(--color-canvas); }
-    ::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted); }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 0.8); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
     /* ==========================================================================
        RESPONSIVE ADAPTATIONS
@@ -941,19 +1066,31 @@
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
+      .ethereal-orb {
+        animation: none !important;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- Top Navigation & Mission Controls Header -->
+<!-- Living Ethereal Aurora & Mesh Gradient Backdrop (Auroral & CSS Mesh) -->
+<div class="ethereal-backdrop" aria-hidden="true">
+  <div class="ethereal-orb orb-glacier"></div>
+  <div class="ethereal-orb orb-lavender"></div>
+  <div class="ethereal-orb orb-sage"></div>
+  <div class="ethereal-orb orb-pearl"></div>
+  <div class="ethereal-diffuser"></div>
+</div>
+
+<!-- Top Navigation & Ethereal Mission Controls Header -->
 <header>
   <div style="display:flex; align-items:center; gap:20px;">
     <a href="#" class="brand">
       <div class="brand-logo">N</div>
       <div class="brand-text">
         <b>NEXUS</b>
-        <span>Threat Intelligence & Security Analytics</span>
+        <span>Ethereal Intelligence & Cyber Defense</span>
       </div>
     </a>
     <div class="telemetry-ticker">
@@ -994,7 +1131,7 @@
 <aside class="demo-guide" aria-label="Guided demo instructions">
   <div class="demo-guide-copy">
     <div class="demo-guide-title">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--color-teal-base);"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-accent-teal);"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
       Start here · guided synthetic demo
     </div>
     <div class="demo-guide-steps">1. Trace an alert to critical data · 2. Compare simulated responses · 3. Approve containment, verify the result, then roll it back</div>
@@ -1020,7 +1157,7 @@
         </div>
 
         <div id="decision-content">
-          <p style="color:var(--color-text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
+          <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
         </div>
       </section>
 
@@ -1031,11 +1168,11 @@
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             Pareto Action Simulation Matrix
           </span>
-          <span style="font-size:11px; color:var(--color-text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
+          <span style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
         </div>
 
         <div id="matrix-container" class="table-container" data-lenis-prevent>
-          <p style="color:var(--color-text-dim); padding:20px; text-align:center;">No simulations run yet.</p>
+          <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
         </div>
       </section>
 
@@ -1046,11 +1183,11 @@
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             Investigation Execution Trace
           </span>
-          <span id="trace-step-count" style="font-size:11px; color:var(--color-text-muted); font-family:'JetBrains Mono';">0 steps</span>
+          <span id="trace-step-count" style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono';">0 steps</span>
         </div>
 
         <div id="trace" class="trace-list" data-lenis-prevent>
-          <p style="color:var(--color-text-dim); font-size:12px; padding:8px 0;">Awaiting investigation dispatch...</p>
+          <p style="color:var(--text-ethereal); font-size:12px; padding:8px 0;">Awaiting investigation dispatch...</p>
         </div>
       </section>
 
@@ -1061,9 +1198,9 @@
       <section class="card graph-card">
         <div class="graph-toolbar">
           <div>
-            <div style="font-size:13.5px; font-weight:700; color:var(--color-text-primary); letter-spacing:-0.1px;">Attack Path Traversal Topology</div>
-            <div id="physics-status" style="font-size:11px; color:var(--color-text-secondary); font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
-              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--color-forest-base);"></span>
+            <div style="font-size:13.5px; font-weight:700; color:var(--text-primary); letter-spacing:-0.1px;">Attack Path Traversal Topology</div>
+            <div id="physics-status" style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-success-text); box-shadow:0 0 6px rgba(21, 128, 61, 0.4);"></span>
               Obsidian Force-Directed Physics Active · Drag nodes to deform network
             </div>
           </div>
@@ -1092,40 +1229,40 @@
         </div>
 
         <!-- Force Controls Drawer -->
-        <div id="forces-drawer" data-lenis-prevent style="display:none; background:var(--color-canvas); border-bottom:1px solid var(--color-border-subtle); padding:14px 20px; font-size:11px;">
+        <div id="forces-drawer" data-lenis-prevent style="display:none; background:var(--glass-surface-tier-3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--glass-border-subtle); padding:14px 20px; font-size:11px;">
           <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; align-items:center;">
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--color-text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
                 <span>Repulsion</span>
-                <span id="repel-label" style="color:var(--color-text-primary); font-family:'JetBrains Mono';">9500</span>
+                <span id="repel-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">9500</span>
               </div>
               <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500" style="width:100%;">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--color-text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
                 <span>Link Distance</span>
-                <span id="link-dist-label" style="color:var(--color-text-primary); font-family:'JetBrains Mono';">130</span>
+                <span id="link-dist-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">130</span>
               </div>
               <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130" style="width:100%;">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--color-text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
                 <span>Spring Force</span>
-                <span id="spring-label" style="color:var(--color-text-primary); font-family:'JetBrains Mono';">0.045</span>
+                <span id="spring-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.045</span>
               </div>
               <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045" style="width:100%;">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--color-text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
                 <span>Gravity</span>
-                <span id="grav-label" style="color:var(--color-text-primary); font-family:'JetBrains Mono';">0.0012</span>
+                <span id="grav-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.0012</span>
               </div>
               <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%;">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--color-text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
                 <span>Damping</span>
-                <span id="damp-label" style="color:var(--color-text-primary); font-family:'JetBrains Mono';">0.89</span>
+                <span id="damp-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.89</span>
               </div>
               <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89" style="width:100%;">
             </div>
@@ -1140,33 +1277,33 @@
           <div id="cy" style="width:100%; height:100%;"></div>
 
           <!-- Floating Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none; position:absolute; top:16px; right:16px; width:280px; background:var(--color-surface-card); border:1px solid var(--color-border-default); border-radius:var(--radius-md); padding:14px 16px; z-index:15; box-shadow:var(--shadow-dropdown);">
+          <div id="node-inspector" style="display:none; position:absolute; top:16px; right:16px; width:280px; background:var(--glass-surface-tier-2); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid var(--glass-border-subtle); border-top:1px solid var(--glass-border-specular); border-radius:var(--radius-md); padding:14px 16px; z-index:15; box-shadow:var(--shadow-ethereal-dropdown);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
               <div style="display:flex; align-items:center; gap:7px;">
-                <span id="inspect-dot" style="display:inline-block; width:9px; height:9px; border-radius:2px; background:var(--color-teal-base);"></span>
-                <span id="inspect-title" style="font-weight:700; font-size:13px; color:var(--color-text-primary);">Entity Inspector</span>
+                <span id="inspect-dot" style="display:inline-block; width:9px; height:9px; border-radius:2px; background:var(--status-accent-teal);"></span>
+                <span id="inspect-title" style="font-weight:700; font-size:13px; color:var(--text-primary);">Entity Inspector</span>
               </div>
-              <button id="inspect-close" style="background:transparent; border:none; color:var(--color-text-muted); cursor:pointer; padding:2px 4px; font-size:13px;">✕</button>
+              <button id="inspect-close" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px 4px; font-size:13px;">✕</button>
             </div>
             <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-divider); padding-bottom:4px;">
-                <span style="color:var(--color-text-muted);">Node ID</span>
-                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--color-text-primary); font-weight:600;">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
+                <span style="color:var(--text-muted);">Node ID</span>
+                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--text-primary); font-weight:600;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-divider); padding-bottom:4px;">
-                <span style="color:var(--color-text-muted);">Entity Kind</span>
-                <span id="inspect-kind" style="color:var(--color-text-primary); font-weight:600;">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
+                <span style="color:var(--text-muted);">Entity Kind</span>
+                <span id="inspect-kind" style="color:var(--text-primary); font-weight:600;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-divider); padding-bottom:4px;">
-                <span style="color:var(--color-text-muted);">Status</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
+                <span style="color:var(--text-muted);">Status</span>
                 <span id="inspect-status" class="pill-tag">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--color-divider); padding-bottom:4px;">
-                <span style="color:var(--color-text-muted);">Connections</span>
-                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--color-text-primary);">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
+                <span style="color:var(--text-muted);">Connections</span>
+                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--text-primary);">-</span>
               </div>
               <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
-                <span style="color:var(--color-text-muted);">Position Lock</span>
+                <span style="color:var(--text-muted);">Position Lock</span>
                 <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 8px;">Pin Node</button>
               </div>
             </div>
@@ -1182,14 +1319,14 @@
           </div>
         </div>
 
-        <!-- Light-Mode Semantic Node Legend -->
+        <!-- Ethereal Semantic Node Legend -->
         <div class="graph-legend">
-          <span style="font-weight:700; color:var(--color-text-primary); margin-right:4px;">Entities:</span>
-          <div class="legend-item"><div class="legend-dot" style="background:#6366F1;"></div> Person</div>
+          <span style="font-weight:700; color:var(--text-primary); margin-right:4px;">Entities:</span>
+          <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6;"></div> Person</div>
           <div class="legend-item"><div class="legend-dot" style="background:#0284C7;"></div> Device</div>
           <div class="legend-item"><div class="legend-dot" style="background:#16A34A;"></div> Server</div>
           <div class="legend-item"><div class="legend-dot" style="background:#D97706;"></div> ServiceAccount</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6;"></div> Service</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#7C3AED;"></div> Service</div>
           <div class="legend-item"><div class="legend-dot" style="background:#DC2626;"></div> DataStore (Crown Jewel)</div>
           <div class="legend-item"><div class="legend-dot" style="background:#FEF2F2; border:1px dashed #DC2626;"></div> Quarantined</div>
         </div>
@@ -1242,7 +1379,7 @@ try {
   console.warn("Lenis initialization skipped:", e);
 }
 
-// Smooth numeric score animation helper
+// Smooth numeric score animation helper with GSAP or ease-out cubic
 function animateScoreCounter(el, targetScore, duration = 0.6) {
   if (!el) return;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1310,7 +1447,7 @@ const initialLayout = {
 };
 
 // ==============================================================
-// 3. CONTINUOUS FORCE-DIRECTED PHYSICS ENGINE
+// 3. CONTINUOUS FORCE-DIRECTED CELESTIAL PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
   repulsion: 9500,
@@ -1339,8 +1476,8 @@ window.togglePhysicsPause = function() {
   if (pauseText) pauseText.textContent = isPhysicsPaused ? 'Resume' : 'Pause';
   if ($('physics-status')) {
     $('physics-status').innerHTML = isPhysicsPaused
-      ? `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--color-high-text);"></span> Physics Paused · Static View`
-      : `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--color-forest-base);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
+      ? `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-warning-text);"></span> Physics Paused · Static View`
+      : `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-success-text); box-shadow:0 0 6px rgba(21, 128, 61, 0.4);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
   }
 };
 
@@ -1423,11 +1560,11 @@ window.inspectNode = function(node) {
   const bad = node.data('bad');
   const degree = node.connectedEdges().length;
   const colorMap = {
-    Person: '#6366F1',
+    Person: '#8B5CF6',
     Device: '#0284C7',
     Server: '#16A34A',
     ServiceAccount: '#D97706',
-    Service: '#8B5CF6',
+    Service: '#7C3AED',
     DataStore: '#DC2626'
   };
   $('inspect-dot').style.background = colorMap[kind] || '#0D9488';
@@ -1548,7 +1685,7 @@ function initObsidianPhysics(cyInstance) {
     lastGrabPos = null;
   });
 
-  // 60 FPS Continuous Force-Directed Physics Simulation Loop
+  // 60 FPS Continuous Celestial Force-Directed Simulation Loop
   let time = 0;
   const nodes = Array.from(nodeMap.values());
   const numNodes = nodes.length;
@@ -1884,9 +2021,9 @@ async function resetDemo() {
     if ($('pause-btn-text')) $('pause-btn-text').textContent = 'Pause';
     $('fit-btn').disabled = true;
     $('inv-id').textContent = 'RESET COMPLETED';
-    $('decision-content').innerHTML = `<p style="color:var(--color-text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
-    $('matrix-container').innerHTML = `<p style="color:var(--color-text-dim); padding:20px; text-align:center;">No simulations run yet.</p>`;
-    $('trace').innerHTML = `<p style="color:var(--color-text-dim); font-size:12px; padding:8px 0;">Pristine state restored.</p>`;
+    $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
+    $('matrix-container').innerHTML = `<p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>`;
+    $('trace').innerHTML = `<p style="color:var(--text-ethereal); font-size:12px; padding:8px 0;">Pristine state restored.</p>`;
     $('trace-step-count').textContent = '0 steps';
   } catch (error) {
     alert('Reset error: ' + error.message);
@@ -1946,9 +2083,9 @@ function render(data) {
     : '';
 
   const postRiskInfo = ex 
-    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--color-low-bg); border:1px solid var(--color-low-border); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px;">
-        <span style="font-size:12px; color:var(--color-forest-base); font-weight:600;">Live risk after containment:</span>
-        <span style="font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:800; color:var(--color-forest-base);">${ex.before} → ${ex.after} / 100</span>
+    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--status-success-bg); border:1px solid var(--status-success-border); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; box-shadow:var(--shadow-ethereal-sm);">
+        <span style="font-size:12px; color:var(--status-success-text); font-weight:600;">Live risk after containment:</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:800; color:var(--status-success-text);">${ex.before} → ${ex.after} / 100</span>
       </div>`
     : '';
 
@@ -1977,15 +2114,15 @@ function render(data) {
 
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(ini.label)}-bg">${esc(ini.label)} RISK</span>
-        <div style="font-size:13px; font-weight:700; color:var(--color-text-primary); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</div>
-        <div style="font-size:11px; color:var(--color-text-muted);">Live Seeded Topology Heuristic</div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-primary); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</div>
+        <div style="font-size:11px; color:var(--text-muted);">Live Seeded Topology Heuristic</div>
       </div>
     </div>
 
     <div class="action-banner">
       <div class="action-header">Recommended Response Policy</div>
       <div class="action-name">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--color-forest-base);"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-success-text);"><polyline points="20 6 9 17 4 12"/></svg>
         ${esc(actionText)}
       </div>
       <div class="action-reason">${esc(rec.why)}</div>
@@ -2027,14 +2164,14 @@ function render(data) {
       ? `<span class="pill-tag pill-dominated">dominated by ${esc(row.dominated_by)}</span>`
       : `<span class="pill-tag pill-pareto">PARETO OPTIMAL</span>`;
     
-    const riskBarColor = row.residual_risk > 70 ? 'var(--color-critical-text)' : (row.residual_risk > 40 ? 'var(--color-high-text)' : 'var(--color-forest-base)');
+    const riskBarColor = row.residual_risk > 70 ? 'var(--status-critical-text)' : (row.residual_risk > 40 ? 'var(--status-warning-text)' : 'var(--status-success-text)');
 
     return `
       <tr class="${isRecommended ? 'recommended-row' : ''}">
         <td><b>${esc(row.action)}</b></td>
-        <td><code style="color:var(--color-text-primary); font-size:11px; font-family:'JetBrains Mono'; background:var(--color-canvas); padding:2px 4px; border-radius:3px;">${esc(row.target || '—')}</code></td>
+        <td><code style="color:var(--text-primary); font-size:11px; font-family:'JetBrains Mono'; background:rgba(255, 255, 255, 0.9); padding:2px 5px; border-radius:3px; border:1px solid var(--glass-border-subtle);">${esc(row.target || '—')}</code></td>
         <td>
-          <div style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--color-text-primary);">${row.residual_risk}</div>
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--text-primary);">${row.residual_risk}</div>
           <div class="mini-risk-bar"><div class="mini-risk-fill" style="width:${row.residual_risk}%; background:${riskBarColor};"></div></div>
         </td>
         <td style="font-family:'JetBrains Mono'; font-weight:600;">${row.paths_broken} / ${row.paths_before}</td>
@@ -2124,7 +2261,7 @@ async function drawGraph() {
     elements: elements,
     layout: { name: 'preset' },
     style: [
-      /* --- LIGHT-MODE REFINED NODE STYLES --- */
+      /* --- ETHEREAL CELESTIAL NODE STYLES --- */
       {
         selector: 'node',
         style: {
@@ -2136,17 +2273,17 @@ async function drawGraph() {
           'text-valign': 'bottom',
           'text-margin-y': 6,
           'text-background-color': '#FFFFFF',
-          'text-background-opacity': 0.95,
+          'text-background-opacity': 0.92,
           'text-background-padding': '3px',
           'text-background-shape': 'roundrectangle',
-          'text-border-color': '#E2E8F0',
+          'text-border-color': '#CBD5E1',
           'text-border-width': 1,
-          'text-border-opacity': 0.9,
+          'text-border-opacity': 0.8,
           'width': 36,
           'height': 36,
           'border-width': 2,
           'border-color': '#94A3B8',
-          'background-color': '#FFFFFF',
+          'background-color': 'rgba(255, 255, 255, 0.95)',
           'transition-property': 'background-color, border-color, width, height',
           'transition-duration': '0.2s'
         }
@@ -2155,8 +2292,11 @@ async function drawGraph() {
         selector: 'node[kind = "Person"]',
         style: {
           'shape': 'ellipse',
-          'border-color': '#6366F1',
-          'background-color': '#EEF2FF'
+          'border-color': '#8B5CF6',
+          'background-color': '#F5F3FF',
+          'shadow-blur': 12,
+          'shadow-color': 'rgba(139, 92, 246, 0.25)',
+          'shadow-opacity': 0.8
         }
       },
       {
@@ -2164,7 +2304,10 @@ async function drawGraph() {
         style: {
           'shape': 'round-rectangle',
           'border-color': '#0284C7',
-          'background-color': '#F0F9FF'
+          'background-color': '#F0F9FF',
+          'shadow-blur': 12,
+          'shadow-color': 'rgba(2, 132, 199, 0.25)',
+          'shadow-opacity': 0.8
         }
       },
       {
@@ -2172,7 +2315,10 @@ async function drawGraph() {
         style: {
           'shape': 'round-rectangle',
           'border-color': '#16A34A',
-          'background-color': '#F0FDF4'
+          'background-color': '#F0FDF4',
+          'shadow-blur': 12,
+          'shadow-color': 'rgba(22, 163, 74, 0.25)',
+          'shadow-opacity': 0.8
         }
       },
       {
@@ -2182,15 +2328,21 @@ async function drawGraph() {
           'width': 40,
           'height': 40,
           'border-color': '#D97706',
-          'background-color': '#FFFBEB'
+          'background-color': '#FFFBEB',
+          'shadow-blur': 12,
+          'shadow-color': 'rgba(217, 119, 6, 0.25)',
+          'shadow-opacity': 0.8
         }
       },
       {
         selector: 'node[kind = "Service"]',
         style: {
           'shape': 'round-hexagon',
-          'border-color': '#8B5CF6',
-          'background-color': '#F5F3FF'
+          'border-color': '#7C3AED',
+          'background-color': '#FAF5FF',
+          'shadow-blur': 12,
+          'shadow-color': 'rgba(124, 58, 237, 0.25)',
+          'shadow-opacity': 0.8
         }
       },
       {
@@ -2202,7 +2354,10 @@ async function drawGraph() {
           'border-color': '#DC2626',
           'background-color': '#FEF2F2',
           'border-width': 3,
-          'color': '#991B1B'
+          'color': '#991B1B',
+          'shadow-blur': 18,
+          'shadow-color': 'rgba(220, 38, 38, 0.35)',
+          'shadow-opacity': 0.9
         }
       },
       {
@@ -2216,7 +2371,7 @@ async function drawGraph() {
         }
       },
 
-      /* --- LIGHT-MODE REFINED EDGE STYLES --- */
+      /* --- ETHEREAL REFINED EDGE STYLES --- */
       {
         selector: 'edge',
         style: {
@@ -2226,7 +2381,7 @@ async function drawGraph() {
           'font-weight': 600,
           'font-family': 'JetBrains Mono, monospace',
           'text-background-color': '#FFFFFF',
-          'text-background-opacity': 0.95,
+          'text-background-opacity': 0.94,
           'text-background-padding': '3px',
           'text-background-shape': 'roundrectangle',
           'text-border-color': '#CBD5E1',
@@ -2272,7 +2427,9 @@ async function drawGraph() {
         style: {
           'opacity': 1,
           'border-width': 3.5,
-          'border-color': '#0D9488'
+          'border-color': '#0D9488',
+          'shadow-blur': 16,
+          'shadow-color': 'rgba(13, 148, 136, 0.4)'
         }
       },
       {
@@ -2301,7 +2458,9 @@ async function drawGraph() {
         style: {
           'border-width': 4,
           'border-style': 'double',
-          'border-color': '#D97706'
+          'border-color': '#D97706',
+          'shadow-blur': 14,
+          'shadow-color': 'rgba(217, 119, 6, 0.4)'
         }
       },
       {
@@ -2310,7 +2469,9 @@ async function drawGraph() {
           'opacity': 1,
           'border-width': 3.5,
           'border-color': '#DC2626',
-          'background-color': '#FEF2F2'
+          'background-color': '#FEF2F2',
+          'shadow-blur': 20,
+          'shadow-color': 'rgba(220, 38, 38, 0.4)'
         }
       },
       {
