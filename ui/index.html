@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXUS — 1980s Memphis Design Cyber Intelligence Cockpit</title>
+  <title>NEXUS — Graph Cyber Intelligence Cockpit</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,6 +109,20 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
+    /* Accessibility: Focus-Visible & Reduced-Motion */
+    :focus-visible {
+      outline: 3px solid var(--memphis-blue) !important;
+      outline-offset: 2px !important;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
     /* Lenis Smooth Scroll Rules */
     html.lenis, html.lenis body {
       height: auto;
@@ -121,7 +135,7 @@
     }
 
     /* ==========================================================================
-       MEMPHIS GEOMETRIC BACKGROUND MOTIFS & FLOATING SHAPES
+       MEMPHIS GEOMETRIC BACKGROUND MOTIFS (Crisp Static Graphic Accents)
        ========================================================================== */
     .memphis-backdrop {
       position: fixed;
@@ -135,7 +149,6 @@
     .memphis-shape {
       position: absolute;
       opacity: 0.85;
-      will-change: transform;
     }
     .shape-triangle {
       width: 0;
@@ -147,7 +160,6 @@
       top: 12%;
       right: 3%;
       transform: rotate(24deg);
-      animation: floatRotate 18s ease-in-out infinite alternate;
     }
     .shape-circle {
       width: 48px;
@@ -158,12 +170,10 @@
       box-shadow: var(--shadow-offset);
       bottom: 14%;
       left: 2%;
-      animation: floatBob 14s ease-in-out infinite alternate;
     }
     .shape-squiggle {
       top: 48%;
       right: 2%;
-      animation: floatBob 20s ease-in-out infinite alternate-reverse;
     }
     .shape-plus {
       position: absolute;
@@ -175,16 +185,6 @@
       color: var(--memphis-coral);
       text-shadow: 3px 3px 0px var(--memphis-black);
       transform: rotate(15deg);
-      animation: floatRotate 22s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatRotate {
-      0% { transform: translateY(0px) rotate(0deg); }
-      100% { transform: translateY(-24px) rotate(35deg); }
-    }
-    @keyframes floatBob {
-      0% { transform: translateY(0px) rotate(0deg); }
-      100% { transform: translateY(28px) rotate(-15deg); }
     }
 
     /* Decorative Top Stripe Ribbon */
@@ -1364,15 +1364,15 @@
 <!-- Top Navigation & Cockpit Mission Controls Header -->
 <header>
   <div style="display:flex; align-items:center; gap:16px;">
-    <a href="#" class="brand">
+    <a href="/" class="brand" aria-label="NEXUS Cyber Intelligence Cockpit">
       <div class="brand-logo">N</div>
       <div class="brand-text">
         <b>NEXUS</b>
-        <span>Memphis Cyber Intelligence</span>
+        <span>Autonomous Attack-Path SOC</span>
       </div>
     </a>
     <div class="telemetry-ticker">
-      <span>GRID: <b>SEC-SOC-09</b></span>
+      <span>ENVIRONMENT: <b>SYNTHETIC ACTIVE DIRECTORY</b></span>
       <span class="telemetry-time" id="telemetry-clock">00:00:00 UTC · ACTIVE</span>
     </div>
   </div>
@@ -1382,28 +1382,28 @@
     <div class="badge synth" title="100% Synthetic SOC Benchmark Dataset — Safe & Reproducible">Synthetic Benchmark Data</div>
     <div id="mode-badge" class="badge">● SCRIPTED · NO MODEL</div>
 
-    <select id="alert" title="Select Alert Scenario"></select>
+    <select id="alert" aria-label="Select Alert Scenario" title="Select Alert Scenario"></select>
     
-    <select id="mode" title="Execution Mode">
+    <select id="mode" aria-label="Execution Mode" title="Execution Mode">
       <option value="auto">Real agent (needs key)</option>
       <option value="mock" selected>Scripted tools (no key · reproducible)</option>
     </select>
 
     <label class="checkbox-label" title="Allow agent to execute low-impact actions autonomously">
-      <input type="checkbox" id="auto"> Auto
+      <input type="checkbox" id="auto" aria-label="Autonomous containment execution"> Auto
     </label>
 
-    <button id="go" class="primary">
+    <button id="go" class="primary" aria-label="Investigate selected alert">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       Investigate selected alert
     </button>
 
-    <button id="reset" class="secondary" title="Restore pristine synthetic graph and drop mutated nodes">
+    <button id="reset" class="secondary" aria-label="Reset synthetic graph" title="Restore pristine synthetic graph and drop mutated nodes">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       Reset Graph
     </button>
 
-    <button id="cypher-toggle-btn" class="secondary" title="Toggle Live FalkorDB OpenCypher Explorer" style="font-weight:900; background:var(--memphis-yellow);">
+    <button id="cypher-toggle-btn" class="secondary" aria-label="Toggle live Cypher console" title="Toggle Live FalkorDB OpenCypher Explorer" style="font-weight:900; background:var(--memphis-yellow);">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Live Cypher
     </button>
@@ -1519,44 +1519,44 @@
                 <span>Repulsion</span>
                 <span id="repel-label" style="font-family:'JetBrains Mono';">18000</span>
               </div>
-              <input type="range" id="repel-slider" min="2000" max="40000" step="1000" value="18000">
+              <input type="range" id="repel-slider" aria-label="Node repulsion force" min="2000" max="40000" step="1000" value="18000">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Link Distance</span>
                 <span id="link-dist-label" style="font-family:'JetBrains Mono';">220</span>
               </div>
-              <input type="range" id="link-dist-slider" min="100" max="350" step="10" value="220">
+              <input type="range" id="link-dist-slider" aria-label="Link distance" min="100" max="350" step="10" value="220">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Spring Force</span>
                 <span id="spring-label" style="font-family:'JetBrains Mono';">0.032</span>
               </div>
-              <input type="range" id="spring-slider" min="0.01" max="0.10" step="0.005" value="0.032">
+              <input type="range" id="spring-slider" aria-label="Spring force" min="0.01" max="0.10" step="0.005" value="0.032">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Gravity</span>
                 <span id="grav-label" style="font-family:'JetBrains Mono';">0.0006</span>
               </div>
-              <input type="range" id="grav-slider" min="0.0001" max="0.003" step="0.0001" value="0.0006">
+              <input type="range" id="grav-slider" aria-label="Centroid gravity" min="0.0001" max="0.003" step="0.0001" value="0.0006">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Damping</span>
                 <span id="damp-label" style="font-family:'JetBrains Mono';">0.84</span>
               </div>
-              <input type="range" id="damp-slider" min="0.70" max="0.96" step="0.01" value="0.84">
+              <input type="range" id="damp-slider" aria-label="Velocity damping" min="0.70" max="0.96" step="0.01" value="0.84">
             </div>
             <div style="display:flex; gap:6px; justify-content:flex-end;">
-              <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:10px;">Reset Defaults</button>
+              <button id="reset-forces-btn" class="secondary" aria-label="Reset physics defaults" style="font-size:10px; padding:4px 10px; margin-top:10px;">Reset Defaults</button>
             </div>
           </div>
         </div>
 
         <!-- Canvas Container with Floating Inspector and Zoom Controls -->
-        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:var(--memphis-canvas); background-image:radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px); background-size:24px 24px;" data-lenis-prevent>
+        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:var(--memphis-canvas); background-image:radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px); background-size:24px 24px;">
           <div id="cy" style="width:100%; height:100%;"></div>
 
           <!-- Floating Sandbox Diff Preview HUD Overlay -->
@@ -1578,13 +1578,13 @@
           </div>
 
           <!-- Floating Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none;">
+          <div id="node-inspector" style="display:none;" aria-label="Node details inspector">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--memphis-black);">
               <div style="display:flex; align-items:center; gap:7px;">
                 <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span>
                 <span id="inspect-title" style="font-weight:900; font-size:13px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
               </div>
-              <button id="inspect-close" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:14px; font-weight:900; box-shadow:none;">✕</button>
+              <button id="inspect-close" aria-label="Close entity inspector" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:14px; font-weight:900; box-shadow:none;">✕</button>
             </div>
             <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
               <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
@@ -1612,9 +1612,9 @@
 
           <!-- Floating Canvas Zoom Controls -->
           <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:15;">
-            <button id="zoom-in-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom In">+</button>
-            <button id="zoom-out-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom Out">−</button>
-            <button id="fit-canvas-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
+            <button id="zoom-in-btn" class="secondary" aria-label="Zoom in" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom In">+</button>
+            <button id="zoom-out-btn" class="secondary" aria-label="Zoom out" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom Out">−</button>
+            <button id="fit-canvas-btn" class="secondary" aria-label="Fit graph to viewport" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
           </div>
@@ -1648,8 +1648,8 @@
 
         <div class="cypher-chips-bar">
           <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">1-Click Cypher:</span>
-          <button class="cypher-chip" data-query="MATCH p = (a:Alert)-[*1..4]->(d:DataStore) RETURN p">⚡ 7-Hop Attack Radius</button>
-          <button class="cypher-chip" data-query="MATCH (u:Person)-[:LOGS_INTO]->(s:Server)-[:HOSTS_CREDENTIAL]->(c) RETURN u.name, s.name, c.name LIMIT 8">🛡️ Privilege Escalation</button>
+          <button class="cypher-chip" data-query="MATCH p = (a:Alert)-[*1..7]->(d:DataStore) RETURN p LIMIT 5">⚡ 7-Hop Attack Radius</button>
+          <button class="cypher-chip" data-query="MATCH (u:Person)-[:OWNS]->(d:Device)-[:LOGS_INTO]->(s:Server)-[:HOSTS_CREDENTIAL]->(c) RETURN u.name, d.name, s.name, c.name LIMIT 5">🛡️ Privilege Escalation</button>
           <button class="cypher-chip" data-query="MATCH (d:DataStore) RETURN d.name, d.criticality ORDER BY d.criticality DESC LIMIT 6">💎 Crown Jewels</button>
           <button class="cypher-chip" data-query="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC">📊 Topology Distribution</button>
         </div>
@@ -1657,9 +1657,9 @@
         <div class="cypher-editor-row">
           <div class="cypher-input-wrap">
             <span class="cypher-prompt">CYPHER &gt;</span>
-            <input type="text" id="cypher-input" value="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC" placeholder="Enter OpenCypher query..." spellcheck="false" autocomplete="off">
+            <input type="text" id="cypher-input" aria-label="OpenCypher query input" value="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC" placeholder="Enter OpenCypher query..." spellcheck="false" autocomplete="off">
           </div>
-          <button id="run-cypher-btn" class="primary" style="padding:7px 18px; font-size:12px; font-weight:900;">
+          <button id="run-cypher-btn" class="primary" aria-label="Execute OpenCypher query" style="padding:7px 18px; font-size:12px; font-weight:900;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Run Cypher
           </button>
@@ -2836,7 +2836,7 @@ async function executeCypherQuery(queryText) {
     if (!res.rows || res.rows.length === 0) {
       resultContainer.innerHTML = `
         <div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px; font-weight:700;">
-          Query returned 0 rows. (FalkorDB graph contains 145+ nodes)
+          Query returned 0 rows. (FalkorDB graph contains 157 nodes)
         </div>
       `;
       return;
@@ -2991,12 +2991,17 @@ async function drawGraph() {
   const data = await (await fetch(`/api/graph/${INV}`)).json();
   const inactive = new Set(data.nodes.filter(n => n.status !== 'ACTIVE').map(n => n.id));
 
-  const elements = data.nodes.map(n => ({
+  const total = (data.nodes && data.nodes.length) || 1;
+  const elements = data.nodes.map((n, idx) => ({
     data: {
       id: n.id,
       label: n.name || n.id,
       kind: n.label,
       bad: inactive.has(n.id) ? 1 : 0
+    },
+    position: {
+      x: 350 + Math.cos((idx / total) * 2 * Math.PI) * 180 + (idx % 2 ? 15 : -15),
+      y: 260 + Math.sin((idx / total) * 2 * Math.PI) * 180 + (idx % 3 ? 15 : -15)
     }
   })).concat(data.edges.map(e => ({
     data: {
@@ -3168,9 +3173,7 @@ async function drawGraph() {
         style: {
           'opacity': 1,
           'border-width': 4.5,
-          'border-color': '#2563EB',
-          'shadow-blur': 16,
-          'shadow-color': 'rgba(37, 99, 235, 0.4)'
+          'border-color': '#2563EB'
         }
       },
       {
@@ -3208,9 +3211,7 @@ async function drawGraph() {
           'opacity': 1,
           'border-width': 4.5,
           'border-color': '#0F172A',
-          'background-color': '#FF6B6B',
-          'shadow-blur': 18,
-          'shadow-color': 'rgba(255, 107, 107, 0.5)'
+          'background-color': '#FF6B6B'
         }
       },
       {
@@ -3246,9 +3247,7 @@ async function drawGraph() {
           'color': '#FFFFFF',
           'text-background-color': '#FF3366',
           'text-border-color': '#0F172A',
-          'text-border-width': 2,
-          'shadow-blur': 26,
-          'shadow-color': 'rgba(255, 51, 102, 0.75)'
+          'text-border-width': 2
         }
       },
       {
@@ -3274,9 +3273,7 @@ async function drawGraph() {
           'height': 52,
           'border-width': 5,
           'border-color': '#0F172A',
-          'background-color': '#00E5A3',
-          'shadow-blur': 24,
-          'shadow-color': 'rgba(0, 229, 163, 0.75)'
+          'background-color': '#00E5A3'
         }
       },
       {
