@@ -1,6 +1,7 @@
 """Browser smoke and interactive physics test for the local NEXUS demo. Requires Compose + Playwright Chromium."""
 
 import os
+import re
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright, expect
@@ -128,3 +129,73 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         # Verify no console or unhandled page errors occurred
         assert page_errors == []
         browser.close()
+
+
+def test_sandbox_diff_preview_and_live_cypher_repl():
+    SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
+        page_errors = []
+        page.on("pageerror", lambda error: page_errors.append(f"{error}\n{error.stack}"))
+
+        page.goto(BASE_URL, wait_until="networkidle")
+
+        # 1. Run investigation to populate matrix
+        page.locator("#guided-demo").click()
+        page.locator(".action-header").filter(has_text="Recommended Response Policy").wait_for()
+        page.wait_for_function("typeof cy !== 'undefined' && cy.nodes().length > 0")
+
+        # 2. Test Sandbox Diff Preview on Hover
+        first_row = page.locator("#matrix-container tbody tr").first
+        expect(first_row).to_be_visible()
+        first_row.hover()
+        expect(page.locator("#sandbox-preview-hud")).to_be_visible()
+        expect(page.locator("#sb-hud-action-name")).not_to_be_empty()
+        expect(page.locator("#sb-hud-risk")).to_contain_text("/100")
+
+        # Verify Cytoscape diff class
+        has_diff_elements = page.evaluate("cy.elements('.sandbox-target, .sandbox-severed, .sandbox-dimmed').length > 0")
+        assert has_diff_elements is True
+
+        # Test Lock / Toggle on Click
+        first_row.click()
+        expect(first_row).to_have_class(re.compile(r"previewing-active"))
+        first_row.click()
+        expect(first_row).not_to_have_class(re.compile(r"previewing-active"))
+
+        # Hover targeted action row (row 1: isolate_device LAPTOP-042)
+        targeted_row = page.locator("#matrix-container tbody tr").nth(1)
+        targeted_row.hover()
+        expect(page.locator("#sandbox-preview-hud")).to_be_visible()
+        expect(page.locator("#sb-hud-target")).to_contain_text("LAPTOP-042")
+        has_severed = page.evaluate("cy.elements('.sandbox-target, .sandbox-severed').length > 0")
+        assert has_severed is True
+
+        # 3. Test Live FalkorDB Cypher REPL
+        page.locator("#cypher-toggle-btn").click()
+        expect(page.locator("#cypher-card")).to_be_visible()
+
+        # Click pre-loaded query chip: Crown Jewels
+        crown_jewels_chip = page.locator(".cypher-chip").filter(has_text="Crown Jewels")
+        crown_jewels_chip.click()
+
+        # Wait for Cypher results table
+        page.locator("#cypher-result-container table").wait_for()
+        rows_count = page.locator("#cypher-result-container table tbody tr").count()
+        assert rows_count > 0
+        expect(page.locator("#cypher-latency-pill")).to_contain_text("ms")
+        expect(page.locator("#cypher-result-container")).to_contain_text("CUSTOMER-DB")
+
+        # Test Custom Cypher Query Execution
+        page.locator("#cypher-input").fill("MATCH (u:Person) RETURN u.name, u.role LIMIT 5")
+        page.locator("#run-cypher-btn").click()
+        page.locator("#cypher-result-container table").wait_for()
+        expect(page.locator("#cypher-result-container")).to_contain_text("U-BG-00")
+
+        # Screenshot the 11/10 additions
+        page.screenshot(path=str(SCREENSHOT_DIR / "nexus-cypher-repl-sandbox-diff.png"), full_page=True)
+
+        assert page_errors == []
+        browser.close()
+

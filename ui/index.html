@@ -1004,6 +1004,185 @@
     }
 
     /* ==========================================================================
+       WHAT-IF SANDBOX DIFF PREVIEW & PARETO HOVER AFFORDANCE
+       ========================================================================== */
+    .sandbox-hud {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 25;
+      background: var(--memphis-canvas);
+      border: var(--memphis-border-thick);
+      box-shadow: var(--shadow-offset-md);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      max-width: 400px;
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sandbox-hud.hidden {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+      pointer-events: none;
+    }
+    .sandbox-hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .sandbox-hud-title {
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #FFFFFF;
+      background: var(--memphis-coral);
+      padding: 3px 8px;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .sandbox-hud-action {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sandbox-hud-stats {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .sb-stat {
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      padding: 3px 6px;
+      border-radius: 3px;
+      display: inline-flex;
+      gap: 4px;
+    }
+    .sandbox-hud-hint {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Pareto Table Row Hover Affordance */
+    #matrix-container tbody tr {
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    #matrix-container tbody tr:hover {
+      background: #FFF2CC !important;
+    }
+    #matrix-container tbody tr.previewing-active {
+      background: #FFE082 !important;
+      outline: 2.5px solid var(--memphis-black);
+    }
+
+    /* ==========================================================================
+       LIVE FALKORDB OPENCYPHER EXPLORER STYLES
+       ========================================================================== */
+    #cypher-card {
+      border: var(--memphis-border-thick);
+      box-shadow: var(--shadow-offset-md);
+      background: #FFFFFF;
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      transition: box-shadow 0.25s, transform 0.25s;
+    }
+    .cypher-chips-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 2px dashed #E2E8F0;
+    }
+    .cypher-chip {
+      background: #FFFFFF;
+      border: 2px solid var(--memphis-black);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--memphis-black);
+      transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .cypher-chip:hover {
+      background: var(--memphis-yellow);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--memphis-black);
+    }
+    .cypher-chip:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--memphis-black);
+    }
+    .cypher-editor-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .cypher-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      overflow: hidden;
+    }
+    .cypher-prompt {
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 900;
+      font-size: 11px;
+      background: var(--memphis-yellow);
+      color: var(--memphis-black);
+      border-right: 2px solid var(--memphis-black);
+      user-select: none;
+      flex-shrink: 0;
+    }
+    #cypher-input {
+      flex: 1;
+      border: none;
+      box-shadow: none;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      background: transparent;
+      outline: none;
+      width: 100%;
+    }
+    #cypher-input:focus {
+      box-shadow: none;
+    }
+    #cypher-result-container {
+      background: var(--memphis-canvas);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
+    }
+
+    /* ==========================================================================
        RESPONSIVE BREAKPOINTS (Mobile 390px Viewport Compliance)
        ========================================================================== */
     @media (max-width: 1080px) {
@@ -1098,6 +1277,11 @@
     <button id="reset" class="secondary" title="Restore pristine synthetic graph and drop mutated nodes">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       Reset Graph
+    </button>
+
+    <button id="cypher-toggle-btn" class="secondary" title="Toggle Live FalkorDB OpenCypher Explorer" style="font-weight:900; background:var(--memphis-yellow);">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Live Cypher
     </button>
   </div>
 </header>
@@ -1251,6 +1435,24 @@
         <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:var(--memphis-canvas); background-image:radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px); background-size:24px 24px;" data-lenis-prevent>
           <div id="cy" style="width:100%; height:100%;"></div>
 
+          <!-- Floating Sandbox Diff Preview HUD Overlay -->
+          <div id="sandbox-preview-hud" class="sandbox-hud hidden">
+            <div class="sandbox-hud-header">
+              <span class="sandbox-hud-title">⚡ WHAT-IF SANDBOX PREVIEW</span>
+              <span id="sb-hud-tag" class="pill-tag pill-pareto">PARETO CANDIDATE</span>
+            </div>
+            <div class="sandbox-hud-action">
+              <span id="sb-hud-action-name" style="font-family:'JetBrains Mono'; font-weight:900; color:var(--memphis-coral); text-transform:uppercase;">quarantine_host</span>
+              <code id="sb-hud-target" style="font-family:'JetBrains Mono'; font-weight:800; font-size:12px; background:#FFFFFF; border:1.5px solid var(--memphis-black); padding:2px 7px; border-radius:3px;">srv-jump-01</code>
+            </div>
+            <div class="sandbox-hud-stats">
+              <span class="sb-stat">Simulated Risk: <b id="sb-hud-risk" style="color:var(--memphis-coral);">38/100</b></span>
+              <span class="sb-stat">Paths Broken: <b id="sb-hud-broken">2 / 2</b></span>
+              <span class="sb-stat">Disruption: <b id="sb-hud-impact">MEDIUM (45)</b></span>
+            </div>
+            <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
+          </div>
+
           <!-- Floating Node Inspector Overlay -->
           <div id="node-inspector" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--memphis-black);">
@@ -1304,6 +1506,45 @@
           <div class="legend-item"><div class="legend-dot" style="background:#F472B6;"></div> Service</div>
           <div class="legend-item"><div class="legend-dot" style="background:#FF6B6B;"></div> DataStore (Crown Jewel)</div>
           <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></div> Quarantined</div>
+        </div>
+      </section>
+
+      <!-- Live FalkorDB OpenCypher Explorer Card -->
+      <section class="card" id="cypher-card">
+        <div class="card-header">
+          <span class="card-title">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Live FalkorDB OpenCypher Explorer
+          </span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span id="cypher-latency-pill" class="badge" style="font-size:11px; font-weight:800; background:#FFFFFF;">⚡ Ready</span>
+            <span class="badge" style="background:var(--memphis-mint); font-size:10px;">FALKORDB ENGINE</span>
+          </div>
+        </div>
+
+        <div class="cypher-chips-bar">
+          <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">1-Click Cypher:</span>
+          <button class="cypher-chip" data-query="MATCH p = (a:Alert)-[*1..4]->(d:DataStore) RETURN p">⚡ 7-Hop Attack Radius</button>
+          <button class="cypher-chip" data-query="MATCH (u:Person)-[:LOGS_INTO]->(s:Server)-[:HOSTS_CREDENTIAL]->(c) RETURN u.name, s.name, c.name LIMIT 8">🛡️ Privilege Escalation</button>
+          <button class="cypher-chip" data-query="MATCH (d:DataStore) RETURN d.name, d.criticality ORDER BY d.criticality DESC LIMIT 6">💎 Crown Jewels</button>
+          <button class="cypher-chip" data-query="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC">📊 Topology Distribution</button>
+        </div>
+
+        <div class="cypher-editor-row">
+          <div class="cypher-input-wrap">
+            <span class="cypher-prompt">CYPHER &gt;</span>
+            <input type="text" id="cypher-input" value="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC" placeholder="Enter OpenCypher query..." spellcheck="false" autocomplete="off">
+          </div>
+          <button id="run-cypher-btn" class="primary" style="padding:7px 18px; font-size:12px; font-weight:900;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Run Cypher
+          </button>
+        </div>
+
+        <div id="cypher-result-container" class="table-container" style="max-height:220px; min-height:100px; overflow-y:auto;" data-lenis-prevent>
+          <div id="cypher-empty-state" style="color:var(--text-muted); font-size:12px; padding:18px; text-align:center;">
+            Click a 1-click query chip above or type any OpenCypher query to execute in real-time against FalkorDB.
+          </div>
         </div>
       </section>
     </div>
@@ -1935,6 +2176,9 @@ async function init() {
       if (window.toggleCurrentNodeLock) window.toggleCurrentNodeLock();
     };
   }
+
+  // Initialize Live FalkorDB Cypher Console
+  initCypherConsole();
 }
 
 async function runGuidedDemo() {
@@ -2161,7 +2405,16 @@ function render(data) {
     const riskBarColor = row.residual_risk > 70 ? 'var(--memphis-coral)' : (row.residual_risk > 40 ? 'var(--memphis-orange)' : 'var(--memphis-mint)');
 
     return `
-      <tr class="${isRecommended ? 'recommended-row' : ''}">
+      <tr class="${isRecommended ? 'recommended-row' : ''}" 
+          data-action="${esc(row.action)}" 
+          data-target="${esc(row.target || '')}" 
+          data-residual="${row.residual_risk}" 
+          data-broken="${row.paths_broken}" 
+          data-total="${row.paths_before}" 
+          data-impact="${row.impact}" 
+          data-impact-label="${esc(row.impact_label)}" 
+          data-dominated="${row.dominated_by ? '1' : '0'}"
+          title="Hover or click to preview what-if simulation on graph">
         <td><b>${esc(row.action)}</b></td>
         <td><code style="color:var(--text-primary); font-size:11px; font-family:'JetBrains Mono'; background:#FFFFFF; padding:2px 6px; border-radius:3px; border:1.5px solid var(--memphis-black); font-weight:700;">${esc(row.target || '—')}</code></td>
         <td>
@@ -2191,11 +2444,284 @@ function render(data) {
     </table>
   `;
 
+  // Wire real-time Sandbox Diff preview
+  setupSandboxTableInteractions();
+
   // Re-wire dynamic buttons
   const containBtn = $('contain');
   if (containBtn) containBtn.onclick = () => act('/api/contain');
   const rollbackBtn = $('rollback');
   if (rollbackBtn) rollbackBtn.onclick = () => act('/api/rollback');
+}
+
+// ==============================================================
+// 5. WHAT-IF SANDBOX DIFF PREVIEW (PILLAR 1)
+// ==============================================================
+let activeLockedRow = null;
+
+function setupSandboxTableInteractions() {
+  const container = $('matrix-container');
+  if (!container) return;
+  const rows = container.querySelectorAll('tbody tr');
+  rows.forEach(tr => {
+    tr.addEventListener('mouseenter', () => {
+      if (activeLockedRow && activeLockedRow !== tr) return;
+      const { action, target, residual, broken, total, impact, impactLabel, dominated } = tr.dataset;
+      previewSandboxDiff({ action, target, residual, broken, total, impact, impactLabel, isDominated: dominated === '1' });
+    });
+    tr.addEventListener('mouseleave', () => {
+      if (activeLockedRow) return;
+      clearSandboxDiff();
+    });
+    tr.addEventListener('click', () => {
+      if (activeLockedRow === tr) {
+        // Unlock
+        activeLockedRow.classList.remove('previewing-active');
+        activeLockedRow = null;
+        clearSandboxDiff();
+      } else {
+        // Lock this row
+        if (activeLockedRow) activeLockedRow.classList.remove('previewing-active');
+        activeLockedRow = tr;
+        tr.classList.add('previewing-active');
+        const { action, target, residual, broken, total, impact, impactLabel, dominated } = tr.dataset;
+        previewSandboxDiff({ action, target, residual, broken, total, impact, impactLabel, isDominated: dominated === '1' });
+      }
+    });
+  });
+}
+
+function previewSandboxDiff(sim) {
+  const hud = $('sandbox-preview-hud');
+  if (hud) {
+    const actionEl = $('sb-hud-action-name');
+    if (actionEl) actionEl.textContent = sim.action;
+    const targetEl = $('sb-hud-target');
+    if (targetEl) targetEl.textContent = sim.target || 'BROAD POLICY';
+    const riskEl = $('sb-hud-risk');
+    if (riskEl) riskEl.textContent = `${sim.residual}/100`;
+    const brokenEl = $('sb-hud-broken');
+    if (brokenEl) brokenEl.textContent = `${sim.broken} / ${sim.total}`;
+    const impactEl = $('sb-hud-impact');
+    if (impactEl) impactEl.textContent = `${sim.impactLabel} (${sim.impact})`;
+    const tag = $('sb-hud-tag');
+    if (tag) {
+      tag.className = sim.isDominated ? 'pill-tag pill-dominated' : 'pill-tag pill-pareto';
+      tag.textContent = sim.isDominated ? 'DOMINATED OPTION' : 'PARETO OPTIMAL';
+    }
+    hud.classList.remove('hidden');
+  }
+
+  if (!cy) return;
+
+  // Clear previous diff classes
+  cy.elements().removeClass('sandbox-target sandbox-severed sandbox-protected sandbox-dimmed');
+
+  if (!sim.target || sim.action === 'monitor_only') {
+    // Monitor only leaves all attack paths unmitigated and Crown Jewels exposed!
+    const dataStores = cy.nodes().filter(n => n.data('kind') === 'DataStore');
+    dataStores.addClass('sandbox-target');
+    const threatenedEdges = cy.edges();
+    threatenedEdges.addClass('sandbox-severed');
+    return;
+  }
+
+  // Find target node in Cytoscape
+  const targetUpper = sim.target.toUpperCase();
+  const targetNode = cy.nodes().filter(n => {
+    const nid = (n.id() || '').toUpperCase();
+    const nname = (n.data('name') || '').toUpperCase();
+    const nlabel = (n.data('label') || '').toUpperCase();
+    return nid === targetUpper || nname === targetUpper || nlabel === targetUpper || nid.includes(targetUpper);
+  });
+
+  if (targetNode.length > 0) {
+    targetNode.addClass('sandbox-target');
+    const connectedEdges = targetNode.connectedEdges();
+    connectedEdges.addClass('sandbox-severed');
+
+    const protectedStores = cy.nodes().filter(n => n.data('kind') === 'DataStore');
+    protectedStores.addClass('sandbox-protected');
+
+    const activeSet = targetNode.union(connectedEdges).union(protectedStores);
+    cy.elements().difference(activeSet).addClass('sandbox-dimmed');
+  } else {
+    const matched = cy.nodes().filter(n => (n.id() || '').toUpperCase().includes(targetUpper));
+    if (matched.length > 0) {
+      matched.addClass('sandbox-target');
+      matched.connectedEdges().addClass('sandbox-severed');
+      cy.elements().difference(matched.union(matched.connectedEdges())).addClass('sandbox-dimmed');
+    }
+  }
+}
+
+function clearSandboxDiff() {
+  const hud = $('sandbox-preview-hud');
+  if (hud) hud.classList.add('hidden');
+  if (!cy) return;
+  cy.elements().removeClass('sandbox-target sandbox-severed sandbox-protected sandbox-dimmed');
+}
+
+// ==============================================================
+// 6. LIVE FALKORDB OPENCYPHER EXPLORER (PILLAR 2)
+// ==============================================================
+async function executeCypherQuery(queryText) {
+  const q = (queryText || '').trim();
+  if (!q) return;
+
+  const resultContainer = $('cypher-result-container');
+  const latencyPill = $('cypher-latency-pill');
+  const runBtn = $('run-cypher-btn');
+
+  if (runBtn) runBtn.disabled = true;
+  if (latencyPill) latencyPill.innerHTML = `⚡ Running...`;
+  resultContainer.innerHTML = `<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px; font-weight:700;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="32" stroke-linecap="round"/></svg> Executing OpenCypher in FalkorDB...</div>`;
+
+  try {
+    const res = await post('/api/cypher', { query: q });
+    if (latencyPill) {
+      latencyPill.innerHTML = `⚡ ${res.latency_ms}ms (${res.total_count || 0} rows)`;
+      latencyPill.style.background = res.ok ? 'var(--memphis-mint)' : 'var(--memphis-coral)';
+      latencyPill.style.color = res.ok ? '#065F46' : '#991B1B';
+    }
+
+    if (!res.ok) {
+      resultContainer.innerHTML = `
+        <div style="background:#FEE2E2; border:2px solid var(--memphis-black); border-radius:4px; padding:12px; margin:8px; font-family:'JetBrains Mono', monospace; font-size:11px; color:#991B1B;">
+          <b>FalkorDB Syntax / Execution Error:</b>
+          <div style="margin-top:6px; white-space:pre-wrap;">${esc(res.error)}</div>
+        </div>
+      `;
+      return;
+    }
+
+    if (!res.rows || res.rows.length === 0) {
+      resultContainer.innerHTML = `
+        <div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px; font-weight:700;">
+          Query returned 0 rows. (FalkorDB graph contains 145+ nodes)
+        </div>
+      `;
+      return;
+    }
+
+    // Render HTML Table for Results
+    const headerHtml = (res.headers || []).map(h => `<th>${esc(h)}</th>`).join('');
+    const rowsHtml = res.rows.map(row => {
+      const cells = row.map(cell => {
+        let display = '';
+        if (cell && typeof cell === 'object') {
+          if (cell._type === 'Node') {
+            display = `<span class="pill-tag" style="background:#EFF6FF; border:1.5px solid var(--memphis-black); color:#1D4ED8; font-weight:800;">Node:${esc((cell.labels||[]).join(':'))}</span> <b style="font-family:'JetBrains Mono';">${esc(cell.properties?.name || cell.properties?.id || JSON.stringify(cell.properties))}</b>`;
+          } else if (cell._type === 'Edge') {
+            display = `<span class="pill-tag" style="background:#FEF3C7; border:1.5px solid var(--memphis-black); color:#92400E; font-weight:800;">[${esc(cell.relation)}]</span>`;
+          } else {
+            display = `<code style="font-family:'JetBrains Mono'; font-size:10px;">${esc(JSON.stringify(cell))}</code>`;
+          }
+        } else {
+          display = esc(cell ?? '—');
+        }
+        return `<td>${display}</td>`;
+      }).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+
+    resultContainer.innerHTML = `
+      <table style="width:100%; border-collapse:collapse; font-size:11.5px;">
+        <thead><tr>${headerHtml}</tr></thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+    `;
+
+    // Highlight any returned nodes in Cytoscape!
+    if (cy && res.rows.length > 0) {
+      highlightCypherResultsInCytoscape(res.rows);
+    }
+  } catch (err) {
+    if (latencyPill) {
+      latencyPill.textContent = '⚡ Error';
+      latencyPill.style.background = 'var(--memphis-coral)';
+    }
+    resultContainer.innerHTML = `<div style="padding:14px; color:#B91C1C; font-weight:800; font-size:12px;">Request failed: ${esc(err.message)}</div>`;
+  } finally {
+    if (runBtn) runBtn.disabled = false;
+  }
+}
+
+function highlightCypherResultsInCytoscape(rows) {
+  if (!cy) return;
+  const returnedIds = new Set();
+  rows.forEach(r => {
+    r.forEach(val => {
+      if (typeof val === 'string' && val.length > 1) {
+        returnedIds.add(val.toUpperCase());
+      } else if (val && typeof val === 'object' && val.properties?.id) {
+        returnedIds.add(String(val.properties.id).toUpperCase());
+      } else if (val && typeof val === 'object' && val.properties?.name) {
+        returnedIds.add(String(val.properties.name).toUpperCase());
+      }
+    });
+  });
+
+  const matched = cy.nodes().filter(n => {
+    const id = (n.id() || '').toUpperCase();
+    const name = (n.data('name') || '').toUpperCase();
+    const label = (n.data('label') || '').toUpperCase();
+    return returnedIds.has(id) || returnedIds.has(name) || returnedIds.has(label);
+  });
+
+  if (matched.length > 0) {
+    cy.elements().removeClass('obsidian-focused obsidian-dimmed');
+    matched.addClass('obsidian-focused');
+    const connected = matched.connectedEdges();
+    connected.addClass('obsidian-focused');
+    cy.elements().difference(matched.union(connected)).addClass('obsidian-dimmed');
+    
+    // Auto-clear highlight after 4 seconds
+    setTimeout(() => {
+      cy.elements().removeClass('obsidian-focused obsidian-dimmed');
+    }, 4000);
+  }
+}
+
+function initCypherConsole() {
+  const runBtn = $('run-cypher-btn');
+  const inputEl = $('cypher-input');
+  const chips = document.querySelectorAll('.cypher-chip');
+  const toggleBtn = $('cypher-toggle-btn');
+
+  if (runBtn && inputEl) {
+    runBtn.onclick = () => executeCypherQuery(inputEl.value);
+    inputEl.onkeydown = e => {
+      if (e.key === 'Enter') {
+        executeCypherQuery(inputEl.value);
+      }
+    };
+  }
+
+  chips.forEach(chip => {
+    chip.onclick = () => {
+      const q = chip.dataset.query;
+      if (inputEl) inputEl.value = q;
+      executeCypherQuery(q);
+    };
+  });
+
+  if (toggleBtn) {
+    toggleBtn.onclick = () => {
+      const card = $('cypher-card');
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.transition = 'box-shadow 0.3s, transform 0.3s';
+        card.style.transform = 'scale(1.02)';
+        card.style.boxShadow = 'var(--shadow-offset-xl)';
+        setTimeout(() => {
+          card.style.transform = 'none';
+          card.style.boxShadow = 'var(--shadow-offset-md)';
+          if (inputEl) inputEl.focus();
+        }, 350);
+      }
+    };
+  }
 }
 
 async function act(url) {
@@ -2466,6 +2992,67 @@ async function drawGraph() {
         style: {
           'border-width': 4.5,
           'border-color': '#2563EB'
+        }
+      },
+
+      /* --- WHAT-IF SANDBOX DIFF PREVIEW STYLES --- */
+      {
+        selector: 'node.sandbox-target',
+        style: {
+          'opacity': 1,
+          'width': 52,
+          'height': 52,
+          'border-width': 5,
+          'border-color': '#0F172A',
+          'background-color': '#FF3366',
+          'color': '#FFFFFF',
+          'text-background-color': '#FF3366',
+          'text-border-color': '#0F172A',
+          'text-border-width': 2,
+          'shadow-blur': 26,
+          'shadow-color': 'rgba(255, 51, 102, 0.75)'
+        }
+      },
+      {
+        selector: 'edge.sandbox-severed',
+        style: {
+          'opacity': 1,
+          'width': 4.5,
+          'line-color': '#FF3366',
+          'line-style': 'dashed',
+          'line-dash-pattern': [8, 5],
+          'target-arrow-color': '#FF3366',
+          'text-background-color': '#FEE2E2',
+          'text-border-color': '#FF3366',
+          'text-border-width': 2,
+          'color': '#BE123C'
+        }
+      },
+      {
+        selector: 'node.sandbox-protected',
+        style: {
+          'opacity': 1,
+          'width': 52,
+          'height': 52,
+          'border-width': 5,
+          'border-color': '#0F172A',
+          'background-color': '#00E5A3',
+          'shadow-blur': 24,
+          'shadow-color': 'rgba(0, 229, 163, 0.75)'
+        }
+      },
+      {
+        selector: '.sandbox-dimmed',
+        style: {
+          'opacity': 0.16,
+          'text-opacity': 0.05
+        }
+      },
+      {
+        selector: 'edge.sandbox-dimmed',
+        style: {
+          'opacity': 0.06,
+          'text-opacity': 0
         }
       }
     ]

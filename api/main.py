@@ -1,4 +1,5 @@
 import os
+import time
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -24,6 +25,64 @@ class ActReq(BaseModel):
     investigation_id: str
     action: str = ""
     target: str | None = None
+
+
+class CypherReq(BaseModel):
+    query: str
+
+
+def _serialize_cell(val):
+    if hasattr(val, "properties") and hasattr(val, "labels"):
+        return {"_type": "Node", "labels": val.labels, "properties": val.properties}
+    if hasattr(val, "properties") and hasattr(val, "relation"):
+        return {"_type": "Edge", "relation": val.relation, "properties": val.properties}
+    if hasattr(val, "nodes") and hasattr(val, "relationships"):
+        return {"_type": "Path", "length": len(val.relationships)}
+    if isinstance(val, (int, float, str, bool)) or val is None:
+        return val
+    if isinstance(val, (list, tuple)):
+        return [_serialize_cell(x) for x in val]
+    if isinstance(val, dict):
+        return {k: _serialize_cell(v) for k, v in val.items()}
+    return str(val)
+
+
+@app.post("/api/cypher")
+def run_cypher(req: CypherReq):
+    start = time.perf_counter()
+    query_str = (req.query or "").strip()
+    if not query_str:
+        raise HTTPException(400, "Query cannot be empty")
+    try:
+        res = graph().query(query_str)
+        elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
+        headers = []
+        if hasattr(res, "header") and res.header:
+            headers = [
+                h[1] if isinstance(h, (list, tuple)) and len(h) > 1 else str(h)
+                for h in res.header
+            ]
+        elif hasattr(res, "result_set") and res.result_set:
+            headers = [f"col_{i}" for i in range(len(res.result_set[0]))]
+
+        rows = []
+        for row in (res.result_set or [])[:100]:
+            rows.append([_serialize_cell(c) for c in row])
+
+        return {
+            "ok": True,
+            "latency_ms": elapsed_ms,
+            "headers": headers,
+            "rows": rows,
+            "total_count": len(res.result_set) if res.result_set else 0,
+        }
+    except Exception as exc:
+        elapsed_ms = round((time.perf_counter() - start) * 1000, 2)
+        return {
+            "ok": False,
+            "latency_ms": elapsed_ms,
+            "error": str(exc),
+        }
 
 
 @app.get("/api/alerts")

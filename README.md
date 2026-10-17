@@ -6,21 +6,29 @@ An alert can look small while the affected identity can reach critical data thro
 
 ## Demo
 
-- Browser screenshots: [desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png) · [mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png).
+- Browser screenshots: [desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png) · [live cypher repl & sandbox diff](artifacts/screenshots/nexus-cypher-repl-sandbox-diff.png) · [mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png).
 - Video: pending recording.
 
 ## First-run walkthrough
 
 Click **Run guided demo** to investigate the preselected synthetic alert with deterministic scripted tools. This path needs no model credentials and does not change the seeded graph. The result shows the traversed graph routes, the assumptions behind the 0–100 heuristic score, the response policy, and a full-width simulation matrix of candidate actions. The score is a scenario ranking, not a probability of an attack.
 
-Containment changes the synthetic graph only after you click the approval action. NEXUS then compares the live score with the simulated residual score. **Rollback** restores the demo graph and reports whether the baseline score returned. **Reset Graph** restores all seeded demo data and clears saved investigations.
+### ⚡ 11/10 Interactive Capabilities
 
-### Desktop investigation
+1. **What-If Sandbox Diff Preview**:
+   - Hover or click any candidate action in the **Pareto Action Simulation Matrix** to instantly preview the simulated containment on the Cytoscape graph canvas.
+   - The targeted entity pulses in vivid neon coral (`.sandbox-target`), incident edges convert to dashed red severed conduits (`.sandbox-severed`), protected Crown Jewel DataStores illuminate in green (`.sandbox-protected`), and peripheral nodes are smoothly dimmed.
+   - A real-time HUD badge displays live simulation telemetry (residual risk, severed routes, business disruption score).
 
-![NEXUS desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png)
+2. **Live FalkorDB OpenCypher Explorer & REPL**:
+   - Open the **Live Cypher Console** drawer to inspect or query the running FalkorDB database in real-time.
+   - Pre-loaded with 1-click queries: *7-Hop Attack Radius*, *Privilege Escalation Paths*, *Crown Jewel Inventory*, and *Topology Distribution*.
+   - Run arbitrary OpenCypher queries with sub-millisecond FalkorDB latency reporting and automatic canvas entity spotlighting.
 
-### Mobile investigation
+### Desktop Investigation & Sandbox Diff
+![NEXUS Cypher REPL and Sandbox Diff](artifacts/screenshots/nexus-cypher-repl-sandbox-diff.png)
 
+### Mobile Responsive Layout
 ![NEXUS mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png)
 
 ## How it works
