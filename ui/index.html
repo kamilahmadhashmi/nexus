@@ -460,8 +460,8 @@
        ========================================================================== */
     .demo-guide {
       max-width: 1520px;
-      margin: 6px auto 0;
-      padding: 6px 14px;
+      margin: 4px auto 0;
+      padding: 4px 12px;
       background: var(--memphis-yellow);
       border: var(--memphis-border-thick);
       border-radius: var(--radius-md);
@@ -469,7 +469,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       position: relative;
       overflow: hidden;
     }
@@ -478,7 +478,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 10px;
+      width: 8px;
       height: 100%;
       background: repeating-linear-gradient(
         45deg,
@@ -490,36 +490,35 @@
       border-right: 2px solid var(--memphis-black);
     }
     .demo-guide-copy {
-      padding-left: 8px;
+      padding-left: 6px;
     }
     .demo-guide-title {
-      font-size: 13.5px;
+      font-size: 12.5px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
     .demo-guide-steps {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: var(--memphis-black);
-      margin-top: 2px;
+      margin-top: 1px;
     }
     .demo-guide-note {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 500;
       color: #334155;
-      margin-top: 2px;
     }
     #guided-demo {
       background: var(--memphis-coral);
       color: #FFFFFF;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
-      padding: 8px 14px;
+      padding: 6px 12px;
       box-shadow: var(--shadow-offset-xs);
       flex-shrink: 0;
     }
@@ -533,7 +532,7 @@
     main {
       max-width: 1520px;
       margin: 0 auto;
-      padding: 8px 18px 24px;
+      padding: 6px 16px 20px;
       width: 100%;
       position: relative;
       z-index: 10;
@@ -541,13 +540,13 @@
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
+      grid-template-columns: 430px minmax(0, 1fr);
       grid-template-areas:
-        "decision graph"
+        "graph graph"
         "decision matrix"
         "cypher cypher"
         "trace trace";
-      gap: 12px;
+      gap: 10px;
       align-items: stretch;
     }
     .analysis-stack { display: contents; }
@@ -556,35 +555,49 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      max-height: clamp(520px, calc(100vh - 105px), 570px);
+      height: 225px;
+      max-height: 225px;
       overflow-y: auto;
-      padding: 12px 14px;
+      padding: 10px 12px;
     }
     #decision-card #contain, #decision-card #rollback {
       width: 100%;
-      padding: 9px 12px;
-      font-size: 12px;
+      padding: 6px 10px;
+      font-size: 11px;
       justify-content: center;
-      margin-top: 5px;
-      margin-bottom: 8px;
+      margin-top: 3px;
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+    .decision-head-grid {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 4px;
       flex-shrink: 0;
     }
     .evidence-scroll-wrap {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 4px;
+      gap: 6px;
+      margin-top: 2px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
     }
     #matrix-card {
       grid-area: matrix;
       min-width: 0;
       display: flex;
       flex-direction: column;
-      padding: 10px 14px;
+      height: 225px;
+      max-height: 225px;
+      overflow-y: auto;
+      padding: 8px 12px;
     }
     #matrix-card .card-header {
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       padding-bottom: 4px;
     }
     #cypher-card { grid-area: cypher; min-width: 0; }
@@ -631,25 +644,25 @@
     .risk-instrument-row {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 8px;
       background: var(--memphis-yellow-light);
       border: var(--memphis-border-thin);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      padding: 10px 14px;
-      margin-bottom: 12px;
+      padding: 5px 8px;
+      margin-bottom: 0;
       position: relative;
       flex-shrink: 0;
     }
     .risk-gauge-container {
       position: relative;
-      width: 80px;
-      height: 80px;
+      width: 54px;
+      height: 54px;
       flex-shrink: 0;
     }
     .risk-gauge-svg {
-      width: 80px;
-      height: 80px;
+      width: 54px;
+      height: 54px;
       transform: rotate(-90deg);
     }
     .risk-gauge-bg {
@@ -679,14 +692,14 @@
     }
     .risk-score {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 24px;
+      font-size: 15px;
       font-weight: 900;
       color: var(--memphis-black);
       line-height: 1;
     }
     .risk-gauge-unit {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9.5px;
+      font-size: 7.5px;
       font-weight: 800;
       color: var(--text-muted);
     }
@@ -694,14 +707,15 @@
     .risk-meta {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
+      min-width: 0;
     }
     .risk-band-pill {
       display: inline-flex;
       align-self: flex-start;
-      padding: 3px 8px;
+      padding: 1px 5px;
       border-radius: var(--radius-sm);
-      font-size: 10px;
+      font-size: 8.5px;
       font-weight: 900;
       font-family: 'JetBrains Mono', monospace;
       border: var(--memphis-border-thin);
@@ -728,33 +742,44 @@
     .action-banner {
       background: var(--memphis-mint-light);
       border: var(--memphis-border-thin);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      padding: 10px 14px;
-      margin-bottom: 10px;
+      padding: 6px 10px;
+      margin-bottom: 0;
       flex-shrink: 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     .action-header {
-      font-size: 10.5px;
+      font-size: 9.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--memphis-black);
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
     .action-name {
-      font-size: 13.5px;
+      font-size: 12px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .action-reason {
-      font-size: 11.5px;
+      font-size: 10px;
       color: var(--text-secondary);
-      margin-top: 2px;
-      line-height: 1.35;
+      margin-top: 1px;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .evidence-panel {
@@ -1095,7 +1120,7 @@
     .graph-card {
       display: flex;
       flex-direction: column;
-      height: clamp(240px, calc(42vh - 50px), 280px);
+      height: clamp(330px, calc(52vh - 30px), 410px);
       padding: 8px 12px;
       position: relative;
       overflow: hidden;
@@ -1239,7 +1264,7 @@
       position: relative;
       flex: 1;
       width: 100%;
-      min-height: 160px;
+      min-height: 200px;
       overflow: hidden;
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
@@ -1530,14 +1555,21 @@
       .dashboard-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-          "decision"
           "graph"
+          "decision"
           "matrix"
           "cypher"
           "trace";
       }
       .graph-card {
-        height: 460px;
+        height: 420px;
+      }
+      #decision-card, #matrix-card {
+        height: auto;
+        max-height: none;
+      }
+      .decision-head-grid {
+        grid-template-columns: 1fr;
       }
       .graph-toolbar {
         flex-wrap: wrap;
@@ -2846,32 +2878,34 @@ function render(data) {
     : '';
 
   $('decision-content').innerHTML = `
-    <div class="risk-instrument-row">
-      <div class="risk-gauge-container">
-        <svg class="risk-gauge-svg" viewBox="0 0 110 110">
-          <circle class="risk-gauge-bg" cx="55" cy="55" r="44" />
-          <circle class="risk-gauge-bar ${esc(currentLabel)}" cx="55" cy="55" r="44" style="stroke-dashoffset: ${initialOffset};" />
-        </svg>
-        <div class="risk-gauge-content">
-          <div id="score-counter" class="risk-score ${esc(currentLabel)}">${currentScore}</div>
-          <div class="risk-gauge-unit">/ 100</div>
+    <div class="decision-head-grid">
+      <div class="risk-instrument-row">
+        <div class="risk-gauge-container">
+          <svg class="risk-gauge-svg" viewBox="0 0 110 110">
+            <circle class="risk-gauge-bg" cx="55" cy="55" r="44" />
+            <circle class="risk-gauge-bar ${esc(currentLabel)}" cx="55" cy="55" r="44" style="stroke-dashoffset: ${initialOffset};" />
+          </svg>
+          <div class="risk-gauge-content">
+            <div id="score-counter" class="risk-score ${esc(currentLabel)}">${currentScore}</div>
+            <div class="risk-gauge-unit">/ 100</div>
+          </div>
+        </div>
+
+        <div class="risk-meta">
+          <span class="risk-band-pill ${esc(currentLabel)}-bg">${esc(currentLabel)} RISK</span>
+          <div style="font-size:11px; font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">${ex ? `${ex.before}→${ex.after}/100` : `${data.matrix[0]?.paths_before ?? 0} Paths`}</div>
+          <div style="font-size:9.5px; font-weight:600; color:var(--text-muted);">${ex ? 'Mitigated' : 'Seeded'}</div>
         </div>
       </div>
 
-      <div class="risk-meta">
-        <span class="risk-band-pill ${esc(currentLabel)}-bg">${esc(currentLabel)} RISK</span>
-        <div style="font-size:12.5px; font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">${ex ? `Live Risk Mitigated: ${ex.before} → ${ex.after}/100` : `${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered`}</div>
-        <div style="font-size:10.5px; font-weight:600; color:var(--text-muted);">${ex ? 'Containment Applied on FalkorDB' : 'Live Seeded Topology Heuristic'}</div>
+      <div class="action-banner">
+        <div class="action-header">Recommended Response Policy</div>
+        <div class="action-name">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-success-text);"><polyline points="20 6 9 17 4 12"/></svg>
+          ${esc(actionText)}
+        </div>
+        <div class="action-reason">${esc(rec.why)}</div>
       </div>
-    </div>
-
-    <div class="action-banner">
-      <div class="action-header">Recommended Response Policy</div>
-      <div class="action-name">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-success-text);"><polyline points="20 6 9 17 4 12"/></svg>
-        ${esc(actionText)}
-      </div>
-      <div class="action-reason">${esc(rec.why)}</div>
     </div>
 
     ${actionButton}
@@ -3597,6 +3631,13 @@ async function drawGraph() {
   });
   layout.run();
 }
+
+window.addEventListener('resize', () => {
+  if (typeof cy !== 'undefined' && cy) {
+    cy.resize();
+    cy.fit(undefined, 50);
+  }
+});
 
 init().catch(err => console.error(err));
 </script>
