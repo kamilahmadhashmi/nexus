@@ -538,45 +538,193 @@
       z-index: 10;
     }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 430px minmax(0, 1fr);
-      grid-template-areas:
-        "graph graph"
-        "decision matrix"
-        "cypher cypher"
-        "trace trace";
+    /* ==========================================================================
+       COCKPIT 3-COLUMN CENTER STAGE (EXPANDABLE RAILS ARCHITECTURE)
+       ========================================================================== */
+    .cockpit-stage {
+      display: flex;
       gap: 10px;
       align-items: stretch;
+      height: clamp(500px, calc(100vh - 125px), 610px);
+      width: 100%;
+      margin-bottom: 12px;
+      position: relative;
     }
-    .analysis-stack { display: contents; }
-    #decision-card {
-      grid-area: decision;
-      min-width: 0;
+
+    /* Expandable Side Panels */
+    .expandable-panel {
+      position: relative;
+      z-index: 20;
+      flex-shrink: 0;
+      height: 100%;
       display: flex;
       flex-direction: column;
-      height: 225px;
-      max-height: 225px;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      background: var(--memphis-card-bg);
+      box-shadow: var(--shadow-offset-md);
+      transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      will-change: width;
       overflow-y: auto;
+      overflow-x: hidden;
       padding: 10px 12px;
     }
+    .expandable-panel:hover,
+    .expandable-panel:focus-within,
+    .expandable-panel.is-expanded {
+      box-shadow: var(--shadow-offset-xl);
+      z-index: 25;
+    }
+
+    /* Left Side Panel: Pareto Action Simulation Matrix */
+    #matrix-card {
+      width: 240px;
+      min-width: 240px;
+    }
+    #matrix-card:hover,
+    #matrix-card:focus-within,
+    #matrix-card.is-expanded {
+      width: 540px;
+      min-width: 540px;
+    }
+
+    /* Center Panel: Attack Path Traversal Topology (Hero Center Canvas) */
+    #graph-card {
+      flex: 1;
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 12px;
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      background: var(--memphis-card-bg);
+      box-shadow: var(--shadow-offset-md);
+      transition: box-shadow 0.2s ease;
+    }
+
+    /* Right Side Panel: Threat Analysis & Containment */
+    #decision-card {
+      width: 200px;
+      min-width: 200px;
+    }
+    #decision-card:hover,
+    #decision-card:focus-within,
+    #decision-card.is-expanded {
+      width: 450px;
+      min-width: 450px;
+    }
+
+    /* Panel Cue Strip (Visual indicator for min info & expansion) */
+    .panel-cue-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: var(--memphis-yellow-light);
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 3px 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      font-weight: 800;
+      color: var(--memphis-black);
+      margin-bottom: 6px;
+      user-select: none;
+      box-shadow: 1px 1px 0px var(--memphis-black);
+      flex-shrink: 0;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+    .panel-cue-strip .cue-dot {
+      display: inline-block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--memphis-coral);
+      border: 1px solid var(--memphis-black);
+      animation: pulse 1.5s infinite;
+    }
+    .expandable-panel:hover .panel-cue-strip,
+    .expandable-panel:focus-within .panel-cue-strip,
+    .expandable-panel.is-expanded .panel-cue-strip {
+      background: var(--memphis-mint-light);
+    }
+
+    /* Header Pin Button */
+    .panel-pin-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 2px 4px;
+      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--memphis-black);
+      font-size: 11px;
+      transition: all 0.15s ease;
+      box-shadow: none;
+    }
+    .panel-pin-btn:hover {
+      background: var(--memphis-yellow-light);
+      border-color: var(--memphis-black);
+      transform: translateY(-1px);
+    }
+    .expandable-panel.is-expanded .panel-pin-btn {
+      background: var(--memphis-yellow);
+      border-color: var(--memphis-black);
+    }
+
+    /* Responsive Head Grid for Decision Card */
+    .decision-head-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      align-items: stretch;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+      transition: grid-template-columns 0.3s ease;
+    }
+    #decision-card:hover .decision-head-grid,
+    #decision-card:focus-within .decision-head-grid,
+    #decision-card.is-expanded .decision-head-grid {
+      grid-template-columns: 135px minmax(0, 1fr);
+      gap: 8px;
+    }
+
+    /* Action Buttons in Decision Card */
     #decision-card #contain, #decision-card #rollback {
       width: 100%;
-      padding: 6px 10px;
-      font-size: 11px;
+      padding: 6px 6px;
+      font-size: 10px;
       justify-content: center;
       margin-top: 3px;
       margin-bottom: 5px;
       flex-shrink: 0;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: padding 0.25s ease, font-size 0.25s ease;
     }
-    .decision-head-grid {
-      display: grid;
-      grid-template-columns: 140px minmax(0, 1fr);
-      gap: 8px;
-      align-items: stretch;
-      margin-bottom: 4px;
-      flex-shrink: 0;
+    #decision-card:hover #contain,
+    #decision-card:hover #rollback,
+    #decision-card.is-expanded #contain,
+    #decision-card.is-expanded #rollback {
+      padding: 7px 12px;
+      font-size: 11px;
     }
+    #decision-card .btn-text-full { display: none; }
+    #decision-card .btn-text-min { display: inline; }
+    #decision-card:hover .btn-text-full,
+    #decision-card.is-expanded .btn-text-full { display: inline; }
+    #decision-card:hover .btn-text-min,
+    #decision-card.is-expanded .btn-text-min { display: none; }
+
     .evidence-scroll-wrap {
       display: flex;
       flex-direction: column;
@@ -586,23 +734,68 @@
       flex: 1;
       min-height: 0;
     }
-    #matrix-card {
-      grid-area: matrix;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      height: 225px;
-      max-height: 225px;
-      overflow-y: auto;
-      padding: 8px 12px;
-    }
+
+    /* Responsive Table Padding for Matrix Card */
     #matrix-card .card-header {
       margin-bottom: 4px;
       padding-bottom: 4px;
     }
-    #cypher-card { grid-area: cypher; min-width: 0; }
-    #trace-card { grid-area: trace; min-width: 0; }
-    #graph-card { grid-area: graph; min-width: 0; }
+    #matrix-card .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      background: #FFFFFF;
+      flex: 1;
+      min-height: 120px;
+    }
+    #matrix-card table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    #matrix-card th {
+      background: var(--memphis-black);
+      color: var(--memphis-yellow);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid var(--memphis-black);
+      white-space: nowrap;
+      padding: 4px 6px;
+      font-size: 9.5px;
+      transition: padding 0.25s ease, font-size 0.25s ease;
+    }
+    #matrix-card td {
+      border-bottom: 1.5px solid #E2E8F0;
+      color: var(--text-primary);
+      vertical-align: middle;
+      white-space: nowrap;
+      padding: 4px 6px;
+      font-size: 10px;
+      transition: padding 0.25s ease, font-size 0.25s ease;
+    }
+    #matrix-card:hover th,
+    #matrix-card:focus-within th,
+    #matrix-card.is-expanded th {
+      padding: 6px 10px;
+      font-size: 10.5px;
+    }
+    #matrix-card:hover td,
+    #matrix-card:focus-within td,
+    #matrix-card.is-expanded td {
+      padding: 5px 10px;
+      font-size: 11px;
+    }
+
+    /* Lower Section: OpenCypher & Trace Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      width: 100%;
+    }
 
     /* Neo-Brutalist Memphis Cards */
     .card {
@@ -761,7 +954,7 @@
       margin-bottom: 1px;
     }
     .action-name {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
@@ -770,6 +963,11 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: font-size 0.2s ease;
+    }
+    #decision-card:hover .action-name,
+    #decision-card.is-expanded .action-name {
+      font-size: 12.5px;
     }
     .action-reason {
       font-size: 10px;
@@ -1120,7 +1318,7 @@
     .graph-card {
       display: flex;
       flex-direction: column;
-      height: clamp(330px, calc(52vh - 30px), 410px);
+      height: 100%;
       padding: 8px 12px;
       position: relative;
       overflow: hidden;
@@ -1552,19 +1750,18 @@
        RESPONSIVE BREAKPOINTS (Mobile 390px Viewport Compliance)
        ========================================================================== */
     @media (max-width: 1080px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "graph"
-          "decision"
-          "matrix"
-          "cypher"
-          "trace";
+      .cockpit-stage {
+        flex-direction: column;
+        height: auto;
+        gap: 12px;
       }
-      .graph-card {
+      #graph-card {
         height: 420px;
+        order: -1;
       }
       #decision-card, #matrix-card {
+        width: 100% !important;
+        min-width: 0 !important;
         height: auto;
         max-height: none;
       }
@@ -1677,24 +1874,32 @@
 
 <!-- Main Investigation Workspace -->
 <main>
-  <div class="dashboard-grid">
-    <!-- Left Column: Threat Intelligence & Decision Deck -->
-    <section class="card" id="decision-card">
+  <div class="cockpit-stage">
+    <!-- Left Column: Pareto Action Simulation Matrix (Min Info -> Expands on Hover) -->
+    <section class="card expandable-panel" id="matrix-card" aria-label="Pareto Action Simulation Matrix">
       <div class="card-header">
         <span class="card-title">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Threat Analysis & Containment
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          Simulation Matrix
         </span>
-        <span id="inv-id" class="badge" style="font-size:10px;">AWAITING RUN</span>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <span style="font-size:9.5px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">SANDBOX</span>
+          <button type="button" class="panel-pin-btn" onclick="window.togglePanelPin && window.togglePanelPin('matrix-card')" title="Pin / Lock expanded matrix">📌</button>
+        </div>
       </div>
 
-      <div id="decision-content">
-        <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
+      <div class="panel-cue-strip" title="Hover over this panel to expand full simulation matrix">
+        <span style="display:flex; align-items:center; gap:5px;"><span class="cue-dot"></span> <b>MIN INFO</b></span>
+        <span class="hover-tag">HOVER TO EXPAND ⤢</span>
+      </div>
+
+      <div id="matrix-container" class="table-container" data-lenis-prevent>
+        <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
       </div>
     </section>
 
-    <!-- Right Column: Interactive Attack Graph Workspace -->
-    <section class="card graph-card" id="graph-card">
+    <!-- Center Column: Interactive Attack Graph Workspace (Hero Stage) -->
+    <section class="card graph-card" id="graph-card" aria-label="Attack Path Traversal Topology">
       <div class="graph-toolbar">
         <div class="graph-toolbar-title">
           <b>Attack Path Traversal Topology</b>
@@ -1852,20 +2057,31 @@
       </div>
     </section>
 
-    <!-- Containment Matrix Card -->
-    <section class="card" id="matrix-card">
+    <!-- Right Column: Threat Intelligence & Decision Deck (Min Info -> Expands on Hover) -->
+    <section class="card expandable-panel" id="decision-card" aria-label="Threat Analysis & Containment">
       <div class="card-header">
         <span class="card-title">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-          Pareto Action Simulation Matrix
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Threat Analysis
         </span>
-        <span style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <span id="inv-id" class="badge" style="font-size:9.5px;">AWAITING RUN</span>
+          <button type="button" class="panel-pin-btn" onclick="window.togglePanelPin && window.togglePanelPin('decision-card')" title="Pin / Lock expanded threat analysis">📌</button>
+        </div>
       </div>
 
-      <div id="matrix-container" class="table-container" data-lenis-prevent>
-        <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
+      <div class="panel-cue-strip" title="Hover over this panel to expand evidence & trade-offs">
+        <span style="display:flex; align-items:center; gap:5px;"><span class="cue-dot"></span> <b>MIN INFO</b></span>
+        <span class="hover-tag">HOVER TO EXPAND ⤢</span>
+      </div>
+
+      <div id="decision-content">
+        <p style="color:var(--text-muted); padding: 14px 0; font-size:11px; line-height:1.4;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show graph evidence, risk score, and response trade-offs before asking you to approve any change.</p>
       </div>
     </section>
+  </div>
+
+  <div class="dashboard-grid">
 
     <!-- Live FalkorDB OpenCypher Explorer Card -->
     <section class="card" id="cypher-card">
@@ -2759,14 +2975,17 @@ function render(data) {
   if (rec.action !== 'monitor_only' && !ex) {
     const btnClass = rec.requires_approval ? 'danger' : 'success';
     const label = rec.requires_approval ? 'AUTHORIZE & CONTAIN' : 'APPROVE & APPLY CONTAINMENT';
+    const minLabel = rec.requires_approval ? 'AUTHORIZE' : 'APPROVE & CONTAIN';
     actionButton = `<button id="contain" class="${btnClass}">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      ${label}
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="btn-text-full">${label}</span>
+      <span class="btn-text-min">${minLabel}</span>
     </button>`;
   } else if (ex) {
     actionButton = `<button id="rollback" class="danger">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-      ROLLBACK CONTAINMENT (RESTORE GRAPH)
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <span class="btn-text-full">ROLLBACK CONTAINMENT (RESTORE GRAPH)</span>
+      <span class="btn-text-min">ROLLBACK</span>
     </button>`;
   }
 
@@ -3632,10 +3851,42 @@ async function drawGraph() {
   layout.run();
 }
 
+window.togglePanelPin = function(panelId) {
+  const panel = document.getElementById(panelId);
+  if (panel) {
+    panel.classList.toggle('is-expanded');
+    if (typeof cy !== 'undefined' && cy) {
+      setTimeout(() => {
+        cy.resize();
+        cy.fit(undefined, 35);
+      }, 360);
+    }
+  }
+};
+
+if (typeof window !== 'undefined' && window.ResizeObserver) {
+  let cyFitTimer = null;
+  const cyObserver = new ResizeObserver(() => {
+    if (typeof cy !== 'undefined' && cy) {
+      cy.resize();
+      if (cyFitTimer) cancelAnimationFrame(cyFitTimer);
+      cyFitTimer = requestAnimationFrame(() => {
+        if (typeof cy !== 'undefined' && cy) {
+          cy.fit(undefined, 35);
+        }
+      });
+    }
+  });
+  const cyEl = document.getElementById('cy');
+  if (cyEl) cyObserver.observe(cyEl);
+  const graphCardEl = document.getElementById('graph-card');
+  if (graphCardEl) cyObserver.observe(graphCardEl);
+}
+
 window.addEventListener('resize', () => {
   if (typeof cy !== 'undefined' && cy) {
     cy.resize();
-    cy.fit(undefined, 50);
+    cy.fit(undefined, 40);
   }
 });
 
