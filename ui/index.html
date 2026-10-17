@@ -6,11 +6,11 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXUS — Ethereal Intelligence & Cyber Defense Cockpit</title>
+  <title>NEXUS — 1980s Memphis Design Cyber Intelligence Cockpit</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- 1. Cytoscape Graph Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
@@ -23,71 +23,72 @@
 
   <style>
     /* ==========================================================================
-       ETHEREAL DESIGN SYSTEM TOKENS
-       Synthesizing: Auroral (GPU Transforms), CSS Mesh (Organic Blended Blobs),
-       Glassmorphism Theme (Measured Tiers & Specular Edges), Gradient Backdrops
+       MEMPHIS MILANO DESIGN SYSTEM TOKENS (1980s Bold Geometric Neo-Brutalism)
+       Pattern.css (Pure CSS Grids & Stripes), Open Props (Hard Offset Shadows),
+       GSAP Spring Curves, Chunky Geometric Cytoscape Graph Topology
        ========================================================================== */
     :root {
       color-scheme: light;
 
-      /* Atmospheric Foundation: Warm Pearl & Soft Ivory */
-      --ethereal-pearl-base: #FAF9F6;
-      --ethereal-ivory: #F5F3EF;
-      --ethereal-mist-grey: #ECEEF2;
-      --ethereal-canvas-grid: rgba(148, 163, 184, 0.22);
+      /* Foundations: Warm Canvas & Solid Black Ink */
+      --memphis-canvas: #FFFDF7;
+      --memphis-canvas-dot: #CBD5E1;
+      --memphis-card-bg: #FFFFFF;
+      --memphis-black: #0F172A;
+      --memphis-border: 3px solid #0F172A;
+      --memphis-border-thick: 4px solid #0F172A;
+      --memphis-border-thin: 2px solid #0F172A;
 
-      /* Ethereal Tints */
-      --ethereal-glacier: #E0F2FE;      /* Pale glacier sky */
-      --ethereal-lavender: #EDE9FE;     /* Muted ethereal violet */
-      --ethereal-sage: #E6F4EA;         /* Soft celestial mist-green */
-      --ethereal-rose: #FFE4E6;         /* Delicate threat tint */
-      --ethereal-amber: #FEF3C7;        /* Soft warning champagne */
+      /* Hard Neo-Brutalist & Memphis Drop Shadows */
+      --shadow-offset-xs: 2px 2px 0px #0F172A;
+      --shadow-offset: 4px 4px 0px #0F172A;
+      --shadow-offset-md: 5px 5px 0px #0F172A;
+      --shadow-offset-lg: 7px 7px 0px #0F172A;
+      --shadow-offset-active: 1px 1px 0px #0F172A;
 
-      /* Translucency Tiers (RampStack Glassmorphism Architecture) */
-      --glass-surface-tier-1: rgba(255, 255, 255, 0.80);   /* Primary cards with backdrop blur */
-      --glass-surface-tier-2: rgba(255, 255, 255, 0.92);   /* Elevated modals, floating inspector */
-      --glass-surface-tier-3: rgba(248, 250, 252, 0.68);   /* Inset evidence panels & drawers */
-      --glass-blur: 20px;
+      /* Saturated 1980s Memphis Palette */
+      --memphis-yellow: #FFE033;       /* Bright Lemon Yellow */
+      --memphis-yellow-light: #FEF9C3;
+      --memphis-coral: #FF6B6B;        /* Radical Coral / Red */
+      --memphis-coral-light: #FFE4E6;
+      --memphis-blue: #2563EB;         /* Electric Cobalt Blue */
+      --memphis-blue-light: #DBEAFE;
+      --memphis-mint: #10B981;         /* Fresh Emerald Mint */
+      --memphis-mint-light: #D1FAE5;
+      --memphis-pink: #FF5C8A;         /* Bubblegum Pink */
+      --memphis-pink-light: #FCE7F3;
+      --memphis-lilac: #A78BFA;        /* Electric Lilac / Violet */
+      --memphis-lilac-light: #EDE9FE;
+      --memphis-orange: #FB923C;       /* Radiant Tangerine */
+      --memphis-teal: #06B6D4;         /* Turquoise Accent */
 
-      /* Specular Edge Highlights */
-      --glass-border-specular: rgba(255, 255, 255, 0.95); /* Top & left light catch */
-      --glass-border-subtle: rgba(226, 232, 240, 0.75);   /* Clean boundary */
-      --glass-border-inner: rgba(255, 255, 255, 0.6);
-
-      /* Typography: Deep Navy & Ethereal Slate */
-      --text-primary: #0F172A;          /* Slate-12: Deep navy headings */
-      --text-secondary: #334155;        /* Slate-11: High-readability body */
-      --text-muted: #64748B;            /* Slate-9: Metadata, captions */
-      --text-ethereal: #94A3B8;         /* Slate-7: Delicate timestamps */
+      /* Typography */
+      --text-primary: #0F172A;          /* Deep Slate Black */
+      --text-secondary: #334155;        /* Graphic Charcoal */
+      --text-muted: #64748B;            /* Slate-9 */
+      --text-ethereal: #94A3B8;         /* Subdued label text */
+      --text-white: #FFFFFF;
 
       /* Semantic Security Statuses */
-      --status-critical-text: #DC2626;  /* Muted ruby */
-      --status-critical-bg: #FEF2F2;
-      --status-critical-border: #FECACA;
-      --status-critical-halo: rgba(220, 38, 38, 0.18);
+      --status-critical-text: #E11D48;
+      --status-critical-bg: #FFE4E6;
+      --status-critical-border: #0F172A;
 
-      --status-warning-text: #D97706;   /* Amber */
-      --status-warning-bg: #FFFBEB;
-      --status-warning-border: #FDE68A;
+      --status-warning-text: #D97706;
+      --status-warning-bg: #FEF3C7;
+      --status-warning-border: #0F172A;
 
-      --status-success-text: #15803D;   /* Forest green */
-      --status-success-bg: #F0FDF4;
-      --status-success-border: #BBF7D0;
+      --status-success-text: #059669;
+      --status-success-bg: #D1FAE5;
+      --status-success-border: #0F172A;
 
       --status-accent-teal: #0D9488;
-      --status-accent-teal-subtle: #F0FDFA;
 
-      /* Ethereal Diffuse Shadows (Open Props Layered Light Shadows) */
-      --shadow-ethereal-sm: 0 1px 3px rgba(148, 163, 184, 0.08);
-      --shadow-ethereal-card: 0 4px 20px rgba(148, 163, 184, 0.09), 0 1px 3px rgba(148, 163, 184, 0.05);
-      --shadow-ethereal-hover: 0 8px 30px rgba(148, 163, 184, 0.14), 0 2px 6px rgba(148, 163, 184, 0.06);
-      --shadow-ethereal-dropdown: 0 14px 40px rgba(148, 163, 184, 0.18);
-
-      /* Border Radii */
-      --radius-xs: 4px;
-      --radius-sm: 6px;
-      --radius-md: 9px;
+      /* Radii: Bold Graphic Geometry */
+      --radius-sm: 4px;
+      --radius-md: 8px;
       --radius-lg: 12px;
+      --radius-pill: 9999px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -96,108 +97,16 @@
       overflow-x: hidden;
       max-width: 100vw;
       width: 100%;
-      background-color: var(--ethereal-pearl-base);
-      color: var(--text-secondary);
+      background-color: var(--memphis-canvas);
+      background-image: radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+      color: var(--text-primary);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.5;
       font-size: 13.5px;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* ==========================================================================
-       LIVING ETHEREAL AURORA & MESH GRADIENT BACKDROP (Auroral & CSS Mesh)
-       Zero layout repaints; pure GPU composited translate3d & scale transforms
-       ========================================================================== */
-    .ethereal-backdrop {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 0;
-      background: linear-gradient(135deg, #FAF9F6 0%, #F5F3EF 50%, #FAF8F5 100%);
-    }
-    .ethereal-diffuser {
-      position: absolute;
-      inset: 0;
-      backdrop-filter: blur(80px);
-      -webkit-backdrop-filter: blur(80px);
-      z-index: 1;
-    }
-    .ethereal-orb {
-      position: absolute;
-      border-radius: 50%;
-      will-change: transform;
-      opacity: 0.65;
-      mix-blend-mode: multiply;
-    }
-    .orb-glacier {
-      width: 65vw;
-      height: 65vw;
-      background: radial-gradient(circle, rgba(186, 230, 253, 0.7) 0%, rgba(186, 230, 253, 0) 70%);
-      top: -15%;
-      left: -10%;
-      animation: etherealFloat1 28s ease-in-out infinite alternate;
-    }
-    .orb-lavender {
-      width: 58vw;
-      height: 58vw;
-      background: radial-gradient(circle, rgba(233, 213, 255, 0.6) 0%, rgba(233, 213, 255, 0) 70%);
-      top: 15%;
-      right: -10%;
-      animation: etherealFloat2 34s ease-in-out infinite alternate;
-    }
-    .orb-sage {
-      width: 55vw;
-      height: 55vw;
-      background: radial-gradient(circle, rgba(209, 250, 229, 0.65) 0%, rgba(209, 250, 229, 0) 70%);
-      bottom: -15%;
-      left: 15%;
-      animation: etherealFloat3 30s ease-in-out infinite alternate;
-    }
-    .orb-pearl {
-      width: 48vw;
-      height: 48vw;
-      background: radial-gradient(circle, rgba(254, 243, 199, 0.5) 0%, rgba(254, 243, 199, 0) 70%);
-      bottom: 10%;
-      right: 15%;
-      animation: etherealFloat4 26s ease-in-out infinite alternate;
-    }
-
-    @keyframes etherealFloat1 {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(80px, 60px, 0) scale(1.08); }
-      100% { transform: translate3d(-40px, 90px, 0) scale(0.95); }
-    }
-    @keyframes etherealFloat2 {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(-90px, 70px, 0) scale(1.1); }
-      100% { transform: translate3d(50px, 100px, 0) scale(0.92); }
-    }
-    @keyframes etherealFloat3 {
-      0% { transform: translate3d(0, 0, 0) scale(0.95); }
-      50% { transform: translate3d(70px, -80px, 0) scale(1.08); }
-      100% { transform: translate3d(-60px, -40px, 0) scale(1); }
-    }
-    @keyframes etherealFloat4 {
-      0% { transform: translate3d(0, 0, 0) scale(1.05); }
-      50% { transform: translate3d(-70px, -60px, 0) scale(0.95); }
-      100% { transform: translate3d(40px, -90px, 0) scale(1.1); }
-    }
-
-    /* Subtle architectural micro-grid on top of atmosphere */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: radial-gradient(var(--ethereal-canvas-grid) 1px, transparent 1px);
-      background-size: 24px 24px;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.75;
     }
 
     /* Lenis Smooth Scroll Rules */
@@ -212,23 +121,108 @@
     }
 
     /* ==========================================================================
-       TOP NAVIGATION & ETHEREAL MISSION CONTROLS
+       MEMPHIS GEOMETRIC BACKGROUND MOTIFS & FLOATING SHAPES
+       ========================================================================== */
+    .memphis-backdrop {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .memphis-shape {
+      position: absolute;
+      opacity: 0.85;
+      will-change: transform;
+    }
+    .shape-triangle {
+      width: 0;
+      height: 0;
+      border-left: 22px solid transparent;
+      border-right: 22px solid transparent;
+      border-bottom: 38px solid var(--memphis-yellow);
+      filter: drop-shadow(3px 3px 0px var(--memphis-black));
+      top: 12%;
+      right: 3%;
+      transform: rotate(24deg);
+      animation: floatRotate 18s ease-in-out infinite alternate;
+    }
+    .shape-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--memphis-pink);
+      border: var(--memphis-border-thin);
+      box-shadow: var(--shadow-offset);
+      bottom: 14%;
+      left: 2%;
+      animation: floatBob 14s ease-in-out infinite alternate;
+    }
+    .shape-squiggle {
+      top: 48%;
+      right: 2%;
+      animation: floatBob 20s ease-in-out infinite alternate-reverse;
+    }
+    .shape-plus {
+      position: absolute;
+      bottom: 22%;
+      right: 5%;
+      font-family: 'Inter', sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--memphis-coral);
+      text-shadow: 3px 3px 0px var(--memphis-black);
+      transform: rotate(15deg);
+      animation: floatRotate 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatRotate {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-24px) rotate(35deg); }
+    }
+    @keyframes floatBob {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(28px) rotate(-15deg); }
+    }
+
+    /* Decorative Top Stripe Ribbon */
+    .memphis-top-ribbon {
+      height: 8px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--memphis-black) 0,
+        var(--memphis-black) 14px,
+        var(--memphis-yellow) 14px,
+        var(--memphis-yellow) 28px,
+        var(--memphis-coral) 28px,
+        var(--memphis-coral) 42px,
+        var(--memphis-blue) 42px,
+        var(--memphis-blue) 56px
+      );
+      border-bottom: 2.5px solid var(--memphis-black);
+      position: sticky;
+      top: 0;
+      z-index: 70;
+    }
+
+    /* ==========================================================================
+       TOP NAVIGATION & COCKPIT HEADER
        ========================================================================== */
     header {
       position: sticky;
-      top: 0;
+      top: 8px;
       z-index: 60;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      padding: 12px 28px;
+      background: #FFFFFF;
+      border-bottom: var(--memphis-border-thick);
+      padding: 12px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      box-shadow: var(--shadow-ethereal-sm);
+      box-shadow: 0 4px 0px rgba(15, 23, 42, 0.08);
     }
 
     .brand {
@@ -238,49 +232,62 @@
       text-decoration: none;
     }
     .brand-logo {
-      width: 34px;
-      height: 34px;
+      width: 40px;
+      height: 40px;
       border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      background: var(--memphis-yellow);
+      border: var(--memphis-border-thin);
+      box-shadow: var(--shadow-offset-xs);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 16px;
-      color: #FFFFFF;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--memphis-black);
+      transform: rotate(-3deg);
+      transition: transform 0.15s ease;
+    }
+    .brand:hover .brand-logo {
+      transform: rotate(4deg) scale(1.05);
+    }
+    .brand-text {
+      display: flex;
+      flex-direction: column;
     }
     .brand-text b {
-      font-size: 17px;
-      letter-spacing: 0.5px;
-      font-weight: 800;
-      color: var(--text-primary);
-      display: block;
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+      color: var(--memphis-black);
       line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .brand-text span {
-      display: block;
-      font-size: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
     }
 
-    /* Live Telemetry Ticker */
     .telemetry-ticker {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--memphis-black);
+      background: var(--memphis-yellow-light);
+      padding: 5px 12px;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
     }
     .telemetry-time {
-      color: var(--text-secondary);
-      font-weight: 600;
+      font-weight: 800;
+      color: var(--memphis-blue);
     }
 
     .header-controls {
@@ -290,222 +297,218 @@
       flex-wrap: wrap;
     }
 
-    /* Refined Frosted-Glass Badges */
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 5px 10px;
+      border-radius: var(--radius-sm);
       font-size: 11px;
+      font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--glass-border-subtle);
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: var(--text-secondary);
-      font-weight: 500;
-      user-select: none;
-      transition: all 0.15s ease;
-      box-shadow: var(--shadow-ethereal-sm);
+      border: var(--memphis-border-thin);
+      box-shadow: var(--shadow-offset-xs);
+      white-space: nowrap;
+      text-transform: uppercase;
     }
-    .badge.pulse::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--status-success-text);
-      box-shadow: 0 0 6px rgba(21, 128, 61, 0.5);
+    .badge.pulse {
+      background: var(--memphis-mint-light);
+      color: var(--memphis-black);
     }
     .badge.synth {
-      border-color: rgba(233, 213, 255, 0.6);
-      background: rgba(237, 233, 254, 0.5);
-      color: #6B21A8;
+      background: var(--memphis-lilac-light);
+      color: var(--memphis-black);
     }
     #mode-badge {
-      border-color: rgba(186, 230, 253, 0.8);
-      background: rgba(224, 242, 254, 0.65);
-      color: #0369A1;
-      font-weight: 600;
+      background: var(--memphis-yellow);
+      color: var(--memphis-black);
     }
 
-    /* Form Selects & Inputs */
+    /* Form Controls & Buttons */
     select {
+      background: #FFFFFF;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      color: var(--memphis-black);
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 500;
-      border-radius: var(--radius-sm);
-      padding: 6px 12px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: var(--text-primary);
-      border: 1px solid var(--glass-border-subtle);
+      font-weight: 700;
+      padding: 6px 10px;
       cursor: pointer;
       outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: var(--shadow-ethereal-sm);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
-    select:hover, select:focus {
-      border-color: var(--text-muted);
-      box-shadow: 0 0 0 2px rgba(224, 242, 254, 0.5);
+    select:focus {
+      border-color: var(--memphis-blue);
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-offset);
     }
-    
+
     .checkbox-label {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-secondary);
+      font-weight: 800;
+      color: var(--memphis-black);
       cursor: pointer;
       user-select: none;
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 5px 9px;
+      background: #FFFFFF;
+      padding: 5px 8px;
+      border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
-      border: 1px solid var(--glass-border-subtle);
-      transition: border-color 0.15s;
-      box-shadow: var(--shadow-ethereal-sm);
-    }
-    .checkbox-label:hover {
-      border-color: rgba(203, 213, 225, 0.9);
+      box-shadow: var(--shadow-offset-xs);
     }
     .checkbox-label input {
-      accent-color: var(--status-accent-teal);
+      accent-color: var(--memphis-black);
       cursor: pointer;
       width: 14px;
       height: 14px;
     }
 
-    /* Refined Buttons with Specular Edge Bevels */
     button {
-      font-family: inherit;
-      font-weight: 600;
-      font-size: 12.5px;
-      border-radius: var(--radius-sm);
-      padding: 7px 14px;
-      border: 1px solid transparent;
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      user-select: none;
-      position: relative;
+      border: var(--memphis-border);
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 14px;
+      cursor: pointer;
       outline: none;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      box-shadow: var(--shadow-offset);
+      transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.1s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    button:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--shadow-offset-lg);
     }
     button:active:not(:disabled) {
-      transform: translateY(1px);
+      transform: translate(2px, 2px);
+      box-shadow: var(--shadow-offset-active);
     }
     button:disabled {
-      opacity: 0.5;
+      opacity: 0.55;
       cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none !important;
+      box-shadow: var(--shadow-offset-xs);
     }
 
     button.primary {
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      background: var(--memphis-blue);
       color: #FFFFFF;
-      border: 1px solid rgba(15, 23, 42, 0.9);
-      border-top: 1px solid rgba(255, 255, 255, 0.35);
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
     }
     button.primary:hover:not(:disabled) {
-      background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
-      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.22);
+      background: #1D4ED8;
     }
 
     button.secondary {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: var(--text-secondary);
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      box-shadow: var(--shadow-ethereal-sm);
+      background: #FFFFFF;
+      color: var(--memphis-black);
+      border: var(--memphis-border-thin);
+      box-shadow: var(--shadow-offset-xs);
     }
     button.secondary:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.98);
-      color: var(--text-primary);
-      border-color: rgba(203, 213, 225, 0.9);
-      box-shadow: var(--shadow-ethereal-card);
+      background: var(--memphis-yellow-light);
     }
     button.secondary.active {
-      border-color: var(--status-accent-teal) !important;
-      color: #0F766E !important;
-      background: rgba(240, 253, 250, 0.9) !important;
+      background: var(--memphis-yellow);
+      color: var(--memphis-black);
     }
 
     button.danger {
-      background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+      background: var(--memphis-coral);
       color: #FFFFFF;
-      border: 1px solid #DC2626;
-      border-top: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
     }
     button.danger:hover:not(:disabled) {
-      background: linear-gradient(135deg, #B91C1C 0%, #991B1B 100%);
+      background: #E11D48;
     }
 
     button.success {
-      background: linear-gradient(135deg, #15803D 0%, #166534 100%);
+      background: var(--memphis-mint);
       color: #FFFFFF;
-      border: 1px solid #15803D;
-      border-top: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 2px 8px rgba(21, 128, 61, 0.2);
     }
     button.success:hover:not(:disabled) {
-      background: linear-gradient(135deg, #166534 0%, #14532D 100%);
-    }
-
-    /* Guided Demo Ethereal Callout Banner */
-    .demo-guide {
-      max-width: 1520px;
-      width: calc(100% - 40px);
-      margin: 18px auto 0;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      border-radius: var(--radius-md);
-      background: var(--glass-surface-tier-1);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      border-left: 4px solid var(--status-accent-teal);
-      box-shadow: var(--shadow-ethereal-card);
-      position: relative;
-      z-index: 10;
-    }
-    .demo-guide-copy { min-width: 0; }
-    .demo-guide-title {
-      color: var(--text-primary);
-      font-weight: 700;
-      font-size: 13.5px;
-      letter-spacing: 0.2px;
-      margin-bottom: 3px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .demo-guide-steps {
-      color: var(--text-secondary);
-      font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .demo-guide-note {
-      color: var(--text-muted);
-      font-size: 11px;
-      margin-top: 3px;
+      background: #059669;
     }
 
     /* ==========================================================================
-       MAIN COCKPIT LAYOUT GEOMETRY
+       GUIDED DEMO CALLOUT BANNER
+       ========================================================================== */
+    .demo-guide {
+      max-width: 1520px;
+      margin: 18px auto 0;
+      padding: 16px 24px;
+      background: var(--memphis-yellow);
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-offset-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-guide::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 12px;
+      height: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--memphis-black),
+        var(--memphis-black) 8px,
+        var(--memphis-yellow) 8px,
+        var(--memphis-yellow) 16px
+      );
+      border-right: 2px solid var(--memphis-black);
+    }
+    .demo-guide-copy {
+      padding-left: 10px;
+    }
+    .demo-guide-title {
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--memphis-black);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .demo-guide-steps {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--memphis-black);
+      margin-top: 3px;
+    }
+    .demo-guide-note {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #334155;
+      margin-top: 3px;
+    }
+    #guided-demo {
+      background: var(--memphis-coral);
+      color: #FFFFFF;
+      font-size: 13px;
+      padding: 10px 18px;
+      box-shadow: var(--shadow-offset-md);
+    }
+    #guided-demo:hover:not(:disabled) {
+      background: #E11D48;
+    }
+
+    /* ==========================================================================
+       DASHBOARD GRID & CARDS
        ========================================================================== */
     main {
       max-width: 1520px;
@@ -523,7 +526,7 @@
         "decision graph"
         "matrix matrix"
         "trace trace";
-      gap: 20px;
+      gap: 22px;
       align-items: start;
     }
     .analysis-stack { display: contents; }
@@ -532,368 +535,324 @@
     #trace-card { grid-area: trace; min-width: 0; }
     #graph-card { grid-area: graph; min-width: 0; }
 
-    /* Frosted-Glass Cards with Specular Edge Highlights */
+    /* Neo-Brutalist Memphis Cards */
     .card {
-      background: var(--glass-surface-tier-1);
-      backdrop-filter: blur(var(--glass-blur));
-      -webkit-backdrop-filter: blur(var(--glass-blur));
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      border-left: 1px solid var(--glass-border-specular);
-      border-radius: var(--radius-lg);
+      background: var(--memphis-card-bg);
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
       padding: 22px;
       position: relative;
-      box-shadow: var(--shadow-ethereal-card);
-      transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+      box-shadow: var(--shadow-offset-md);
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .card:hover {
-      box-shadow: var(--shadow-ethereal-hover);
-      border-color: rgba(203, 213, 225, 0.9);
+      transform: translate(-1px, -1px);
+      box-shadow: var(--shadow-offset-lg);
     }
 
     .card-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 18px;
-      gap: 12px;
-      position: relative;
-      z-index: 3;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--memphis-black);
     }
     .card-title {
       font-size: 14.5px;
-      font-weight: 700;
-      letter-spacing: -0.1px;
-      color: var(--text-primary);
+      font-weight: 900;
+      color: var(--memphis-black);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 8px;
     }
-    .card-title svg {
-      color: var(--status-accent-teal);
-    }
 
     /* ==========================================================================
-       ETHEREAL THREAT DECISION DECK & CIRCULAR RISK GAUGE
+       THREAT ANALYSIS & RADIAL GAUGE
        ========================================================================== */
     .risk-instrument-row {
       display: flex;
       align-items: center;
-      gap: 18px;
-      margin: 12px 0 18px;
-      padding: 16px;
-      background: var(--glass-surface-tier-3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
+      gap: 20px;
+      background: var(--memphis-yellow-light);
+      border: var(--memphis-border-thin);
       border-radius: var(--radius-md);
-      box-shadow: var(--shadow-ethereal-sm);
+      box-shadow: var(--shadow-offset-xs);
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      position: relative;
     }
-    
     .risk-gauge-container {
       position: relative;
-      width: 110px;
-      height: 110px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 96px;
+      height: 96px;
       flex-shrink: 0;
     }
     .risk-gauge-svg {
-      width: 100%;
-      height: 100%;
+      width: 96px;
+      height: 96px;
       transform: rotate(-90deg);
     }
     .risk-gauge-bg {
       fill: none;
-      stroke: rgba(226, 232, 240, 0.8);
-      stroke-width: 8;
+      stroke: #E2E8F0;
+      stroke-width: 10px;
     }
     .risk-gauge-bar {
       fill: none;
-      stroke-width: 8;
+      stroke-width: 10px;
       stroke-linecap: round;
-      stroke-dasharray: 276.46; /* 2 * PI * 44 */
-      stroke-dashoffset: 55;
-      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s;
+      stroke-dasharray: 276.46;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease;
     }
-    .risk-gauge-bar.CRITICAL { stroke: var(--status-critical-text); filter: drop-shadow(0 0 4px rgba(220, 38, 38, 0.25)); }
-    .risk-gauge-bar.HIGH { stroke: var(--status-warning-text); filter: drop-shadow(0 0 4px rgba(217, 119, 6, 0.25)); }
-    .risk-gauge-bar.MEDIUM { stroke: #CA8A04; }
-    .risk-gauge-bar.LOW { stroke: var(--status-success-text); filter: drop-shadow(0 0 4px rgba(21, 128, 61, 0.25)); }
+    .risk-gauge-bar.CRITICAL { stroke: var(--memphis-coral); }
+    .risk-gauge-bar.HIGH { stroke: var(--memphis-orange); }
+    .risk-gauge-bar.MEDIUM { stroke: var(--memphis-yellow); }
+    .risk-gauge-bar.LOW { stroke: var(--memphis-mint); }
 
     .risk-gauge-content {
       position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
     .risk-score {
-      font-size: 42px;
-      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--memphis-black);
       line-height: 1;
-      font-family: 'JetBrains Mono', monospace;
-      letter-spacing: -1.5px;
-      color: var(--text-primary);
     }
-    .CRITICAL { color: var(--status-critical-text); }
-    .HIGH { color: var(--status-warning-text); }
-    .MEDIUM { color: #CA8A04; }
-    .LOW { color: var(--status-success-text); }
-
     .risk-gauge-unit {
-      font-size: 10px;
-      color: var(--text-muted);
       font-family: 'JetBrains Mono', monospace;
-      font-weight: 600;
-      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
     }
 
     .risk-meta {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .risk-band-pill {
-      font-family: 'JetBrains Mono', monospace;
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
       font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: var(--radius-xs);
+      font-weight: 900;
+      font-family: 'JetBrains Mono', monospace;
+      border: var(--memphis-border-thin);
+      box-shadow: var(--shadow-offset-xs);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      width: fit-content;
-      box-shadow: var(--shadow-ethereal-sm);
     }
-    .CRITICAL-bg { background: var(--status-critical-bg); color: var(--status-critical-text); border: 1px solid var(--status-critical-border); }
-    .HIGH-bg { background: var(--status-warning-bg); color: var(--status-warning-text); border: 1px solid var(--status-warning-border); }
-    .LOW-bg { background: var(--status-success-bg); color: var(--status-success-text); border: 1px solid var(--status-success-border); }
+    .CRITICAL-bg {
+      background: var(--memphis-coral);
+      color: #FFFFFF;
+    }
+    .HIGH-bg {
+      background: var(--memphis-orange);
+      color: #FFFFFF;
+    }
+    .MEDIUM-bg {
+      background: var(--memphis-yellow);
+      color: var(--memphis-black);
+    }
+    .LOW-bg {
+      background: var(--memphis-mint);
+      color: #FFFFFF;
+    }
 
-    /* Recommended Action Callout */
     .action-banner {
-      background: var(--glass-surface-tier-3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      border-left: 4px solid var(--status-success-text);
+      background: var(--memphis-mint-light);
+      border: var(--memphis-border-thin);
       border-radius: var(--radius-md);
+      box-shadow: var(--shadow-offset-xs);
       padding: 16px 18px;
-      margin: 16px 0;
-      box-shadow: var(--shadow-ethereal-sm);
+      margin-bottom: 16px;
     }
     .action-header {
       font-size: 11px;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+      color: var(--memphis-black);
       margin-bottom: 4px;
     }
     .action-name {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--memphis-black);
       display: flex;
       align-items: center;
       gap: 8px;
-      letter-spacing: -0.2px;
     }
     .action-reason {
-      font-size: 12.5px;
+      font-size: 12px;
       color: var(--text-secondary);
-      margin-top: 6px;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .evidence-panel {
+      background: var(--memphis-lilac-light);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-offset-xs);
+      padding: 14px 18px;
+      margin-top: 14px;
+    }
+    .evidence-panel h4 {
+      font-size: 12.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--memphis-black);
+      margin-bottom: 6px;
+    }
+    .evidence-panel p {
+      font-size: 12px;
+      color: var(--text-secondary);
       line-height: 1.5;
+    }
+    .evidence-panel details {
+      margin-top: 10px;
+      background: #FFFFFF;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      box-shadow: var(--shadow-offset-xs);
+    }
+    .evidence-panel summary {
+      font-weight: 800;
+      font-size: 12px;
+      color: var(--memphis-black);
+      cursor: pointer;
+    }
+    .evidence-panel ul {
+      margin: 8px 0 0 18px;
+      font-size: 11.5px;
+    }
+    .evidence-panel li {
+      margin-bottom: 4px;
     }
 
     .mutation-alert {
-      background: var(--status-warning-bg);
-      border: 1px solid var(--status-warning-border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      font-size: 12px;
-      color: var(--status-warning-text);
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin: 12px 0;
-      box-shadow: var(--shadow-ethereal-sm);
+      gap: 12px;
+      background: var(--memphis-coral-light);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-offset-xs);
+      padding: 12px 16px;
+      margin-top: 14px;
+      color: var(--memphis-black);
+      font-size: 12px;
+      font-weight: 700;
     }
 
-    .evidence-panel, .action-notice {
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      border-radius: var(--radius-sm);
-      background: var(--glass-surface-tier-3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 14px 16px;
-      margin-top: 12px;
-      box-shadow: var(--shadow-ethereal-sm);
+    .action-notice {
+      background: var(--memphis-mint-light);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-offset-xs);
+      padding: 12px 16px;
+      margin-top: 14px;
+      color: var(--memphis-black);
+      font-size: 12px;
+      font-weight: 800;
     }
-    .evidence-panel h4 { font-size: 12px; color: var(--text-primary); margin-bottom: 6px; font-weight: 700; }
-    .evidence-panel p, .evidence-panel li { color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
-    .evidence-panel ul { padding-left: 18px; margin-top: 6px; }
-    .evidence-panel li + li { margin-top: 4px; }
-    .evidence-panel code { color: var(--text-primary); overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: rgba(255, 255, 255, 0.9); border: 1px solid var(--glass-border-subtle); padding: 2px 5px; border-radius: 4px; }
-    
-    .action-notice { color: var(--status-success-text); border-color: var(--status-success-border); background: var(--status-success-bg); font-weight: 600; font-size: 12.5px; }
-    .action-notice.mismatch { color: var(--status-warning-text); border-color: var(--status-warning-border); background: var(--status-warning-bg); }
+    .action-notice.mismatch {
+      background: var(--memphis-coral-light);
+    }
 
     /* ==========================================================================
-       CONTAINMENT SIMULATION MATRIX (TREMOR DATA TABLE)
+       PARETO SIMULATION MATRIX TABLE
        ========================================================================== */
     .table-container {
+      width: 100%;
       overflow-x: auto;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: var(--shadow-ethereal-sm);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      background: #FFFFFF;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 12.5px;
       text-align: left;
+      font-size: 12px;
     }
     th {
-      background: rgba(248, 250, 252, 0.8);
-      color: var(--text-muted);
-      font-weight: 700;
+      background: var(--memphis-black);
+      color: var(--memphis-yellow);
+      font-weight: 900;
       text-transform: uppercase;
-      font-size: 10px;
-      letter-spacing: 0.8px;
-      padding: 11px 16px;
-      border-bottom: 1px solid var(--glass-border-subtle);
-      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+      padding: 12px 14px;
+      border-bottom: 2px solid var(--memphis-black);
+      white-space: nowrap;
     }
     td {
-      padding: 11px 16px;
-      border-bottom: 1px solid rgba(241, 245, 249, 0.8);
-      color: var(--text-secondary);
+      padding: 11px 14px;
+      border-bottom: 1.5px solid #E2E8F0;
+      color: var(--text-primary);
+      vertical-align: middle;
     }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(248, 250, 252, 0.9); }
-    tr.recommended-row td {
-      background: rgba(240, 253, 244, 0.7);
-      font-weight: 600;
+    tr:last-child td {
+      border-bottom: none;
     }
-    tr.recommended-row td:first-child {
-      border-left: 3px solid var(--status-success-text);
-    }
-
-    .pill-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 999px;
+    tr.recommended-row {
+      background: var(--memphis-yellow-light) !important;
       font-weight: 700;
-      letter-spacing: 0.4px;
-      display: inline-block;
-      box-shadow: var(--shadow-ethereal-sm);
     }
-    .pill-pareto {
-      background: var(--status-success-bg);
-      color: var(--status-success-text);
-      border: 1px solid var(--status-success-border);
-    }
-    .pill-dominated {
-      color: var(--text-muted);
-      background: rgba(241, 245, 249, 0.8);
-      border: 1px solid var(--glass-border-subtle);
+    tr.recommended-row td {
+      border-bottom: 2px solid var(--memphis-black);
     }
 
     .mini-risk-bar {
-      width: 55px;
-      height: 4px;
-      background: rgba(226, 232, 240, 0.8);
+      width: 65px;
+      height: 7px;
+      background: #E2E8F0;
+      border: 1px solid var(--memphis-black);
       border-radius: 2px;
       overflow: hidden;
       margin-top: 3px;
     }
     .mini-risk-fill {
       height: 100%;
-      border-radius: 2px;
+      transition: width 0.3s ease;
     }
 
-    /* ==========================================================================
-       ATTACK GRAPH WORKSPACE (CELESTIAL SUSPENDED GRAPH)
-       ========================================================================== */
-    .graph-card {
-      display: flex;
-      flex-direction: column;
-      height: 640px;
-      padding: 0;
-      overflow: hidden;
-    }
-    .graph-toolbar {
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      display: flex;
+    .pill-tag {
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      z-index: 10;
-    }
-    #forces-toggle-btn.active {
-      border-color: var(--status-accent-teal) !important;
-      color: #0F766E !important;
-      background: rgba(240, 253, 250, 0.9) !important;
-    }
-    #cy {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(248, 250, 252, 0.65);
-      background-image: radial-gradient(var(--ethereal-canvas-grid) 1px, transparent 1px);
-      background-size: 24px 24px;
-      position: relative;
-      cursor: grab;
-    }
-    #cy:active {
-      cursor: grabbing;
-    }
-
-    /* Graph Legend */
-    .graph-legend {
-      padding: 10px 18px;
-      border-top: 1px solid var(--glass-border-subtle);
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      font-size: 11px;
-      color: var(--text-muted);
+      gap: 4px;
+      padding: 3px 8px;
+      font-size: 10.5px;
+      font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
-      z-index: 5;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--memphis-black);
+      box-shadow: 2px 2px 0px var(--memphis-black);
+      text-transform: uppercase;
     }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .pill-pareto {
+      background: var(--memphis-mint);
+      color: #FFFFFF;
     }
-    .legend-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 2px;
+    .pill-dominated {
+      background: #E2E8F0;
+      color: var(--memphis-black);
     }
 
     /* ==========================================================================
-       FORENSIC EXECUTION TRACE LOG
+       INVESTIGATION TRACE LIST
        ========================================================================== */
     .trace-list {
       display: flex;
@@ -902,195 +861,211 @@
       max-height: 280px;
       overflow-y: auto;
       padding-right: 4px;
-      position: relative;
-      z-index: 3;
     }
     .trace-item {
-      background: var(--glass-surface-tier-3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid var(--glass-border-subtle);
-      border-top: 1px solid var(--glass-border-specular);
-      border-left: 3px solid var(--status-accent-teal);
+      background: #FFFFFF;
+      border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
       padding: 10px 14px;
-      font-size: 12px;
-      transition: background 0.15s;
-      box-shadow: var(--shadow-ethereal-sm);
-    }
-    .trace-item:hover {
-      background: rgba(255, 255, 255, 0.95);
-      border-color: rgba(203, 213, 225, 0.9);
     }
     .trace-meta {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 4px;
-      font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--memphis-black);
+      margin-bottom: 4px;
     }
     .trace-tool {
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    .trace-time {
-      color: var(--text-muted);
+      color: var(--memphis-blue);
     }
     .trace-summary {
+      font-size: 12px;
       color: var(--text-secondary);
       line-height: 1.4;
     }
+    .trace-item details {
+      margin-top: 8px;
+      background: var(--memphis-yellow-light);
+      border: 1.5px solid var(--memphis-black);
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 11px;
+    }
+    .trace-item pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+      margin-top: 6px;
+      color: var(--memphis-black);
+    }
 
-    /* Sliders in Forces Drawer */
+    /* ==========================================================================
+       CYTOSCAPE GRAPH CONTAINER & CONTROLS
+       ========================================================================== */
+    .graph-card {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      padding: 18px;
+    }
+    .graph-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 3px solid var(--memphis-black);
+      flex-wrap: wrap;
+    }
+
+    #forces-drawer {
+      background: var(--memphis-yellow-light);
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      font-size: 11px;
+    }
+
+    /* Tactile Memphis Sliders */
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      background: rgba(203, 213, 225, 0.8);
-      height: 4px;
-      border-radius: 2px;
+      width: 100%;
+      height: 8px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: 4px;
       outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
+      background: var(--memphis-yellow);
+      border: 2px solid var(--memphis-black);
       border-radius: 50%;
-      background: var(--status-accent-teal);
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(13, 148, 136, 0.4);
-      transition: transform 0.1s ease;
-    }
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
+      box-shadow: 2px 2px 0px var(--memphis-black);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
+      background: var(--memphis-yellow);
+      border: 2px solid var(--memphis-black);
       border-radius: 50%;
-      background: var(--status-accent-teal);
-      border: none;
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(13, 148, 136, 0.4);
+      box-shadow: 2px 2px 0px var(--memphis-black);
     }
 
-    details { margin-top: 6px; }
-    summary {
-      cursor: pointer;
-      font-size: 11px;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-      user-select: none;
-      transition: color 0.15s;
-    }
-    summary:hover { color: var(--text-primary); }
-    pre {
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid var(--glass-border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--text-primary);
-      white-space: pre-wrap;
-      overflow-x: auto;
-      margin-top: 6px;
-      line-height: 1.45;
+    /* Floating Node Inspector */
+    #node-inspector {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 280px;
+      background: #FFFFFF;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      z-index: 25;
+      box-shadow: var(--shadow-offset-lg);
     }
 
-    /* Subtle clean scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(203, 213, 225, 0.8); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+    /* Semantic Graph Legend */
+    .graph-legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      margin-top: 12px;
+      border-top: 2.5px solid var(--memphis-black);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1.5px solid var(--memphis-black);
+    }
 
     /* ==========================================================================
-       RESPONSIVE ADAPTATIONS
+       RESPONSIVE BREAKPOINTS (Mobile 390px Viewport Compliance)
        ========================================================================== */
     @media (max-width: 1080px) {
       .dashboard-grid {
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-areas: "decision" "graph" "matrix" "trace";
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "decision"
+          "graph"
+          "matrix"
+          "trace";
+      }
+      .graph-card {
+        height: 520px;
       }
     }
+
     @media (max-width: 768px) {
       header {
-        padding: 10px 14px;
         flex-direction: column;
         align-items: flex-start;
+        gap: 12px;
+        padding: 12px 16px;
       }
-      .telemetry-ticker { display: none; }
       .header-controls {
         width: 100%;
         justify-content: flex-start;
       }
-      main {
-        padding: 12px 10px 30px;
-        max-width: 100%;
-      }
-      .card {
-        padding: 16px;
-        max-width: 100%;
-      }
-      .graph-toolbar {
-        padding: 10px 12px;
-      }
-      .graph-toolbar > div {
-        width: 100%;
-      }
-      #physics-status {
-        font-size: 10px !important;
-        flex-wrap: wrap;
-        word-break: break-word;
-      }
-      #node-inspector {
-        max-width: calc(100% - 20px);
-        right: 10px;
-        top: 10px;
-      }
       .demo-guide {
-        width: calc(100% - 20px);
-        margin-top: 12px;
-        padding: 12px;
-        align-items: stretch;
         flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin: 12px 14px 0;
       }
-      .demo-guide button { justify-content: center; }
-    }
-
-    /* Reduced Motion Safety */
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-      .ethereal-orb {
-        animation: none !important;
+      main {
+        padding: 14px 14px 32px;
       }
     }
   </style>
 </head>
 <body>
 
-<!-- Living Ethereal Aurora & Mesh Gradient Backdrop (Auroral & CSS Mesh) -->
-<div class="ethereal-backdrop" aria-hidden="true">
-  <div class="ethereal-orb orb-glacier"></div>
-  <div class="ethereal-orb orb-lavender"></div>
-  <div class="ethereal-orb orb-sage"></div>
-  <div class="ethereal-orb orb-pearl"></div>
-  <div class="ethereal-diffuser"></div>
+<!-- Memphis Decorative Background Motifs -->
+<div class="memphis-backdrop" aria-hidden="true">
+  <div class="memphis-shape shape-triangle"></div>
+  <div class="memphis-shape shape-circle"></div>
+  <div class="memphis-shape shape-plus">+</div>
+  <svg class="memphis-shape shape-squiggle" width="100" height="24" viewBox="0 0 100 24" fill="none">
+    <path d="M2 12 Q 14 0, 26 12 T 50 12 T 74 12 T 98 12" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>
+  </svg>
 </div>
 
-<!-- Top Navigation & Ethereal Mission Controls Header -->
+<!-- Decorative Memphis Top Ribbon -->
+<div class="memphis-top-ribbon"></div>
+
+<!-- Top Navigation & Cockpit Mission Controls Header -->
 <header>
-  <div style="display:flex; align-items:center; gap:20px;">
+  <div style="display:flex; align-items:center; gap:16px;">
     <a href="#" class="brand">
       <div class="brand-logo">N</div>
       <div class="brand-text">
         <b>NEXUS</b>
-        <span>Ethereal Intelligence & Cyber Defense</span>
+        <span>Memphis Cyber Intelligence</span>
       </div>
     </a>
     <div class="telemetry-ticker">
@@ -1121,7 +1096,7 @@
     </button>
 
     <button id="reset" class="secondary" title="Restore pristine synthetic graph and drop mutated nodes">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       Reset Graph
     </button>
   </div>
@@ -1131,7 +1106,7 @@
 <aside class="demo-guide" aria-label="Guided demo instructions">
   <div class="demo-guide-copy">
     <div class="demo-guide-title">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-accent-teal);"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
       Start here · guided synthetic demo
     </div>
     <div class="demo-guide-steps">1. Trace an alert to critical data · 2. Compare simulated responses · 3. Approve containment, verify the result, then roll it back</div>
@@ -1150,7 +1125,7 @@
       <section class="card" id="decision-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Threat Analysis & Containment
           </span>
           <span id="inv-id" class="badge" style="font-size:10px;">AWAITING RUN</span>
@@ -1165,10 +1140,10 @@
       <section class="card" id="matrix-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
             Pareto Action Simulation Matrix
           </span>
-          <span style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
+          <span style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
         </div>
 
         <div id="matrix-container" class="table-container" data-lenis-prevent>
@@ -1180,10 +1155,10 @@
       <section class="card" id="trace-card">
         <div class="card-header">
           <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             Investigation Execution Trace
           </span>
-          <span id="trace-step-count" style="font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono';">0 steps</span>
+          <span id="trace-step-count" style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">0 steps</span>
         </div>
 
         <div id="trace" class="trace-list" data-lenis-prevent>
@@ -1198,73 +1173,73 @@
       <section class="card graph-card">
         <div class="graph-toolbar">
           <div>
-            <div style="font-size:13.5px; font-weight:700; color:var(--text-primary); letter-spacing:-0.1px;">Attack Path Traversal Topology</div>
-            <div id="physics-status" style="font-size:11px; color:var(--text-secondary); font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
-              <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-success-text); box-shadow:0 0 6px rgba(21, 128, 61, 0.4);"></span>
+            <div style="font-size:14px; font-weight:900; color:var(--text-primary); letter-spacing:-0.2px;">Attack Path Traversal Topology</div>
+            <div id="physics-status" style="font-size:11px; font-weight:800; color:var(--text-secondary); font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span>
               Obsidian Force-Directed Physics Active · Drag nodes to deform network
             </div>
           </div>
           <div style="display:flex; gap:6px; flex-wrap:wrap;">
             <button id="physics-pause-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Pause or Resume Live Force-Directed Physics">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
               <span id="pause-btn-text">Pause</span>
             </button>
             <button id="relayout-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Re-run Initial CoSE Global Convergence Layout">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
               Re-layout
             </button>
             <button id="path-spotlight-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Highlight Attack Path to Crown Jewel">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
               Attack Path
             </button>
             <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Adjust Obsidian Physics Simulation Parameters">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               Forces
             </button>
             <button id="fit-btn" class="secondary" style="font-size:11px; padding:5px 10px;" disabled>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               Fit View
             </button>
           </div>
         </div>
 
         <!-- Force Controls Drawer -->
-        <div id="forces-drawer" data-lenis-prevent style="display:none; background:var(--glass-surface-tier-3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--glass-border-subtle); padding:14px 20px; font-size:11px;">
+        <div id="forces-drawer" data-lenis-prevent style="display:none;">
           <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; align-items:center;">
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Repulsion</span>
-                <span id="repel-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">9500</span>
+                <span id="repel-label" style="font-family:'JetBrains Mono';">9500</span>
               </div>
-              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500" style="width:100%;">
+              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Link Distance</span>
-                <span id="link-dist-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">130</span>
+                <span id="link-dist-label" style="font-family:'JetBrains Mono';">130</span>
               </div>
-              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130" style="width:100%;">
+              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Spring Force</span>
-                <span id="spring-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.045</span>
+                <span id="spring-label" style="font-family:'JetBrains Mono';">0.045</span>
               </div>
-              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045" style="width:100%;">
+              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Gravity</span>
-                <span id="grav-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.0012</span>
+                <span id="grav-label" style="font-family:'JetBrains Mono';">0.0012</span>
               </div>
-              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012" style="width:100%;">
+              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012">
             </div>
             <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Damping</span>
-                <span id="damp-label" style="color:var(--text-primary); font-family:'JetBrains Mono';">0.89</span>
+                <span id="damp-label" style="font-family:'JetBrains Mono';">0.89</span>
               </div>
-              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89" style="width:100%;">
+              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89">
             </div>
             <div style="display:flex; gap:6px; justify-content:flex-end;">
               <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:10px;">Reset Defaults</button>
@@ -1273,62 +1248,62 @@
         </div>
 
         <!-- Canvas Container with Floating Inspector and Zoom Controls -->
-        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden;" data-lenis-prevent>
+        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:#FFFFFF;" data-lenis-prevent>
           <div id="cy" style="width:100%; height:100%;"></div>
 
           <!-- Floating Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none; position:absolute; top:16px; right:16px; width:280px; background:var(--glass-surface-tier-2); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid var(--glass-border-subtle); border-top:1px solid var(--glass-border-specular); border-radius:var(--radius-md); padding:14px 16px; z-index:15; box-shadow:var(--shadow-ethereal-dropdown);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div id="node-inspector" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--memphis-black);">
               <div style="display:flex; align-items:center; gap:7px;">
-                <span id="inspect-dot" style="display:inline-block; width:9px; height:9px; border-radius:2px; background:var(--status-accent-teal);"></span>
-                <span id="inspect-title" style="font-weight:700; font-size:13px; color:var(--text-primary);">Entity Inspector</span>
+                <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span>
+                <span id="inspect-title" style="font-weight:900; font-size:13px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
               </div>
-              <button id="inspect-close" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px 4px; font-size:13px;">✕</button>
+              <button id="inspect-close" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:14px; font-weight:900; box-shadow:none;">✕</button>
             </div>
             <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
-                <span style="color:var(--text-muted);">Node ID</span>
-                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--text-primary); font-weight:600;">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
+                <span style="font-weight:700; color:var(--text-muted);">Node ID</span>
+                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
-                <span style="color:var(--text-muted);">Entity Kind</span>
-                <span id="inspect-kind" style="color:var(--text-primary); font-weight:600;">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
+                <span style="font-weight:700; color:var(--text-muted);">Entity Kind</span>
+                <span id="inspect-kind" style="color:var(--memphis-black); font-weight:800;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
-                <span style="color:var(--text-muted);">Status</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
+                <span style="font-weight:700; color:var(--text-muted);">Status</span>
                 <span id="inspect-status" class="pill-tag">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(226, 232, 240, 0.7); padding-bottom:4px;">
-                <span style="color:var(--text-muted);">Connections</span>
-                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--text-primary);">-</span>
+              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
+                <span style="font-weight:700; color:var(--text-muted);">Connections</span>
+                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
               </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
-                <span style="color:var(--text-muted);">Position Lock</span>
-                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 8px;">Pin Node</button>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                <span style="font-weight:700; color:var(--text-muted);">Position Lock</span>
+                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:4px 8px;">Pin Node</button>
               </div>
             </div>
           </div>
 
           <!-- Floating Canvas Zoom Controls -->
-          <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:10;">
-            <button id="zoom-in-btn" class="secondary" style="width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom In">+</button>
-            <button id="zoom-out-btn" class="secondary" style="width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:15px;" title="Zoom Out">−</button>
-            <button id="fit-canvas-btn" class="secondary" style="width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:15;">
+            <button id="zoom-in-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom In">+</button>
+            <button id="zoom-out-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom Out">−</button>
+            <button id="fit-canvas-btn" class="secondary" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
           </div>
         </div>
 
-        <!-- Ethereal Semantic Node Legend -->
+        <!-- Memphis Semantic Node Legend -->
         <div class="graph-legend">
-          <span style="font-weight:700; color:var(--text-primary); margin-right:4px;">Entities:</span>
-          <div class="legend-item"><div class="legend-dot" style="background:#8B5CF6;"></div> Person</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#0284C7;"></div> Device</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#16A34A;"></div> Server</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#D97706;"></div> ServiceAccount</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#7C3AED;"></div> Service</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#DC2626;"></div> DataStore (Crown Jewel)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#FEF2F2; border:1px dashed #DC2626;"></div> Quarantined</div>
+          <span style="font-weight:900; color:var(--text-primary); text-transform:uppercase; margin-right:4px;">Entities:</span>
+          <div class="legend-item"><div class="legend-dot" style="background:#A78BFA;"></div> Person</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#38BDF8;"></div> Device</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#34D399;"></div> Server</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FDE047;"></div> ServiceAccount</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#F472B6;"></div> Service</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FF6B6B;"></div> DataStore (Crown Jewel)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></div> Quarantined</div>
         </div>
       </section>
     </div>
@@ -1395,7 +1370,7 @@ function animateScoreCounter(el, targetScore, duration = 0.6) {
     gsap.to(obj, {
       val: targetScore,
       duration: duration,
-      ease: 'power2.out',
+      ease: 'back.out(1.5)',
       onUpdate: () => {
         el.textContent = Math.round(obj.val);
         const gaugeBar = document.querySelector('.risk-gauge-bar');
@@ -1447,7 +1422,7 @@ const initialLayout = {
 };
 
 // ==============================================================
-// 3. CONTINUOUS FORCE-DIRECTED CELESTIAL PHYSICS ENGINE
+// 3. CONTINUOUS FORCE-DIRECTED PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
   repulsion: 9500,
@@ -1476,8 +1451,8 @@ window.togglePhysicsPause = function() {
   if (pauseText) pauseText.textContent = isPhysicsPaused ? 'Resume' : 'Pause';
   if ($('physics-status')) {
     $('physics-status').innerHTML = isPhysicsPaused
-      ? `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-warning-text);"></span> Physics Paused · Static View`
-      : `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--status-success-text); box-shadow:0 0 6px rgba(21, 128, 61, 0.4);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
+      ? `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-coral); border:1.5px solid var(--memphis-black);"></span> Physics Paused · Static View`
+      : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
   }
 };
 
@@ -1560,14 +1535,14 @@ window.inspectNode = function(node) {
   const bad = node.data('bad');
   const degree = node.connectedEdges().length;
   const colorMap = {
-    Person: '#8B5CF6',
-    Device: '#0284C7',
-    Server: '#16A34A',
-    ServiceAccount: '#D97706',
-    Service: '#7C3AED',
-    DataStore: '#DC2626'
+    Person: '#A78BFA',
+    Device: '#38BDF8',
+    Server: '#34D399',
+    ServiceAccount: '#FDE047',
+    Service: '#F472B6',
+    DataStore: '#FF6B6B'
   };
-  $('inspect-dot').style.background = colorMap[kind] || '#0D9488';
+  $('inspect-dot').style.background = colorMap[kind] || '#FFE033';
   $('inspect-title').textContent = name;
   $('inspect-id').textContent = node.id();
   $('inspect-kind').textContent = kind || 'Entity';
@@ -1652,165 +1627,152 @@ function initObsidianPhysics(cyInstance) {
       p.vx = 0;
       p.vy = 0;
       lastGrabPos = { ...e.target.position() };
-      p.x = lastGrabPos.x;
-      p.y = lastGrabPos.y;
+      dragVel = { vx: 0, vy: 0 };
     }
   });
 
   cyInstance.on('drag', 'node', e => {
-    const target = e.target;
-    const p = nodeMap.get(target.id());
+    const p = nodeMap.get(e.target.id());
     if (p) {
-      const cur = target.position();
+      const currentPos = e.target.position();
+      p.x = currentPos.x;
+      p.y = currentPos.y;
       if (lastGrabPos) {
-        dragVel.vx = cur.x - lastGrabPos.x;
-        dragVel.vy = cur.y - lastGrabPos.y;
+        dragVel.vx = (currentPos.x - lastGrabPos.x) * 0.7;
+        dragVel.vy = (currentPos.y - lastGrabPos.y) * 0.7;
+        lastGrabPos = { ...currentPos };
       }
-      lastGrabPos = { ...cur };
-      p.x = cur.x;
-      p.y = cur.y;
     }
   });
 
   cyInstance.on('free', 'node', e => {
-    const target = e.target;
-    const p = nodeMap.get(target.id());
+    const p = nodeMap.get(e.target.id());
     if (p) {
       p.isGrabbed = false;
+      const currentPos = e.target.position();
+      p.x = currentPos.x;
+      p.y = currentPos.y;
       if (!p.isLocked) {
-        p.vx = dragVel.vx * 1.3;
-        p.vy = dragVel.vy * 1.3;
+        p.vx = Math.max(-25, Math.min(25, dragVel.vx));
+        p.vy = Math.max(-25, Math.min(25, dragVel.vy));
       }
+      lastGrabPos = null;
     }
-    lastGrabPos = null;
   });
 
-  // 60 FPS Continuous Celestial Force-Directed Simulation Loop
-  let time = 0;
-  const nodes = Array.from(nodeMap.values());
-  const numNodes = nodes.length;
-  const numEdges = edgesList.length;
+  const nodesArray = Array.from(nodeMap.values());
+  const numNodes = nodesArray.length;
+  let lastTimestamp = performance.now();
 
-  function stepPhysics() {
-    time += 0.032;
+  function stepPhysics(now) {
+    if (cy !== cyInstance) return;
+
+    const dt = Math.min((now - lastTimestamp) / 1000, 0.033) || 0.016;
+    lastTimestamp = now;
 
     if (!isPhysicsPaused) {
-      // 1. Center of Mass
-      let sumX = 0, sumY = 0;
+      let cx = 0;
+      let cySum = 0;
       for (let i = 0; i < numNodes; i++) {
-        sumX += nodes[i].x;
-        sumY += nodes[i].y;
-        nodes[i].fx = 0;
-        nodes[i].fy = 0;
+        cx += nodesArray[i].x;
+        cySum += nodesArray[i].y;
+        nodesArray[i].fx = 0;
+        nodesArray[i].fy = 0;
       }
-      const cx = numNodes > 0 ? sumX / numNodes : 0;
-      const cy = numNodes > 0 ? sumY / numNodes : 0;
+      cx /= Math.max(numNodes, 1);
+      cySum /= Math.max(numNodes, 1);
 
-      // 2. Gravitational Centering + Coulomb Pairwise Repulsion
+      // Node Repulsion & Collision Prevention
       for (let i = 0; i < numNodes; i++) {
-        const pA = nodes[i];
-        pA.fx += (cx - pA.x) * obsidianParams.gravity * pA.mass;
-        pA.fy += (cy - pA.y) * obsidianParams.gravity * pA.mass;
-
+        const p1 = nodesArray[i];
         for (let j = i + 1; j < numNodes; j++) {
-          const pB = nodes[j];
-          let dx = pB.x - pA.x;
-          let dy = pB.y - pA.y;
-          let distSq = dx * dx + dy * dy;
-          if (distSq < 1) {
-            dx = (Math.random() - 0.5);
-            dy = (Math.random() - 0.5);
-            distSq = 1;
-          }
-          const dist = Math.sqrt(distSq);
-          const effDist = Math.max(dist, 36);
-          const repForce = obsidianParams.repulsion / (effDist * effDist);
-          const nx = dx / dist;
-          const ny = dy / dist;
+          const p2 = nodesArray[j];
+          const dx = p2.x - p1.x;
+          const dy = p2.y - p1.y;
+          const distSq = dx * dx + dy * dy;
+          const dist = Math.sqrt(distSq) || 0.001;
 
-          pA.fx -= nx * repForce;
-          pA.fy -= ny * repForce;
-          pB.fx += nx * repForce;
-          pB.fy += ny * repForce;
-
-          const minSpacing = obsidianParams.collisionRadius;
-          if (dist < minSpacing) {
-            const overlap = (minSpacing - dist) * 0.45;
-            if (!pA.isGrabbed && !pA.isLocked && !pB.isGrabbed && !pB.isLocked) {
-              pA.x -= nx * overlap * 0.5;
-              pA.y -= ny * overlap * 0.5;
-              pB.x += nx * overlap * 0.5;
-              pB.y += ny * overlap * 0.5;
-            }
+          const repulse = obsidianParams.repulsion / (distSq + 1200);
+          let colX = 0, colY = 0;
+          if (dist < obsidianParams.collisionRadius) {
+            const overlap = obsidianParams.collisionRadius - dist;
+            const colPush = overlap * 0.55;
+            colX = (dx / dist) * colPush;
+            colY = (dy / dist) * colPush;
           }
+
+          const fx = (dx / dist) * repulse + colX;
+          const fy = (dy / dist) * repulse + colY;
+
+          p1.fx -= fx;
+          p1.fy -= fy;
+          p2.fx += fx;
+          p2.fy += fy;
         }
+
+        // Gentle central gravity
+        p1.fx -= (p1.x - cx) * obsidianParams.gravity * p1.mass;
+        p1.fy -= (p1.y - cySum) * obsidianParams.gravity * p1.mass;
+
+        // Subtle ambient organic drift
+        const t = now * 0.001 + p1.phase;
+        p1.fx += Math.sin(t) * 0.08;
+        p1.fy += Math.cos(t * 0.8) * 0.08;
       }
 
-      // 3. Hooke's Law Elastic Spring Force along Edges
-      for (let k = 0; k < numEdges; k++) {
-        const e = edgesList[k];
-        const pA = nodeMap.get(e.sourceId);
-        const pB = nodeMap.get(e.targetId);
-        if (!pA || !pB) continue;
+      // Edge Hooke's Elastic Spring Forces
+      for (let k = 0; k < edgesList.length; k++) {
+        const edge = edgesList[k];
+        const p1 = nodeMap.get(edge.sourceId);
+        const p2 = nodeMap.get(edge.targetId);
+        if (!p1 || !p2) continue;
 
-        const dx = pB.x - pA.x;
-        const dy = pB.y - pA.y;
-        const dist = Math.hypot(dx, dy) || 1;
+        const dx = p2.x - p1.x;
+        const dy = p2.y - p1.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
         const delta = dist - obsidianParams.linkDistance;
         const springForce = delta * obsidianParams.springK;
-        const nx = dx / dist;
-        const ny = dy / dist;
 
-        pA.fx += nx * springForce;
-        pA.fy += ny * springForce;
-        pB.fx -= nx * springForce;
-        pB.fy -= ny * springForce;
+        const fx = (dx / dist) * springForce;
+        const fy = (dy / dist) * springForce;
+
+        p1.fx += fx;
+        p1.fy += fy;
+        p2.fx -= fx;
+        p2.fy -= fy;
       }
 
-      // 4. Velocity integration with damping & subtle organic ambiance
+      // Euler-Verlet Integration Step
       for (let i = 0; i < numNodes; i++) {
-        const p = nodes[i];
-        if (p.isGrabbed || p.isLocked) continue;
-
-        p.vx = (p.vx + (p.fx / p.mass)) * obsidianParams.damping;
-        p.vy = (p.vy + (p.fy / p.mass)) * obsidianParams.damping;
-
-        const speed = Math.hypot(p.vx, p.vy);
-        if (speed > 22) {
-          p.vx = (p.vx / speed) * 22;
-          p.vy = (p.vy / speed) * 22;
+        const p = nodesArray[i];
+        if (p.isGrabbed || p.isLocked) {
+          p.vx = 0;
+          p.vy = 0;
+          continue;
         }
 
-        const driftX = Math.sin(time * 1.8 + p.phase) * 0.22;
-        const driftY = Math.cos(time * 1.5 + p.phase) * 0.22;
+        p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * obsidianParams.damping;
+        p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * obsidianParams.damping;
 
-        p.x += p.vx + driftX;
-        p.y += p.vy + driftY;
+        p.vx = Math.max(-30, Math.min(30, p.vx));
+        p.vy = Math.max(-30, Math.min(30, p.vy));
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.node.position({ x: p.x, y: p.y });
       }
-
-      // 5. Batch render updated node positions in Cytoscape
-      cyInstance.batch(() => {
-        for (let i = 0; i < numNodes; i++) {
-          const p = nodes[i];
-          if (!p.isGrabbed && !p.isLocked) {
-            p.node.position({ x: p.x, y: p.y });
-          }
-        }
-      });
     }
 
     jiggleLoopId = requestAnimationFrame(stepPhysics);
   }
 
-  // Initial gentle dispersion
-  for (let i = 0; i < numNodes; i++) {
-    nodes[i].vx = (Math.random() - 0.5) * 6;
-    nodes[i].vy = (Math.random() - 0.5) * 6;
-  }
-
   jiggleLoopId = requestAnimationFrame(stepPhysics);
 }
 
+// ==============================================================
+// 4. API DISPATCH & DEMO RUNNER
+// ==============================================================
 async function post(url, body) {
   const response = await fetch(url, {
     method: 'POST',
@@ -2070,22 +2032,22 @@ function render(data) {
     </button>`;
   } else if (ex) {
     actionButton = `<button id="rollback" class="danger" style="width:100%; padding:12px; font-size:13.5px; justify-content:center; margin-top:16px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       ROLLBACK CONTAINMENT (RESTORE GRAPH)
     </button>`;
   }
 
   const mutationWarning = ex 
     ? `<div class="mutation-alert">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div><b>Containment is active on the synthetic graph:</b> ${esc(ex.action)} ${esc(ex.target || '')}. The change can be reversed with Rollback.</div>
       </div>`
     : '';
 
   const postRiskInfo = ex 
-    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--status-success-bg); border:1px solid var(--status-success-border); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; box-shadow:var(--shadow-ethereal-sm);">
-        <span style="font-size:12px; color:var(--status-success-text); font-weight:600;">Live risk after containment:</span>
-        <span style="font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:800; color:var(--status-success-text);">${ex.before} → ${ex.after} / 100</span>
+    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--memphis-mint-light); border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; box-shadow:var(--shadow-offset-xs);">
+        <span style="font-size:12px; color:var(--memphis-black); font-weight:800;">Live risk after containment:</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:900; color:var(--status-success-text);">${ex.before} → ${ex.after} / 100</span>
       </div>`
     : '';
 
@@ -2114,8 +2076,8 @@ function render(data) {
 
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(ini.label)}-bg">${esc(ini.label)} RISK</span>
-        <div style="font-size:13px; font-weight:700; color:var(--text-primary); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</div>
-        <div style="font-size:11px; color:var(--text-muted);">Live Seeded Topology Heuristic</div>
+        <div style="font-size:13px; font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</div>
+        <div style="font-size:11px; font-weight:600; color:var(--text-muted);">Live Seeded Topology Heuristic</div>
       </div>
     </div>
 
@@ -2146,9 +2108,9 @@ function render(data) {
     </div>
     ${actionButton}
 
-    <details style="margin-top:14px;">
-      <summary>View Deterministic Risk Formula Proof</summary>
-      <pre style="margin-top:8px;">${esc(JSON.stringify(ini, null, 2))}</pre>
+    <details style="margin-top:14px; background:#FFFFFF; border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:10px 14px; box-shadow:var(--shadow-offset-xs);">
+      <summary style="font-weight:800; font-size:11.5px; cursor:pointer;">View Deterministic Risk Formula Proof</summary>
+      <pre style="margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:11px; white-space:pre-wrap; overflow-x:auto;">${esc(JSON.stringify(ini, null, 2))}</pre>
     </details>
   `;
 
@@ -2164,18 +2126,18 @@ function render(data) {
       ? `<span class="pill-tag pill-dominated">dominated by ${esc(row.dominated_by)}</span>`
       : `<span class="pill-tag pill-pareto">PARETO OPTIMAL</span>`;
     
-    const riskBarColor = row.residual_risk > 70 ? 'var(--status-critical-text)' : (row.residual_risk > 40 ? 'var(--status-warning-text)' : 'var(--status-success-text)');
+    const riskBarColor = row.residual_risk > 70 ? 'var(--memphis-coral)' : (row.residual_risk > 40 ? 'var(--memphis-orange)' : 'var(--memphis-mint)');
 
     return `
       <tr class="${isRecommended ? 'recommended-row' : ''}">
         <td><b>${esc(row.action)}</b></td>
-        <td><code style="color:var(--text-primary); font-size:11px; font-family:'JetBrains Mono'; background:rgba(255, 255, 255, 0.9); padding:2px 5px; border-radius:3px; border:1px solid var(--glass-border-subtle);">${esc(row.target || '—')}</code></td>
+        <td><code style="color:var(--text-primary); font-size:11px; font-family:'JetBrains Mono'; background:#FFFFFF; padding:2px 6px; border-radius:3px; border:1.5px solid var(--memphis-black); font-weight:700;">${esc(row.target || '—')}</code></td>
         <td>
-          <div style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--text-primary);">${row.residual_risk}</div>
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--text-primary);">${row.residual_risk}</div>
           <div class="mini-risk-bar"><div class="mini-risk-fill" style="width:${row.residual_risk}%; background:${riskBarColor};"></div></div>
         </td>
-        <td style="font-family:'JetBrains Mono'; font-weight:600;">${row.paths_broken} / ${row.paths_before}</td>
-        <td><span class="${esc(row.impact_label)}" style="font-weight:600;">${esc(row.impact_label)} (${row.impact})</span></td>
+        <td style="font-family:'JetBrains Mono'; font-weight:700;">${row.paths_broken} / ${row.paths_before}</td>
+        <td><span class="${esc(row.impact_label)}" style="font-weight:800;">${esc(row.impact_label)} (${row.impact})</span></td>
         <td>${badge}</td>
       </tr>
     `;
@@ -2261,149 +2223,131 @@ async function drawGraph() {
     elements: elements,
     layout: { name: 'preset' },
     style: [
-      /* --- ETHEREAL CELESTIAL NODE STYLES --- */
+      /* --- MEMPHIS 1980s BOLD GEOMETRIC NODE STYLES --- */
       {
         selector: 'node',
         style: {
           'label': 'data(label)',
           'color': '#0F172A',
-          'font-size': '11px',
-          'font-weight': 600,
-          'font-family': 'Inter, sans-serif',
+          'font-size': '11.5px',
+          'font-weight': 800,
+          'font-family': 'JetBrains Mono, monospace',
           'text-valign': 'bottom',
-          'text-margin-y': 6,
+          'text-margin-y': 7,
           'text-background-color': '#FFFFFF',
-          'text-background-opacity': 0.92,
-          'text-background-padding': '3px',
+          'text-background-opacity': 1.0,
+          'text-background-padding': '4px',
           'text-background-shape': 'roundrectangle',
-          'text-border-color': '#CBD5E1',
-          'text-border-width': 1,
-          'text-border-opacity': 0.8,
-          'width': 36,
-          'height': 36,
-          'border-width': 2,
-          'border-color': '#94A3B8',
-          'background-color': 'rgba(255, 255, 255, 0.95)',
+          'text-border-color': '#0F172A',
+          'text-border-width': 2,
+          'text-border-opacity': 1.0,
+          'width': 38,
+          'height': 38,
+          'border-width': 3,
+          'border-color': '#0F172A',
+          'background-color': '#FFFFFF',
           'transition-property': 'background-color, border-color, width, height',
-          'transition-duration': '0.2s'
+          'transition-duration': '0.15s'
         }
       },
       {
         selector: 'node[kind = "Person"]',
         style: {
           'shape': 'ellipse',
-          'border-color': '#8B5CF6',
-          'background-color': '#F5F3FF',
-          'shadow-blur': 12,
-          'shadow-color': 'rgba(139, 92, 246, 0.25)',
-          'shadow-opacity': 0.8
+          'border-color': '#0F172A',
+          'background-color': '#A78BFA'
         }
       },
       {
         selector: 'node[kind = "Device"]',
         style: {
           'shape': 'round-rectangle',
-          'border-color': '#0284C7',
-          'background-color': '#F0F9FF',
-          'shadow-blur': 12,
-          'shadow-color': 'rgba(2, 132, 199, 0.25)',
-          'shadow-opacity': 0.8
+          'border-color': '#0F172A',
+          'background-color': '#38BDF8'
         }
       },
       {
         selector: 'node[kind = "Server"]',
         style: {
           'shape': 'round-rectangle',
-          'border-color': '#16A34A',
-          'background-color': '#F0FDF4',
-          'shadow-blur': 12,
-          'shadow-color': 'rgba(22, 163, 74, 0.25)',
-          'shadow-opacity': 0.8
+          'border-color': '#0F172A',
+          'background-color': '#34D399'
         }
       },
       {
         selector: 'node[kind = "ServiceAccount"]',
         style: {
           'shape': 'diamond',
-          'width': 40,
-          'height': 40,
-          'border-color': '#D97706',
-          'background-color': '#FFFBEB',
-          'shadow-blur': 12,
-          'shadow-color': 'rgba(217, 119, 6, 0.25)',
-          'shadow-opacity': 0.8
+          'width': 42,
+          'height': 42,
+          'border-color': '#0F172A',
+          'background-color': '#FDE047'
         }
       },
       {
         selector: 'node[kind = "Service"]',
         style: {
           'shape': 'round-hexagon',
-          'border-color': '#7C3AED',
-          'background-color': '#FAF5FF',
-          'shadow-blur': 12,
-          'shadow-color': 'rgba(124, 58, 237, 0.25)',
-          'shadow-opacity': 0.8
+          'border-color': '#0F172A',
+          'background-color': '#F472B6'
         }
       },
       {
         selector: 'node[kind = "DataStore"]',
         style: {
-          'shape': 'star',
-          'width': 44,
-          'height': 44,
-          'border-color': '#DC2626',
-          'background-color': '#FEF2F2',
-          'border-width': 3,
-          'color': '#991B1B',
-          'shadow-blur': 18,
-          'shadow-color': 'rgba(220, 38, 38, 0.35)',
-          'shadow-opacity': 0.9
+          'shape': 'octagon',
+          'width': 46,
+          'height': 46,
+          'border-color': '#0F172A',
+          'background-color': '#FF6B6B',
+          'border-width': 4,
+          'color': '#0F172A'
         }
       },
       {
         selector: 'node[bad = 1]',
         style: {
-          'border-color': '#DC2626',
-          'background-color': '#FEF2F2',
+          'border-color': '#0F172A',
+          'background-color': '#FEE2E2',
           'border-style': 'dashed',
-          'border-width': 3,
-          'color': '#991B1B'
+          'border-width': 4,
+          'color': '#E11D48'
         }
       },
 
-      /* --- ETHEREAL REFINED EDGE STYLES --- */
+      /* --- MEMPHIS THICK GRAPHIC EDGE STYLES --- */
       {
         selector: 'edge',
         style: {
           'label': 'data(label)',
-          'color': '#334155',
-          'font-size': '9.5px',
-          'font-weight': 600,
+          'color': '#0F172A',
+          'font-size': '10px',
+          'font-weight': 800,
           'font-family': 'JetBrains Mono, monospace',
-          'text-background-color': '#FFFFFF',
-          'text-background-opacity': 0.94,
+          'text-background-color': '#FFE033',
+          'text-background-opacity': 1.0,
           'text-background-padding': '3px',
           'text-background-shape': 'roundrectangle',
-          'text-border-color': '#CBD5E1',
-          'text-border-width': 1,
-          'text-border-opacity': 0.85,
+          'text-border-color': '#0F172A',
+          'text-border-width': 1.8,
+          'text-border-opacity': 1.0,
           'text-rotation': 'autorotate',
           'curve-style': 'bezier',
-          'line-color': '#94A3B8',
-          'width': 1.8,
+          'line-color': '#0F172A',
+          'width': 2.8,
           'target-arrow-shape': 'triangle',
-          'target-arrow-color': '#64748B',
-          'arrow-scale': 1.0
+          'target-arrow-color': '#0F172A',
+          'arrow-scale': 1.2
         }
       },
       {
         selector: 'edge[bad = 1]',
         style: {
-          'line-color': '#DC2626',
+          'line-color': '#FF6B6B',
           'line-style': 'dashed',
-          'target-arrow-color': '#DC2626',
-          'color': '#B91C1C',
-          'opacity': 0.65
+          'target-arrow-color': '#FF6B6B',
+          'color': '#E11D48',
+          'opacity': 0.75
         }
       },
 
@@ -2426,71 +2370,69 @@ async function drawGraph() {
         selector: 'node.obsidian-focused',
         style: {
           'opacity': 1,
-          'border-width': 3.5,
-          'border-color': '#0D9488',
+          'border-width': 4.5,
+          'border-color': '#2563EB',
           'shadow-blur': 16,
-          'shadow-color': 'rgba(13, 148, 136, 0.4)'
+          'shadow-color': 'rgba(37, 99, 235, 0.4)'
         }
       },
       {
         selector: 'edge.obsidian-focused',
         style: {
           'opacity': 1,
-          'width': 2.5,
-          'line-color': '#0D9488',
-          'target-arrow-color': '#0D9488',
-          'text-background-color': '#F0FDFA',
-          'text-border-color': '#99F6E4',
-          'color': '#0F766E'
+          'width': 3.5,
+          'line-color': '#2563EB',
+          'target-arrow-color': '#2563EB',
+          'text-background-color': '#DBEAFE',
+          'text-border-color': '#2563EB',
+          'color': '#1D4ED8'
         }
       },
       {
         selector: 'node.obsidian-active',
         style: {
-          'width': 42,
-          'height': 42,
-          'border-width': 3.5,
-          'border-color': '#0D9488'
+          'width': 46,
+          'height': 46,
+          'border-width': 4.5,
+          'border-color': '#2563EB'
         }
       },
       {
         selector: 'node.node-pinned',
         style: {
-          'border-width': 4,
+          'border-width': 5,
           'border-style': 'double',
-          'border-color': '#D97706',
-          'shadow-blur': 14,
-          'shadow-color': 'rgba(217, 119, 6, 0.4)'
+          'border-color': '#FB923C'
         }
       },
       {
         selector: 'node.attack-path-highlight',
         style: {
           'opacity': 1,
-          'border-width': 3.5,
-          'border-color': '#DC2626',
-          'background-color': '#FEF2F2',
-          'shadow-blur': 20,
-          'shadow-color': 'rgba(220, 38, 38, 0.4)'
+          'border-width': 4.5,
+          'border-color': '#0F172A',
+          'background-color': '#FF6B6B',
+          'shadow-blur': 18,
+          'shadow-color': 'rgba(255, 107, 107, 0.5)'
         }
       },
       {
         selector: 'edge.attack-path-highlight',
         style: {
           'opacity': 1,
-          'width': 2.8,
-          'line-color': '#DC2626',
-          'target-arrow-color': '#DC2626',
-          'text-background-color': '#FEF2F2',
-          'text-border-color': '#FECACA',
-          'color': '#B91C1C'
+          'width': 3.8,
+          'line-color': '#FF6B6B',
+          'target-arrow-color': '#FF6B6B',
+          'text-background-color': '#FFE4E6',
+          'text-border-color': '#0F172A',
+          'color': '#E11D48'
         }
       },
       {
         selector: 'node:selected',
         style: {
-          'border-width': 3.5,
-          'border-color': '#0D9488'
+          'border-width': 4.5,
+          'border-color': '#2563EB'
         }
       }
     ]
