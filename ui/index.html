@@ -6,13 +6,13 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NEXUS — Autonomous Graph-Grounded Cyber Defense Cockpit</title>
+  <title>NEXUS — Tactical Cyber Defense Cockpit OS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   
-  <!-- 1. Cytoscape Graph Visualization Engine -->
+  <!-- 1. Cytoscape Graph Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
   
   <!-- 2. GSAP 3 Core Animation Engine -->
@@ -28,40 +28,41 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #05070B;
+      --bg: #04060A;
       --bg-alt: #080C14;
-      --panel: #0D121F;
-      --panel-card: rgba(13, 18, 31, 0.88);
-      --panel-hover: #141B2D;
-      --panel-subtle: #090E17;
-      --border: #161F30;
-      --border-bright: #25334E;
-      --border-glow: rgba(56, 189, 248, 0.28);
+      --panel: #0B101C;
+      --panel-card: rgba(11, 16, 28, 0.9);
+      --panel-hover: #121A2E;
+      --panel-subtle: #070B13;
+      
+      --border: #151F33;
+      --border-bright: #243554;
+      --border-glow: rgba(56, 189, 248, 0.35);
       
       --text: #F8FAFC;
       --text-muted: #94A3B8;
       --text-dim: #64748B;
       
       --blue: #38BDF8;
-      --blue-glow: rgba(56, 189, 248, 0.35);
+      --blue-glow: rgba(56, 189, 248, 0.4);
       --cyan: #06B6D4;
-      --cyan-glow: rgba(6, 182, 212, 0.3);
+      --cyan-glow: rgba(6, 182, 212, 0.35);
       --green: #10B981;
-      --green-glow: rgba(16, 185, 129, 0.35);
+      --green-glow: rgba(16, 185, 129, 0.4);
       --red: #F43F5E;
-      --red-glow: rgba(244, 63, 94, 0.4);
+      --red-glow: rgba(244, 63, 94, 0.45);
       --amber: #F59E0B;
-      --amber-glow: rgba(245, 158, 11, 0.35);
+      --amber-glow: rgba(245, 158, 11, 0.4);
       --purple: #8B5CF6;
-      --purple-glow: rgba(139, 92, 246, 0.3);
+      --purple-glow: rgba(139, 92, 246, 0.35);
       
       --radius-xs: 4px;
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 16px;
+      --radius-lg: 18px;
       
-      --hud-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.08);
-      --card-highlight: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.45), rgba(139, 92, 246, 0.35), transparent);
+      --cockpit-shadow: 0 16px 48px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.1);
+      --card-highlight: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.5) 50%, rgba(139, 92, 246, 0.4) 80%, transparent 100%);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,7 +81,7 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Lenis Smooth Scroll Standard Rules */
+    /* Lenis Smooth Scroll Rules */
     html.lenis, html.lenis body {
       height: auto;
     }
@@ -99,7 +100,7 @@
       height: 100vh;
       pointer-events: none;
       z-index: 0;
-      opacity: 0.65;
+      opacity: 0.6;
       transition: opacity 1s ease;
     }
 
@@ -112,15 +113,15 @@
       z-index: 0;
     }
 
-    /* Tactical CRT/Radar Scanline & Vignette Grid */
+    /* Tactical Coordinate Grid & Scanline Atmosphere */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background-image: 
-        linear-gradient(to right, rgba(56, 189, 248, 0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(56, 189, 248, 0.02) 1px, transparent 1px);
-      background-size: 44px 44px;
+        linear-gradient(to right, rgba(56, 189, 248, 0.025) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
       pointer-events: none;
       z-index: 0;
     }
@@ -128,7 +129,7 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 30%, transparent 40%, rgba(5, 7, 11, 0.82) 100%);
+      background: radial-gradient(circle at 50% 25%, transparent 35%, rgba(4, 6, 10, 0.88) 100%);
       pointer-events: none;
       z-index: 0;
     }
@@ -137,17 +138,17 @@
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(9, 14, 23, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      z-index: 60;
+      background: rgba(7, 11, 19, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border-bottom: 1px solid var(--border);
       padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
     }
 
     .brand {
@@ -157,46 +158,61 @@
       text-decoration: none;
     }
     .brand-logo {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: var(--radius-sm);
       background: linear-gradient(135deg, #0284C7, #38BDF8 60%, #818CF8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 18px;
+      font-weight: 900;
+      font-size: 19px;
       color: #fff;
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
     .brand-text b {
-      font-size: 18px;
+      font-size: 19px;
       letter-spacing: 2px;
       font-weight: 800;
       color: #fff;
       display: block;
       line-height: 1.1;
-      text-shadow: 0 0 16px rgba(255, 255, 255, 0.25);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
     .brand-text span {
       display: block;
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1.4px;
+      letter-spacing: 1.6px;
       color: var(--blue);
       font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    /* Live Telemetry Ticker */
+    .telemetry-ticker {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .telemetry-time {
+      color: #38BDF8;
       font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    /* Badges & Status Indicators */
+    /* Status Badges */
     .badge {
       display: inline-flex;
       align-items: center;
@@ -206,10 +222,10 @@
       padding: 5px 12px;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: rgba(13, 18, 31, 0.7);
+      background: rgba(11, 16, 28, 0.75);
       color: var(--text-muted);
       font-weight: 500;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       letter-spacing: 0.4px;
       user-select: none;
       transition: all 0.2s ease;
@@ -224,13 +240,13 @@
       animation: statusPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
     .badge.synth {
-      border-color: rgba(139, 92, 246, 0.45);
-      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.5);
+      background: rgba(139, 92, 246, 0.12);
       color: #DDD6FE;
     }
     #mode-badge {
-      border-color: rgba(56, 189, 248, 0.35);
-      background: rgba(56, 189, 248, 0.08);
+      border-color: rgba(56, 189, 248, 0.4);
+      background: rgba(56, 189, 248, 0.1);
       color: #BAE6FD;
       font-weight: 600;
     }
@@ -240,25 +256,25 @@
       50% { opacity: 0.35; transform: scale(0.8); box-shadow: 0 0 4px var(--green); }
     }
 
-    /* Form Controls: Select & Checkboxes */
+    /* Form Selects & Checkboxes */
     select {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       border-radius: var(--radius-sm);
       padding: 7px 14px;
-      background: rgba(13, 18, 31, 0.9);
+      background: rgba(11, 16, 28, 0.95);
       color: var(--text);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-bright);
       cursor: pointer;
       outline: none;
       transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
     }
     select:hover, select:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 12px var(--blue-glow);
-      background: #141B2D;
+      box-shadow: 0 0 14px var(--blue-glow);
+      background: #141D30;
     }
     
     .checkbox-label {
@@ -270,7 +286,7 @@
       color: var(--text-muted);
       cursor: pointer;
       user-select: none;
-      background: rgba(13, 18, 31, 0.6);
+      background: rgba(11, 16, 28, 0.7);
       padding: 6px 10px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
@@ -286,7 +302,7 @@
       height: 14px;
     }
 
-    /* Tactile Cockpit Buttons */
+    /* Tactile Buttons with Magnet & Shimmer */
     button {
       font-family: inherit;
       font-weight: 600;
@@ -317,8 +333,8 @@
     button.primary {
       background: linear-gradient(135deg, #0284C7 0%, #2563EB 50%, #1D4ED8 100%);
       color: #fff;
-      box-shadow: 0 4px 16px var(--blue-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 4px 18px var(--blue-glow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(56, 189, 248, 0.45);
     }
     button.primary::after {
       content: '';
@@ -336,7 +352,7 @@
     }
     button.primary:hover:not(:disabled) {
       background: linear-gradient(135deg, #38BDF8 0%, #3B82F6 50%, #2563EB 100%);
-      box-shadow: 0 6px 24px rgba(56, 189, 248, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      box-shadow: 0 6px 26px rgba(56, 189, 248, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
       transform: translateY(-1px);
     }
 
@@ -346,64 +362,64 @@
     }
 
     button.secondary {
-      background: rgba(13, 18, 31, 0.85);
+      background: rgba(11, 16, 28, 0.88);
       color: var(--text-muted);
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      border: 1px solid var(--border-bright);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
     }
     button.secondary:hover:not(:disabled) {
       background: var(--panel-hover);
       color: var(--text);
-      border-color: var(--border-bright);
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+      border-color: #38BDF8;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
     button.secondary.active {
       border-color: #38BDF8 !important;
       color: #38BDF8 !important;
-      background: rgba(56, 189, 248, 0.15) !important;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+      background: rgba(56, 189, 248, 0.18) !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
     }
 
     button.danger {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(185, 28, 28, 0.4));
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(185, 28, 28, 0.45));
       color: #FECDD3;
-      border: 1px solid rgba(244, 63, 94, 0.5);
-      box-shadow: 0 4px 16px var(--red-glow);
+      border: 1px solid rgba(244, 63, 94, 0.55);
+      box-shadow: 0 4px 18px var(--red-glow);
     }
     button.danger:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(220, 38, 38, 0.6));
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.45), rgba(220, 38, 38, 0.65));
       color: #fff;
       border-color: #F43F5E;
-      box-shadow: 0 6px 24px rgba(244, 63, 94, 0.6);
+      box-shadow: 0 6px 28px rgba(244, 63, 94, 0.65);
       transform: translateY(-1px);
     }
 
     button.success {
       background: linear-gradient(135deg, #059669 0%, #047857 100%);
       color: #fff;
-      box-shadow: 0 4px 16px var(--green-glow);
-      border: 1px solid rgba(16, 185, 129, 0.5);
+      box-shadow: 0 4px 18px var(--green-glow);
+      border: 1px solid rgba(16, 185, 129, 0.55);
     }
     button.success:hover:not(:disabled) {
       background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.55);
       transform: translateY(-1px);
     }
 
-    /* Guided Demo Command Strip (StarBorder & Specular Highlight) */
+    /* Guided Demo Command Strip */
     .demo-guide {
-      max-width: 1480px;
+      max-width: 1520px;
       width: calc(100% - 40px);
       margin: 20px auto 0;
-      padding: 16px 22px;
+      padding: 16px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
       border-radius: var(--radius-md);
-      background: linear-gradient(110deg, rgba(2, 132, 199, 0.14) 0%, rgba(13, 18, 31, 0.95) 55%);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      box-shadow: var(--hud-shadow);
+      background: linear-gradient(110deg, rgba(2, 132, 199, 0.16) 0%, rgba(11, 16, 28, 0.96) 55%);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      box-shadow: var(--cockpit-shadow);
       position: relative;
       z-index: 10;
       overflow: hidden;
@@ -421,9 +437,9 @@
     .demo-guide-copy { min-width: 0; }
     .demo-guide-title {
       color: #E0F2FE;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 14px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
@@ -433,7 +449,7 @@
       color: #94A3B8;
       font-size: 12px;
       font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
     }
     .demo-guide-note {
       color: var(--text-dim);
@@ -441,11 +457,11 @@
       margin-top: 4px;
     }
 
-    /* Main Cockpit Layout */
+    /* Main Cockpit Layout Geometry */
     main {
-      max-width: 1480px;
+      max-width: 1520px;
       margin: 0 auto;
-      padding: 24px 20px 40px;
+      padding: 24px 20px 48px;
       width: 100%;
       position: relative;
       z-index: 10;
@@ -453,12 +469,12 @@
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 460px minmax(0, 1fr);
+      grid-template-columns: 480px minmax(0, 1fr);
       grid-template-areas:
         "decision graph"
         "matrix matrix"
         "trace trace";
-      gap: 22px;
+      gap: 24px;
       align-items: start;
     }
     .analysis-stack { display: contents; }
@@ -470,14 +486,14 @@
     /* Tactical HUD Cards (React Bits Spotlight Inspired) */
     .card {
       background: var(--panel-card);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 22px;
+      padding: 24px;
       position: relative;
       overflow: hidden;
-      box-shadow: var(--hud-shadow);
+      box-shadow: var(--cockpit-shadow);
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
     }
     .card::before {
@@ -500,7 +516,7 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      background: radial-gradient(450px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(56, 189, 248, 0.1), transparent 70%);
+      background: radial-gradient(500px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), rgba(56, 189, 248, 0.12), transparent 70%);
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -510,19 +526,32 @@
       opacity: 1;
     }
 
+    /* Tactical HUD Corner Crosshairs */
+    .card .corner-bracket {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: rgba(56, 189, 248, 0.4);
+      pointer-events: none;
+    }
+    .card .cb-tl { top: 8px; left: 8px; border-top: 1px solid; border-left: 1px solid; }
+    .card .cb-tr { top: 8px; right: 8px; border-top: 1px solid; border-right: 1px solid; }
+    .card .cb-bl { bottom: 8px; left: 8px; border-bottom: 1px solid; border-left: 1px solid; }
+    .card .cb-br { bottom: 8px; right: 8px; border-bottom: 1px solid; border-right: 1px solid; }
+
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       gap: 12px;
       position: relative;
       z-index: 3;
     }
     .card-title {
       font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
       color: #fff;
       display: flex;
       align-items: center;
@@ -530,80 +559,129 @@
     }
     .card-title svg {
       color: var(--blue);
-      filter: drop-shadow(0 0 6px var(--blue-glow));
+      filter: drop-shadow(0 0 8px var(--blue-glow));
     }
 
-    /* Hero Decision Card */
+    /* Hero Decision Card & Tactical Risk Gauge */
     .hero-card {
-      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 70%), var(--panel-card);
-      border: 1px solid rgba(56, 189, 248, 0.28);
+      background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 70%), var(--panel-card);
+      border: 1px solid rgba(56, 189, 248, 0.35);
     }
-    .risk-score-wrapper {
+    
+    .risk-instrument-row {
       display: flex;
-      align-items: baseline;
-      gap: 18px;
-      margin: 14px 0 18px;
+      align-items: center;
+      gap: 20px;
+      margin: 16px 0 20px;
       position: relative;
       z-index: 3;
     }
+    
+    .risk-gauge-container {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .risk-gauge-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .risk-gauge-bg {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.07);
+      stroke-width: 9;
+    }
+    .risk-gauge-bar {
+      fill: none;
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-dasharray: 301.6;
+      stroke-dashoffset: 60;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.3s;
+    }
+    .risk-gauge-bar.CRITICAL { stroke: #FF4757; filter: drop-shadow(0 0 10px rgba(255, 71, 87, 0.7)); }
+    .risk-gauge-bar.HIGH { stroke: #FFA502; filter: drop-shadow(0 0 10px rgba(255, 165, 2, 0.7)); }
+    .risk-gauge-bar.MEDIUM { stroke: #ECCC68; filter: drop-shadow(0 0 8px rgba(236, 204, 104, 0.6)); }
+    .risk-gauge-bar.LOW { stroke: #2ED573; filter: drop-shadow(0 0 10px rgba(46, 213, 115, 0.7)); }
+
+    .risk-gauge-content {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
     .risk-score {
-      font-size: 68px;
-      font-weight: 800;
+      font-size: 52px;
+      font-weight: 900;
       line-height: 1;
       font-family: 'JetBrains Mono', monospace;
       letter-spacing: -2px;
-      transition: color 0.3s ease;
     }
-    .CRITICAL { color: #FF4757; text-shadow: 0 0 24px rgba(255, 71, 87, 0.45); }
-    .HIGH { color: #FFA502; text-shadow: 0 0 24px rgba(255, 165, 2, 0.4); }
-    .MEDIUM { color: #ECCC68; text-shadow: 0 0 16px rgba(236, 204, 104, 0.3); }
-    .LOW { color: #2ED573; text-shadow: 0 0 24px rgba(46, 213, 115, 0.45); }
+    .CRITICAL { color: #FF4757; text-shadow: 0 0 24px rgba(255, 71, 87, 0.5); }
+    .HIGH { color: #FFA502; text-shadow: 0 0 24px rgba(255, 165, 2, 0.5); }
+    .MEDIUM { color: #ECCC68; text-shadow: 0 0 16px rgba(236, 204, 104, 0.4); }
+    .LOW { color: #2ED573; text-shadow: 0 0 24px rgba(46, 213, 115, 0.5); }
+
+    .risk-gauge-unit {
+      font-size: 10px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      margin-top: -2px;
+    }
 
     .risk-meta {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     .risk-band-pill {
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
-      font-weight: 700;
-      padding: 4px 10px;
+      font-weight: 800;
+      padding: 5px 12px;
       border-radius: var(--radius-xs);
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       width: fit-content;
     }
-    .CRITICAL-bg { background: rgba(255, 71, 87, 0.18); color: #FF6B81; border: 1px solid rgba(255, 71, 87, 0.4); }
-    .HIGH-bg { background: rgba(255, 165, 2, 0.18); color: #FFA502; border: 1px solid rgba(255, 165, 2, 0.4); }
-    .LOW-bg { background: rgba(46, 213, 115, 0.18); color: #2ED573; border: 1px solid rgba(46, 213, 115, 0.4); }
+    .CRITICAL-bg { background: rgba(255, 71, 87, 0.2); color: #FF6B81; border: 1px solid rgba(255, 71, 87, 0.5); box-shadow: 0 0 12px rgba(255, 71, 87, 0.25); }
+    .HIGH-bg { background: rgba(255, 165, 2, 0.2); color: #FFA502; border: 1px solid rgba(255, 165, 2, 0.5); box-shadow: 0 0 12px rgba(255, 165, 2, 0.25); }
+    .LOW-bg { background: rgba(46, 213, 115, 0.2); color: #2ED573; border: 1px solid rgba(46, 213, 115, 0.5); box-shadow: 0 0 12px rgba(46, 213, 115, 0.25); }
 
     .action-banner {
-      background: rgba(9, 14, 23, 0.85);
+      background: rgba(7, 11, 19, 0.9);
       border: 1px solid var(--border-bright);
       border-radius: var(--radius-md);
-      padding: 16px 18px;
-      margin: 16px 0;
+      padding: 18px 20px;
+      margin: 18px 0;
       position: relative;
       z-index: 3;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
     }
     .action-header {
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.4px;
       color: var(--blue);
-      font-weight: 700;
+      font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
       margin-bottom: 6px;
     }
     .action-name {
-      font-size: 19px;
-      font-weight: 700;
+      font-size: 20px;
+      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 10px;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.5px;
     }
     .action-reason {
       font-size: 13px;
@@ -613,17 +691,17 @@
     }
 
     .mutation-alert {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.5);
       border-radius: var(--radius-sm);
       padding: 12px 16px;
       font-size: 12px;
       color: #FDE68A;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       margin: 14px 0;
-      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15);
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
       position: relative;
       z-index: 3;
     }
@@ -632,26 +710,27 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       background: var(--panel-subtle);
-      padding: 14px 16px;
+      padding: 14px 18px;
       margin-top: 14px;
       position: relative;
       z-index: 3;
     }
-    .evidence-panel h4 { font-size: 12px; color: #BAE6FD; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.3px; }
+    .evidence-panel h4 { font-size: 12px; color: #BAE6FD; margin-bottom: 6px; font-weight: 800; letter-spacing: 0.4px; }
     .evidence-panel p, .evidence-panel li { color: var(--text-muted); font-size: 12px; line-height: 1.5; }
     .evidence-panel ul { padding-left: 20px; margin-top: 6px; }
     .evidence-panel li + li { margin-top: 5px; }
-    .evidence-panel code { color: #BAE6FD; overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: rgba(56, 189, 248, 0.08); padding: 1px 4px; border-radius: 3px; }
-    .action-notice { color: #A7F3D0; border-color: rgba(16,185,129,0.4); background: rgba(16, 185, 129, 0.08); font-weight: 500; }
-    .action-notice.mismatch { color: #FCD34D; border-color: rgba(245,158,11,0.4); background: rgba(245, 158, 11, 0.08); }
+    .evidence-panel code { color: #BAE6FD; overflow-wrap: anywhere; font-family: 'JetBrains Mono', monospace; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px; }
+    .action-notice { color: #A7F3D0; border-color: rgba(16,185,129,0.45); background: rgba(16, 185, 129, 0.1); font-weight: 600; }
+    .action-notice.mismatch { color: #FCD34D; border-color: rgba(245,158,11,0.45); background: rgba(245, 158, 11, 0.1); }
 
-    /* Containment Simulation Matrix */
+    /* Containment Simulation Matrix Table */
     .table-container {
       overflow-x: auto;
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
       position: relative;
       z-index: 3;
+      background: rgba(7, 11, 19, 0.6);
     }
     table {
       width: 100%;
@@ -660,25 +739,25 @@
       text-align: left;
     }
     th {
-      background: rgba(9, 14, 23, 0.95);
+      background: rgba(7, 11, 19, 0.98);
       color: var(--text-dim);
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       font-size: 10px;
-      letter-spacing: 1px;
-      padding: 12px 16px;
+      letter-spacing: 1.2px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border);
       font-family: 'JetBrains Mono', monospace;
     }
     td {
-      padding: 12px 16px;
+      padding: 13px 18px;
       border-bottom: 1px solid var(--border);
       color: var(--text);
     }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--panel-hover); }
     tr.recommended-row td {
-      background: rgba(16, 185, 129, 0.09);
+      background: rgba(16, 185, 129, 0.11);
       font-weight: 600;
     }
     tr.recommended-row td:first-child {
@@ -688,54 +767,68 @@
     .pill-tag {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
-      padding: 3px 8px;
+      padding: 4px 9px;
       border-radius: 999px;
       font-weight: 700;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       display: inline-block;
     }
     .pill-pareto {
-      background: rgba(16, 185, 129, 0.18);
+      background: rgba(16, 185, 129, 0.2);
       color: #34D399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
     }
     .pill-dominated {
       color: var(--text-dim);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
     }
 
-    /* Attack Graph Panel Workspace */
+    /* Graphical Mini Risk Meter in Table */
+    .mini-risk-bar {
+      width: 60px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .mini-risk-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* Attack Graph Workspace */
     .graph-card {
       display: flex;
       flex-direction: column;
-      height: 640px;
+      height: 650px;
       padding: 0;
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.35);
     }
     .graph-toolbar {
-      padding: 14px 22px;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
       flex-wrap: wrap;
-      background: rgba(9, 14, 23, 0.95);
+      background: rgba(7, 11, 19, 0.96);
       z-index: 10;
     }
     #forces-toggle-btn.active {
       border-color: #38BDF8 !important;
       color: #38BDF8 !important;
-      background: rgba(56, 189, 248, 0.15) !important;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.18) !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
     }
     #cy {
       flex: 1;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle at center, #0A111F 0%, #05070B 100%);
+      background: radial-gradient(circle at center, #0B1324 0%, #04060A 100%);
       position: relative;
       cursor: grab;
     }
@@ -745,9 +838,9 @@
 
     /* Graph Legend */
     .graph-legend {
-      padding: 10px 20px;
+      padding: 11px 22px;
       border-top: 1px solid var(--border);
-      background: rgba(9, 14, 23, 0.95);
+      background: rgba(7, 11, 19, 0.96);
       display: flex;
       align-items: center;
       gap: 18px;
@@ -769,12 +862,12 @@
       box-shadow: 0 0 8px currentColor;
     }
 
-    /* Forensic Trace Log Deck */
+    /* Forensic Trace Log Terminal */
     .trace-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      max-height: 290px;
+      max-height: 300px;
       overflow-y: auto;
       padding-right: 6px;
       position: relative;
@@ -785,10 +878,10 @@
       to { opacity: 1; transform: translateY(0); }
     }
     .trace-item {
-      background: rgba(9, 14, 23, 0.8);
+      background: rgba(7, 11, 19, 0.85);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 12px 16px;
+      padding: 12px 18px;
       font-size: 12px;
       transition: border-color 0.2s, background 0.2s;
       animation: traceSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -803,7 +896,7 @@
       width: 2px;
       border-radius: 2px;
       background: #38BDF8;
-      opacity: 0.3;
+      opacity: 0.35;
       transition: opacity 0.2s, box-shadow 0.2s;
     }
     .trace-item:hover::before {
@@ -812,7 +905,7 @@
     }
     .trace-item:hover {
       border-color: var(--border-bright);
-      background: rgba(20, 27, 45, 0.6);
+      background: rgba(18, 26, 46, 0.6);
     }
     .trace-meta {
       display: flex;
@@ -838,7 +931,7 @@
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      background: #162032;
+      background: #141E30;
       height: 5px;
       border-radius: 4px;
       outline: none;
@@ -851,7 +944,7 @@
       height: 14px;
       border-radius: 50%;
       background: #38BDF8;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
       cursor: pointer;
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
@@ -865,7 +958,7 @@
       border-radius: 50%;
       background: #38BDF8;
       border: none;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.85);
       cursor: pointer;
     }
 
@@ -880,7 +973,7 @@
     }
     summary:hover { color: var(--blue); }
     pre {
-      background: #05070B;
+      background: #04060A;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 12px;
@@ -912,6 +1005,7 @@
         flex-direction: column;
         align-items: flex-start;
       }
+      .telemetry-ticker { display: none; }
       .header-controls {
         width: 100%;
         justify-content: flex-start;
@@ -965,19 +1059,25 @@
 </head>
 <body>
 
-<!-- Atmospheric Background Canvas Layers -->
+<!-- Atmospheric 3D Background Layer -->
 <div id="vanta-background"></div>
 <canvas id="ambient-canvas"></canvas>
 
-<!-- Top Tactical Header -->
+<!-- Top Tactical Header & Telemetry Bar -->
 <header>
-  <a href="#" class="brand">
-    <div class="brand-logo">N</div>
-    <div class="brand-text">
-      <b>NEXUS</b>
-      <span>Tactical Attack-Path Agent</span>
+  <div style="display:flex; align-items:center; gap:24px;">
+    <a href="#" class="brand">
+      <div class="brand-logo">N</div>
+      <div class="brand-text">
+        <b>NEXUS</b>
+        <span>Tactical Cyber Defense Cockpit OS</span>
+      </div>
+    </a>
+    <div class="telemetry-ticker">
+      <span>GRID: <b>SEC-SOC-09</b></span>
+      <span class="telemetry-time" id="telemetry-clock">00:00:00 UTC</span>
     </div>
-  </a>
+  </div>
 
   <div class="header-controls">
     <div class="badge pulse">FalkorDB Connected</div>
@@ -1011,7 +1111,7 @@
 <aside class="demo-guide" aria-label="Guided demo instructions">
   <div class="demo-guide-copy">
     <div class="demo-guide-title">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
       Start here · guided synthetic demo
     </div>
     <div class="demo-guide-steps">1. Trace an alert to critical data · 2. Compare simulated responses · 3. Approve containment, verify the result, then roll it back</div>
@@ -1020,14 +1120,19 @@
   <button id="guided-demo" class="primary magnet-btn">Run guided demo</button>
 </aside>
 
-<!-- Main Tactical Cockpit -->
+<!-- Main Cockpit Workspace -->
 <main>
   <div class="dashboard-grid">
-    <!-- Left Column: Decision & Simulation Matrix -->
+    <!-- Left Column: Threat Intelligence & Decision Deck -->
     <div class="analysis-stack">
       
       <!-- Decision Card -->
       <section class="card hero-card spotlight-card" id="decision-card">
+        <div class="corner-bracket cb-tl"></div>
+        <div class="corner-bracket cb-tr"></div>
+        <div class="corner-bracket cb-bl"></div>
+        <div class="corner-bracket cb-br"></div>
+        
         <div class="card-header">
           <span class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -1037,12 +1142,17 @@
         </div>
 
         <div id="decision-content">
-          <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
+          <p style="color:var(--text-muted); padding: 24px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
         </div>
       </section>
 
       <!-- Containment Matrix Card -->
       <section class="card spotlight-card" id="matrix-card">
+        <div class="corner-bracket cb-tl"></div>
+        <div class="corner-bracket cb-tr"></div>
+        <div class="corner-bracket cb-bl"></div>
+        <div class="corner-bracket cb-br"></div>
+
         <div class="card-header">
           <span class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
@@ -1058,6 +1168,11 @@
 
       <!-- Agent Trace Card -->
       <section class="card spotlight-card" id="trace-card">
+        <div class="corner-bracket cb-tl"></div>
+        <div class="corner-bracket cb-tr"></div>
+        <div class="corner-bracket cb-bl"></div>
+        <div class="corner-bracket cb-br"></div>
+
         <div class="card-header">
           <span class="card-title">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
@@ -1078,7 +1193,7 @@
       <section class="card graph-card spotlight-card">
         <div class="graph-toolbar">
           <div>
-            <div style="font-size:14px; font-weight:700; color:#fff; letter-spacing:0.3px;">Attack Path Traversal Topology</div>
+            <div style="font-size:14px; font-weight:800; color:#fff; letter-spacing:0.4px;">Attack Path Traversal Topology</div>
             <div id="physics-status" style="font-size:11px; color:#38BDF8; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:8px;">
               <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#38BDF8; box-shadow:0 0 10px #38BDF8; animation:statusPulse 2s infinite;"></span>
               Obsidian Force-Directed Physics Active · Drag nodes to deform network
@@ -1109,7 +1224,7 @@
         </div>
 
         <!-- Obsidian-Style Force Controls Drawer -->
-        <div id="forces-drawer" data-lenis-prevent style="display:none; background:#0A0F1A; border-bottom:1px solid var(--border); padding:14px 22px; font-size:11px;">
+        <div id="forces-drawer" data-lenis-prevent style="display:none; background:#080C14; border-bottom:1px solid var(--border); padding:16px 24px; font-size:11px;">
           <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:16px; align-items:center;">
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:4px; color:var(--text-muted);">
@@ -1157,22 +1272,22 @@
           <div id="cy" style="width:100%; height:100%;"></div>
 
           <!-- Floating Tactical Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none; position:absolute; top:18px; right:18px; width:290px; background:rgba(9, 14, 25, 0.94); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(56, 189, 248, 0.35); border-radius:var(--radius-md); padding:16px 18px; z-index:15; box-shadow:0 12px 36px rgba(0,0,0,0.7), 0 0 20px rgba(56, 189, 248, 0.1);">
+          <div id="node-inspector" style="display:none; position:absolute; top:18px; right:18px; width:290px; background:rgba(7, 11, 20, 0.95); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border:1px solid rgba(56, 189, 248, 0.4); border-radius:var(--radius-md); padding:16px 18px; z-index:15; box-shadow:0 12px 40px rgba(0,0,0,0.8), 0 0 20px rgba(56, 189, 248, 0.12);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:#38BDF8; box-shadow:0 0 8px #38BDF8;"></span>
-                <span id="inspect-title" style="font-weight:700; font-size:13px; color:#fff; letter-spacing:0.3px;">Entity Inspector</span>
+                <span id="inspect-title" style="font-weight:800; font-size:13px; color:#fff; letter-spacing:0.4px;">Entity Inspector</span>
               </div>
               <button id="inspect-close" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; padding:2px 6px; font-size:14px;">✕</button>
             </div>
             <div style="font-size:11px; display:flex; flex-direction:column; gap:9px;">
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Node ID</span>
-                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:#38BDF8; font-weight:600;">-</span>
+                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:#38BDF8; font-weight:700;">-</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Entity Kind</span>
-                <span id="inspect-kind" style="color:#fff; font-weight:600;">-</span>
+                <span id="inspect-kind" style="color:#fff; font-weight:700;">-</span>
               </div>
               <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:5px;">
                 <span style="color:var(--text-dim);">Status</span>
@@ -1200,7 +1315,7 @@
         </div>
 
         <div class="graph-legend">
-          <span style="font-weight:700; color:var(--text-muted); margin-right:4px;">Entities:</span>
+          <span style="font-weight:800; color:var(--text-muted); margin-right:4px;">Entities:</span>
           <div class="legend-item"><div class="legend-dot" style="background:#6366F1;"></div> Person</div>
           <div class="legend-item"><div class="legend-dot" style="background:#0EA5E9;"></div> Device</div>
           <div class="legend-item"><div class="legend-dot" style="background:#10B981;"></div> Server</div>
@@ -1224,7 +1339,20 @@ let cy = null;
 let jiggleLoopId = null;
 
 // ==============================================================
-// 1. VANTA.JS 3D BACKGROUND WITH ROBUST FALLBACK
+// 1. LIVE TELEMETRY CLOCK
+// ==============================================================
+function updateTelemetryClock() {
+  const clockEl = $('telemetry-clock');
+  if (!clockEl) return;
+  const now = new Date();
+  const utc = now.toUTCString().split(' ')[4] || '00:00:00';
+  clockEl.textContent = `${utc} UTC · DEFCON 2`;
+}
+setInterval(updateTelemetryClock, 1000);
+updateTelemetryClock();
+
+// ==============================================================
+// 2. VANTA.JS 3D BACKGROUND WITH GRACEFUL FALLBACK
 // ==============================================================
 let vantaEffect = null;
 try {
@@ -1239,7 +1367,7 @@ try {
       scale: 1.00,
       scaleMobile: 1.00,
       color: 0x0284c7,
-      backgroundColor: 0x05070b,
+      backgroundColor: 0x04060a,
       points: 9.00,
       maxDistance: 22.00,
       spacing: 18.00,
@@ -1251,7 +1379,7 @@ try {
 }
 
 // ==============================================================
-// 2. AMBIENT CYBER CONSTELLATION CANVAS
+// 3. AMBIENT CYBER CONSTELLATION & RADAR CANVAS
 // ==============================================================
 (function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
@@ -1261,9 +1389,9 @@ try {
   let animationId = null;
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  const numParticles = 38;
+  const numParticles = 40;
   const particles = [];
-  const mouse = { x: -1000, y: -1000, radius: 120 };
+  const mouse = { x: -1000, y: -1000, radius: 130 };
 
   function resize() {
     width = canvas.width = window.innerWidth;
@@ -1287,7 +1415,7 @@ try {
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.35,
       vy: (Math.random() - 0.5) * 0.35,
-      radius: Math.random() * 1.5 + 1,
+      radius: Math.random() * 1.6 + 0.8,
       alpha: Math.random() * 0.35 + 0.15
     });
   }
@@ -1299,7 +1427,7 @@ try {
     }
     ctx.clearRect(0, 0, width, height);
 
-    // Subtle connective mesh
+    // Subtle connective mesh lines
     for (let i = 0; i < numParticles; i++) {
       const p1 = particles[i];
       for (let j = i + 1; j < numParticles; j++) {
@@ -1307,8 +1435,8 @@ try {
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
         const dist = Math.hypot(dx, dy);
-        if (dist < 110) {
-          const alpha = (1 - dist / 110) * 0.12;
+        if (dist < 115) {
+          const alpha = (1 - dist / 115) * 0.14;
           ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -1360,7 +1488,7 @@ try {
 })();
 
 // ==============================================================
-// 3. REACT BITS ADAPTATIONS: SPOTLIGHT CARD & MAGNET BUTTONS
+// 4. REACT BITS ADAPTATIONS: SPOTLIGHT CARD & MAGNET BUTTONS
 // ==============================================================
 function initReactBitsAdaptations() {
   // SpotlightCard: Track cursor position on cards
@@ -1398,7 +1526,7 @@ function initReactBitsAdaptations() {
 document.addEventListener('DOMContentLoaded', initReactBitsAdaptations);
 
 // ==============================================================
-// 4. LENIS SMOOTH SCROLL INTEGRATION
+// 5. LENIS SMOOTH SCROLL INTEGRATION
 // ==============================================================
 let lenis = null;
 try {
@@ -1438,6 +1566,13 @@ function animateScoreCounter(el, targetScore, duration = 0.8) {
       ease: 'power2.out',
       onUpdate: () => {
         el.textContent = Math.round(obj.val);
+        // Also update the SVG radial gauge bar if present
+        const gaugeBar = document.querySelector('.risk-gauge-bar');
+        if (gaugeBar) {
+          const circumference = 301.6;
+          const offset = circumference - (circumference * obj.val) / 100;
+          gaugeBar.style.strokeDashoffset = offset;
+        }
       }
     });
   } else {
@@ -1449,6 +1584,12 @@ function animateScoreCounter(el, targetScore, duration = 0.8) {
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(start + (targetScore - start) * eased);
       el.textContent = current;
+      const gaugeBar = document.querySelector('.risk-gauge-bar');
+      if (gaugeBar) {
+        const circumference = 301.6;
+        const offset = circumference - (circumference * current) / 100;
+        gaugeBar.style.strokeDashoffset = offset;
+      }
       if (progress < 1) {
         requestAnimationFrame(update);
       } else {
@@ -1475,7 +1616,7 @@ const initialLayout = {
 };
 
 // ==============================================================
-// 5. OBSIDIAN FORCE-DIRECTED DYNAMIC PHYSICS ENGINE
+// 6. OBSIDIAN FORCE-DIRECTED DYNAMIC PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
   repulsion: 9500,
@@ -1769,7 +1910,7 @@ function initObsidianPhysics(cyInstance) {
           pA.fx -= nx * repForce;
           pA.fy -= ny * repForce;
           pB.fx += nx * repForce;
-          pB.fy -= ny * repForce;
+          pB.fy += ny * repForce;
 
           // Collision avoidance cushion
           const minSpacing = obsidianParams.collisionRadius;
@@ -1988,7 +2129,7 @@ async function init() {
 
   // GSAP Initial Cockpit Stagger
   if (window.gsap) {
-    gsap.from('.card', { opacity: 0, y: 16, stagger: 0.08, duration: 0.65, ease: 'power3.out' });
+    gsap.from('.card', { opacity: 0, y: 18, stagger: 0.08, duration: 0.7, ease: 'power3.out' });
   }
 }
 
@@ -2070,7 +2211,7 @@ async function resetDemo() {
     if ($('pause-btn-text')) $('pause-btn-text').textContent = 'Pause';
     $('fit-btn').disabled = true;
     $('inv-id').textContent = 'RESET COMPLETED';
-    $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
+    $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 24px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
     $('matrix-container').innerHTML = `<p style="color:var(--text-dim); padding:20px; text-align:center;">No simulations run yet.</p>`;
     $('trace').innerHTML = `<p style="color:var(--text-dim); font-size:12px; padding:8px 0;">Pristine state restored.</p>`;
     $('trace-step-count').textContent = '0 steps';
@@ -2144,12 +2285,27 @@ function render(data) {
 
   const recommendationExplanation = describeRecommendation(rec, recRow, ini);
 
+  // SVG Radial Gauge Calculation (Radius 48 -> Circumference ~301.6)
+  const circumference = 301.6;
+  const initialOffset = circumference - (circumference * ini.score) / 100;
+
   $('decision-content').innerHTML = `
-    <div class="risk-score-wrapper">
-      <div id="score-counter" class="risk-score ${esc(ini.label)}">${ini.score}</div>
+    <div class="risk-instrument-row">
+      <div class="risk-gauge-container">
+        <svg class="risk-gauge-svg" viewBox="0 0 120 120">
+          <circle class="risk-gauge-bg" cx="60" cy="60" r="48" />
+          <circle class="risk-gauge-bar ${esc(ini.label)}" cx="60" cy="60" r="48" style="stroke-dashoffset: ${initialOffset};" />
+        </svg>
+        <div class="risk-gauge-content">
+          <div id="score-counter" class="risk-score ${esc(ini.label)}">${ini.score}</div>
+          <div class="risk-gauge-unit">/ 100</div>
+        </div>
+      </div>
+
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(ini.label)}-bg">${esc(ini.label)} RISK</span>
-        <span style="font-size:12px; color:var(--text-dim); font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</span>
+        <div style="font-size:13px; font-weight:700; color:#fff; font-family:'JetBrains Mono';">${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered</div>
+        <div style="font-size:11px; color:var(--text-dim);">Live Seeded Topology Heuristic</div>
       </div>
     </div>
 
@@ -2198,13 +2354,18 @@ function render(data) {
       ? `<span class="pill-tag pill-dominated">dominated by ${esc(row.dominated_by)}</span>`
       : `<span class="pill-tag pill-pareto">PARETO OPTIMAL</span>`;
     
+    const riskBarColor = row.residual_risk > 70 ? '#F43F5E' : (row.residual_risk > 40 ? '#F59E0B' : '#10B981');
+
     return `
       <tr class="${isRecommended ? 'recommended-row' : ''}">
         <td><b>${esc(row.action)}</b></td>
         <td><code style="color:#93C5FD; font-size:11px; font-family:'JetBrains Mono';">${esc(row.target || '—')}</code></td>
-        <td style="font-family:'JetBrains Mono', monospace; font-weight:700; color:#F8FAFC;">${row.residual_risk}</td>
-        <td style="font-family:'JetBrains Mono';">${row.paths_broken} / ${row.paths_before}</td>
-        <td><span class="${esc(row.impact_label)}">${esc(row.impact_label)} (${row.impact})</span></td>
+        <td>
+          <div style="font-family:'JetBrains Mono', monospace; font-weight:800; color:#F8FAFC;">${row.residual_risk}</div>
+          <div class="mini-risk-bar"><div class="mini-risk-fill" style="width:${row.residual_risk}%; background:${riskBarColor};"></div></div>
+        </td>
+        <td style="font-family:'JetBrains Mono'; font-weight:600;">${row.paths_broken} / ${row.paths_before}</td>
+        <td><span class="${esc(row.impact_label)}" style="font-weight:600;">${esc(row.impact_label)} (${row.impact})</span></td>
         <td>${badge}</td>
       </tr>
     `;
@@ -2304,7 +2465,7 @@ async function drawGraph() {
           'font-family': 'Inter, sans-serif',
           'text-valign': 'bottom',
           'text-margin-y': 7,
-          'text-background-color': '#05070B',
+          'text-background-color': '#04060A',
           'text-background-opacity': 0.88,
           'text-background-padding': '3px',
           'text-background-shape': 'roundrectangle',
@@ -2312,7 +2473,7 @@ async function drawGraph() {
           'height': 36,
           'border-width': 2,
           'border-color': '#38BDF8',
-          'background-color': '#0C1220',
+          'background-color': '#0B1220',
           'transition-property': 'background-color, border-color, width, height',
           'transition-duration': '0.3s'
         }
@@ -2363,14 +2524,14 @@ async function drawGraph() {
         selector: 'node[kind = "DataStore"]',
         style: {
           'shape': 'star',
-          'width': 44,
-          'height': 44,
+          'width': 46,
+          'height': 46,
           'border-color': '#F43F5E',
           'background-color': '#4C0519',
           'border-width': 3,
-          'shadow-blur': 20,
+          'shadow-blur': 22,
           'shadow-color': '#F43F5E',
-          'shadow-opacity': 0.8
+          'shadow-opacity': 0.85
         }
       },
       {
