@@ -30,9 +30,9 @@
     :root {
       color-scheme: light;
 
-      /* Foundations: Warm Canvas & Solid Black Ink */
-      --memphis-canvas: #FFFDF7;
-      --memphis-canvas-dot: #CBD5E1;
+      /* Foundations: Warm Buttercream Newsprint & Solid Black Ink */
+      --memphis-canvas: #FFF8E7;
+      --memphis-canvas-dot: #DDD0B8;
       --memphis-card-bg: #FFFFFF;
       --memphis-black: #0F172A;
       --memphis-border: 3px solid #0F172A;
@@ -1248,7 +1248,7 @@
         </div>
 
         <!-- Canvas Container with Floating Inspector and Zoom Controls -->
-        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:#FFFFFF;" data-lenis-prevent>
+        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:var(--memphis-canvas); background-image:radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px); background-size:24px 24px;" data-lenis-prevent>
           <div id="cy" style="width:100%; height:100%;"></div>
 
           <!-- Floating Node Inspector Overlay -->
