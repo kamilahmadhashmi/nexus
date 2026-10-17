@@ -1209,37 +1209,37 @@
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Repulsion</span>
-                <span id="repel-label" style="font-family:'JetBrains Mono';">9500</span>
+                <span id="repel-label" style="font-family:'JetBrains Mono';">18000</span>
               </div>
-              <input type="range" id="repel-slider" min="1000" max="25000" step="500" value="9500">
+              <input type="range" id="repel-slider" min="2000" max="40000" step="1000" value="18000">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Link Distance</span>
-                <span id="link-dist-label" style="font-family:'JetBrains Mono';">130</span>
+                <span id="link-dist-label" style="font-family:'JetBrains Mono';">220</span>
               </div>
-              <input type="range" id="link-dist-slider" min="50" max="250" step="5" value="130">
+              <input type="range" id="link-dist-slider" min="100" max="350" step="10" value="220">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Spring Force</span>
-                <span id="spring-label" style="font-family:'JetBrains Mono';">0.045</span>
+                <span id="spring-label" style="font-family:'JetBrains Mono';">0.032</span>
               </div>
-              <input type="range" id="spring-slider" min="0.01" max="0.12" step="0.005" value="0.045">
+              <input type="range" id="spring-slider" min="0.01" max="0.10" step="0.005" value="0.032">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Gravity</span>
-                <span id="grav-label" style="font-family:'JetBrains Mono';">0.0012</span>
+                <span id="grav-label" style="font-family:'JetBrains Mono';">0.0006</span>
               </div>
-              <input type="range" id="grav-slider" min="0.0002" max="0.005" step="0.0002" value="0.0012">
+              <input type="range" id="grav-slider" min="0.0001" max="0.003" step="0.0001" value="0.0006">
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
                 <span>Damping</span>
-                <span id="damp-label" style="font-family:'JetBrains Mono';">0.89</span>
+                <span id="damp-label" style="font-family:'JetBrains Mono';">0.84</span>
               </div>
-              <input type="range" id="damp-slider" min="0.70" max="0.97" step="0.01" value="0.89">
+              <input type="range" id="damp-slider" min="0.70" max="0.96" step="0.01" value="0.84">
             </div>
             <div style="display:flex; gap:6px; justify-content:flex-end;">
               <button id="reset-forces-btn" class="secondary" style="font-size:10px; padding:4px 10px; margin-top:10px;">Reset Defaults</button>
@@ -1411,26 +1411,26 @@ const initialLayout = {
   name: 'cose',
   animate: false,
   fit: true,
-  padding: 40,
-  componentSpacing: 80,
-  nodeRepulsion: node => 7500,
-  nodeOverlap: 25,
-  idealEdgeLength: edge => 110,
-  edgeElasticity: edge => 100,
-  gravity: 0.25,
-  numIter: 600
+  padding: 50,
+  componentSpacing: 140,
+  nodeRepulsion: node => 18000,
+  nodeOverlap: 50,
+  idealEdgeLength: edge => 220,
+  edgeElasticity: edge => 80,
+  gravity: 0.12,
+  numIter: 800
 };
 
 // ==============================================================
 // 3. CONTINUOUS FORCE-DIRECTED PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
-  repulsion: 9500,
-  linkDistance: 130,
-  springK: 0.045,
-  gravity: 0.0012,
-  damping: 0.89,
-  collisionRadius: 52
+  repulsion: 18000,
+  linkDistance: 220,
+  springK: 0.032,
+  gravity: 0.0006,
+  damping: 0.84,
+  collisionRadius: 95
 };
 
 let obsidianParams = { ...obsidianDefaults };
@@ -1454,6 +1454,14 @@ window.togglePhysicsPause = function() {
       ? `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-coral); border:1.5px solid var(--memphis-black);"></span> Physics Paused · Static View`
       : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
   }
+  if (!isPhysicsPaused) {
+    physicsNodeMap.forEach(p => {
+      if (!p.isLocked) {
+        p.vx += (Math.random() - 0.5) * 2;
+        p.vy += (Math.random() - 0.5) * 2;
+      }
+    });
+  }
 };
 
 window.rerunInitialLayout = function() {
@@ -1466,8 +1474,8 @@ window.rerunInitialLayout = function() {
   const layout = targetCy.layout(initialLayout);
   targetCy.one('layoutstop', () => {
     if (cy !== targetCy) return;
+    targetCy.fit(undefined, 50);
     initObsidianPhysics(targetCy);
-    targetCy.animate({ fit: { padding: 40 }, duration: 400 });
   });
   layout.run();
 };
@@ -1682,7 +1690,7 @@ function initObsidianPhysics(cyInstance) {
       cx /= Math.max(numNodes, 1);
       cySum /= Math.max(numNodes, 1);
 
-      // Node Repulsion & Collision Prevention
+      // Node Repulsion & Collision Prevention (Generous clearance for labels)
       for (let i = 0; i < numNodes; i++) {
         const p1 = nodesArray[i];
         for (let j = i + 1; j < numNodes; j++) {
@@ -1696,7 +1704,7 @@ function initObsidianPhysics(cyInstance) {
           let colX = 0, colY = 0;
           if (dist < obsidianParams.collisionRadius) {
             const overlap = obsidianParams.collisionRadius - dist;
-            const colPush = overlap * 0.55;
+            const colPush = overlap * 0.6;
             colX = (dx / dist) * colPush;
             colY = (dy / dist) * colPush;
           }
@@ -1710,14 +1718,9 @@ function initObsidianPhysics(cyInstance) {
           p2.fy += fy;
         }
 
-        // Gentle central gravity
+        // Gentle central gravity towards cluster centroid
         p1.fx -= (p1.x - cx) * obsidianParams.gravity * p1.mass;
         p1.fy -= (p1.y - cySum) * obsidianParams.gravity * p1.mass;
-
-        // Subtle ambient organic drift
-        const t = now * 0.001 + p1.phase;
-        p1.fx += Math.sin(t) * 0.08;
-        p1.fy += Math.cos(t * 0.8) * 0.08;
       }
 
       // Edge Hooke's Elastic Spring Forces
@@ -1742,6 +1745,27 @@ function initObsidianPhysics(cyInstance) {
         p2.fy -= fy;
       }
 
+      // Screen boundary containment: keep all nodes strictly within visible screen
+      const extent = cyInstance.extent();
+      const margin = 48;
+      for (let i = 0; i < numNodes; i++) {
+        const p = nodesArray[i];
+        if (p.x < extent.x1 + margin) {
+          p.fx += (extent.x1 + margin - p.x) * 0.25;
+          p.vx *= 0.6;
+        } else if (p.x > extent.x2 - margin) {
+          p.fx -= (p.x - (extent.x2 - margin)) * 0.25;
+          p.vx *= 0.6;
+        }
+        if (p.y < extent.y1 + margin) {
+          p.fy += (extent.y1 + margin - p.y) * 0.25;
+          p.vy *= 0.6;
+        } else if (p.y > extent.y2 - margin) {
+          p.fy -= (p.y - (extent.y2 - margin)) * 0.25;
+          p.vy *= 0.6;
+        }
+      }
+
       // Euler-Verlet Integration Step
       for (let i = 0; i < numNodes; i++) {
         const p = nodesArray[i];
@@ -1754,11 +1778,19 @@ function initObsidianPhysics(cyInstance) {
         p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * obsidianParams.damping;
         p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * obsidianParams.damping;
 
-        p.vx = Math.max(-30, Math.min(30, p.vx));
-        p.vy = Math.max(-30, Math.min(30, p.vy));
+        p.vx = Math.max(-25, Math.min(25, p.vx));
+        p.vy = Math.max(-25, Math.min(25, p.vy));
+
+        // Micro-jitter sleep below perceptual motion threshold
+        if (Math.abs(p.vx) < 0.02) p.vx = 0;
+        if (Math.abs(p.vy) < 0.02) p.vy = 0;
 
         p.x += p.vx;
         p.y += p.vy;
+
+        // Viewport hard clamp ensuring no node ever exits the visible screen
+        p.x = Math.max(extent.x1 + 35, Math.min(extent.x2 - 35, p.x));
+        p.y = Math.max(extent.y1 + 35, Math.min(extent.y2 - 35, p.y));
 
         p.node.position({ x: p.x, y: p.y });
       }
@@ -2321,18 +2353,19 @@ async function drawGraph() {
         style: {
           'label': 'data(label)',
           'color': '#0F172A',
-          'font-size': '10px',
+          'font-size': '9.5px',
           'font-weight': 800,
           'font-family': 'JetBrains Mono, monospace',
           'text-background-color': '#FFE033',
           'text-background-opacity': 1.0,
-          'text-background-padding': '3px',
+          'text-background-padding': '3px 6px',
           'text-background-shape': 'roundrectangle',
           'text-border-color': '#0F172A',
-          'text-border-width': 1.8,
+          'text-border-width': 1.5,
           'text-border-opacity': 1.0,
           'text-rotation': 'autorotate',
           'curve-style': 'bezier',
+          'min-zoomed-font-size': 0,
           'line-color': '#0F172A',
           'width': 2.8,
           'target-arrow-shape': 'triangle',
@@ -2473,6 +2506,7 @@ async function drawGraph() {
   const layout = graphInstance.layout(initialLayout);
   graphInstance.one('layoutstop', () => {
     if (cy !== graphInstance) return;
+    graphInstance.fit(undefined, 50);
     initObsidianPhysics(graphInstance);
   });
   layout.run();
