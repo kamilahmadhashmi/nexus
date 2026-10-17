@@ -25,6 +25,19 @@ Click **Run guided demo** to investigate the preselected synthetic alert with de
    - Pre-loaded with 1-click queries: *7-Hop Attack Radius*, *Privilege Escalation Paths*, *Crown Jewel Inventory*, and *Topology Distribution*.
    - Run arbitrary OpenCypher queries with sub-millisecond FalkorDB latency reporting and automatic canvas entity spotlighting.
 
+3. **Active 7-Hop Attack Subway Route Stepper**:
+   - Visualizes the full sequential path traversal from compromised identity to Crown Jewel with labeled relationship badges (`—OWNS→`, `—LOGS_INTO→`, `—HOSTS_CREDENTIAL→`).
+   - One-click interactive inspection: clicking any entity badge automatically zooms and spotlights the node in the Cytoscape graph canvas.
+
+4. **Explainable Decision Trade-Off Rationale**:
+   - Explains precisely why the recommended containment was chosen over rejecting Monitor Only and over higher-disruption candidate actions, with Pareto frontier and residual risk guarantees.
+
+5. **FalkorDB-Native Persistent Incident Memory (Track 02)**:
+   - Preserves incident records directly inside FalkorDB (`:Incident` nodes linked via `:CONTAINED_ENTITY` edges) across investigations, ensuring agents remember previous containment history and decisions across sessions.
+
+6. **Live Database Health & Telemetry Pill**:
+   - Header badge actively monitors FalkorDB connectivity, live node count (157+), edge count (221+), and millisecond Cypher query round-trip latency.
+
 ### Desktop Investigation & Sandbox Diff
 ![NEXUS Cypher REPL and Sandbox Diff](artifacts/screenshots/nexus-cypher-repl-sandbox-diff.png)
 
@@ -171,8 +184,9 @@ Run `python -m mcp_server.server` from the project root. It exposes the same eig
 All graph data is synthetic and results are not production-calibrated. Risk uses assumptions `K=4.0`, `IP_FACTOR=0.6`, and `REVOKE_FACTOR=0.7`; these are model constants, not validated probabilities. Choke points use attack-path coverage, not betweenness. Vulnerability nodes are seeded as evidence, but the supplied Part B risk code does not adjust scores based on vulnerability relationships. NEXUS describes next-move risk analysis, not attacker prediction. No latency or real-world effectiveness claim is made.
 
 Built for the WeMakeDevs & FalkorDB Graph Hacks Hackathon:
-- **Primary Track**: **Agents That Act on Connected Data** (autonomous SOC agent discovering and neutralizing multi-hop attack graphs)
-- **Secondary Track**: **Company Brain** (deep relational model of enterprise identities, devices, service accounts, and crown jewels)
+- **Primary Track**: **Agents That Act on Connected Data** (autonomous SOC agent discovering and neutralizing multi-hop attack graphs with human-in-the-loop approval)
+- **Secondary Track**: **Agent Memory** (FalkorDB-native incident memory preserving past investigations, actions, and containment history across sessions)
+- **Tertiary Track**: **Company Brain** (deep relational model of enterprise identities, devices, service accounts, and crown jewels)
 
 AI coding assistance was used to implement and review this project; contributors understand and can verify the submitted code.
 

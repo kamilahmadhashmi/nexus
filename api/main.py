@@ -85,6 +85,61 @@ def run_cypher(req: CypherReq):
         }
 
 
+@app.get("/api/health")
+def health():
+    start = time.perf_counter()
+    try:
+        g = graph()
+        node_res = g.query("MATCH (n) RETURN count(n)").result_set
+        node_count = node_res[0][0] if node_res else 0
+        edge_res = g.query("MATCH ()-[r]->() RETURN count(r)").result_set
+        edge_count = edge_res[0][0] if edge_res else 0
+        latency_ms = round((time.perf_counter() - start) * 1000, 2)
+        return {
+            "status": "healthy",
+            "falkordb_connected": True,
+            "latency_ms": latency_ms,
+            "node_count": node_count,
+            "edge_count": edge_count,
+            "synthetic_dataset": True,
+        }
+    except Exception as exc:
+        latency_ms = round((time.perf_counter() - start) * 1000, 2)
+        return {
+            "status": "unhealthy",
+            "falkordb_connected": False,
+            "latency_ms": latency_ms,
+            "error": str(exc),
+        }
+
+
+@app.get("/api/history")
+def incident_history():
+    try:
+        rows = graph().query(
+            """
+            MATCH (inc:Incident)
+            OPTIONAL MATCH (inc)-[:CONTAINED_ENTITY]->(t)
+            RETURN inc.id, inc.alert_id, inc.action, coalesce(t.name, inc.target), inc.status, inc.timestamp
+            ORDER BY inc.timestamp DESC
+            LIMIT 10
+            """
+        ).result_set
+        return [
+            {
+                "id": r[0],
+                "alert_id": r[1],
+                "action": r[2],
+                "target": r[3],
+                "status": r[4],
+                "timestamp": r[5],
+            }
+            for r in rows
+        ]
+    except Exception:
+        return []
+
+
 @app.get("/api/alerts")
 def alerts():
     rows = graph().query(
@@ -96,6 +151,10 @@ def alerts():
 @app.post("/api/reset")
 def reset_demo():
     count = rebuild_demo_graph()
+    try:
+        graph().query("MATCH (inc:Incident) DETACH DELETE inc")
+    except Exception:
+        pass
     store.clear()
     return {"ok": True, "nodes": count, "message": "Synthetic demo graph restored."}
 
@@ -109,7 +168,31 @@ def investigate(request: InvestigateReq):
         raise HTTPException(404, "unknown alert")
     mock = request.mode == "mock" or os.getenv("MOCK_LLM") == "1" or not os.getenv("ANTHROPIC_API_KEY")
     runner = loop.run_scripted if mock else loop.run_llm
-    return runner(request.alert_id, rows[0][0], request.autonomous)
+    res = runner(request.alert_id, rows[0][0], request.autonomous)
+    try:
+        hist_rows = graph().query(
+            """
+            MATCH (inc:Incident)
+            OPTIONAL MATCH (inc)-[:CONTAINED_ENTITY]->(t)
+            RETURN inc.id, inc.alert_id, inc.action, coalesce(t.name, inc.target), inc.status, inc.timestamp
+            ORDER BY inc.timestamp DESC
+            LIMIT 5
+            """
+        ).result_set
+        res["history"] = [
+            {
+                "id": r[0],
+                "alert_id": r[1],
+                "action": r[2],
+                "target": r[3],
+                "status": r[4],
+                "timestamp": r[5],
+            }
+            for r in hist_rows
+        ]
+    except Exception:
+        res["history"] = []
+    return res
 
 
 @app.post("/api/contain")

@@ -43,9 +43,40 @@ def execute(investigation_id, action, target=None, approved=False):
         "before": before["score"],
         "after": after["score"],
         "verified": verified,
+        "simulated_residual": row["residual_risk"],
     }
     if change_log is not None:
         record.setdefault("change_log", []).append(change_log)
+        # Track persistent incident memory directly inside FalkorDB
+        try:
+            graph().query(
+                """
+                MERGE (inc:Incident {id: $inv_id})
+                SET inc.alert_id = $alert_id,
+                    inc.action = $action,
+                    inc.target = $target,
+                    inc.timestamp = timestamp(),
+                    inc.status = 'CONTAINED'
+                """,
+                {
+                    "inv_id": investigation_id,
+                    "alert_id": record["alert_id"],
+                    "action": action,
+                    "target": target or "N/A",
+                },
+            )
+            if target:
+                graph().query(
+                    """
+                    MATCH (inc:Incident {id: $inv_id})
+                    MATCH (t {id: $target})
+                    MERGE (inc)-[:CONTAINED_ENTITY]->(t)
+                    """,
+                    {"inv_id": investigation_id, "target": target},
+                )
+        except Exception:
+            pass
+
     store.save(investigation_id, record)
     return {
         "ok": True,
@@ -65,6 +96,17 @@ def rollback(investigation_id):
         return {"ok": False, "error": "UNKNOWN_INVESTIGATION"}
     if record.get("executed") and record["executed"]["action"] != "monitor_only":
         simulate.restore(graph(), record["alert_id"])
+        # Update persistent incident memory state in FalkorDB
+        try:
+            graph().query(
+                """
+                MATCH (inc:Incident {id: $inv_id})
+                SET inc.status = 'ROLLED_BACK', inc.rolled_back_at = timestamp()
+                """,
+                {"inv_id": investigation_id},
+            )
+        except Exception:
+            pass
     record["executed"] = None
     record["change_log"] = []
     store.save(investigation_id, record)
