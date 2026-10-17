@@ -217,23 +217,23 @@
       z-index: 60;
       background: #FFFFFF;
       border-bottom: var(--memphis-border-thick);
-      padding: 12px 24px;
+      padding: 8px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       box-shadow: 0 4px 0px rgba(15, 23, 42, 0.08);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
     }
     .brand-logo {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: var(--radius-sm);
       background: var(--memphis-yellow);
       border: var(--memphis-border-thin);
@@ -242,7 +242,7 @@
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 20px;
+      font-size: 18px;
       color: var(--memphis-black);
       transform: rotate(-3deg);
       transition: transform 0.15s ease;
@@ -256,7 +256,7 @@
     }
     .brand-text b {
       font-weight: 900;
-      font-size: 19px;
+      font-size: 18px;
       letter-spacing: -0.5px;
       color: var(--memphis-black);
       line-height: 1.1;
@@ -265,7 +265,7 @@
       gap: 6px;
     }
     .brand-text span {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       color: var(--text-secondary);
       letter-spacing: 0.5px;
@@ -275,12 +275,12 @@
     .telemetry-ticker {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--memphis-black);
       background: var(--memphis-yellow-light);
-      padding: 5px 12px;
+      padding: 4px 10px;
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
@@ -293,7 +293,7 @@
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -442,8 +442,8 @@
        ========================================================================== */
     .demo-guide {
       max-width: 1520px;
-      margin: 18px auto 0;
-      padding: 16px 24px;
+      margin: 10px auto 0;
+      padding: 10px 18px;
       background: var(--memphis-yellow);
       border: var(--memphis-border-thick);
       border-radius: var(--radius-md);
@@ -451,7 +451,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 16px;
       position: relative;
       overflow: hidden;
     }
@@ -460,7 +460,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 12px;
+      width: 10px;
       height: 100%;
       background: repeating-linear-gradient(
         45deg,
@@ -472,36 +472,38 @@
       border-right: 2px solid var(--memphis-black);
     }
     .demo-guide-copy {
-      padding-left: 10px;
+      padding-left: 8px;
     }
     .demo-guide-title {
-      font-size: 15px;
+      font-size: 13.5px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
     }
     .demo-guide-steps {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: var(--memphis-black);
-      margin-top: 3px;
+      margin-top: 2px;
     }
     .demo-guide-note {
-      font-size: 11.5px;
+      font-size: 10.5px;
       font-weight: 500;
       color: #334155;
-      margin-top: 3px;
+      margin-top: 2px;
     }
     #guided-demo {
       background: var(--memphis-coral);
       color: #FFFFFF;
-      font-size: 13px;
-      padding: 10px 18px;
-      box-shadow: var(--shadow-offset-md);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 14px;
+      box-shadow: var(--shadow-offset-xs);
+      flex-shrink: 0;
     }
     #guided-demo:hover:not(:disabled) {
       background: #E11D48;
@@ -513,7 +515,7 @@
     main {
       max-width: 1520px;
       margin: 0 auto;
-      padding: 20px 20px 48px;
+      padding: 12px 18px 36px;
       width: 100%;
       position: relative;
       z-index: 10;
@@ -521,17 +523,42 @@
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: 460px minmax(0, 1fr);
+      grid-template-columns: 420px minmax(0, 1fr);
       grid-template-areas:
         "decision graph"
         "matrix matrix"
+        "cypher cypher"
         "trace trace";
-      gap: 22px;
+      gap: 16px;
       align-items: start;
     }
     .analysis-stack { display: contents; }
-    #decision-card { grid-area: decision; }
+    #decision-card {
+      grid-area: decision;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      max-height: clamp(440px, calc(100vh - 150px), 560px);
+      overflow-y: auto;
+      padding: 16px 18px;
+    }
+    #decision-card #contain, #decision-card #rollback {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      justify-content: center;
+      margin-top: 6px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+    .evidence-scroll-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
     #matrix-card { grid-area: matrix; min-width: 0; }
+    #cypher-card { grid-area: cypher; min-width: 0; }
     #trace-card { grid-area: trace; min-width: 0; }
     #graph-card { grid-area: graph; min-width: 0; }
 
@@ -540,7 +567,7 @@
       background: var(--memphis-card-bg);
       border: var(--memphis-border-thick);
       border-radius: var(--radius-md);
-      padding: 22px;
+      padding: 16px 18px;
       position: relative;
       box-shadow: var(--shadow-offset-md);
       transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -554,12 +581,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 3px solid var(--memphis-black);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2.5px solid var(--memphis-black);
     }
     .card-title {
-      font-size: 14.5px;
+      font-size: 13.5px;
       font-weight: 900;
       color: var(--memphis-black);
       letter-spacing: 0.3px;
@@ -575,24 +602,25 @@
     .risk-instrument-row {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 14px;
       background: var(--memphis-yellow-light);
       border: var(--memphis-border-thin);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-offset-xs);
-      padding: 16px 20px;
-      margin-bottom: 18px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
       position: relative;
+      flex-shrink: 0;
     }
     .risk-gauge-container {
       position: relative;
-      width: 96px;
-      height: 96px;
+      width: 80px;
+      height: 80px;
       flex-shrink: 0;
     }
     .risk-gauge-svg {
-      width: 96px;
-      height: 96px;
+      width: 80px;
+      height: 80px;
       transform: rotate(-90deg);
     }
     .risk-gauge-bg {
@@ -622,14 +650,14 @@
     }
     .risk-score {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 900;
       color: var(--memphis-black);
       line-height: 1;
     }
     .risk-gauge-unit {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
       color: var(--text-muted);
     }
@@ -637,14 +665,14 @@
     .risk-meta {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 3px;
     }
     .risk-band-pill {
       display: inline-flex;
       align-self: flex-start;
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: var(--radius-sm);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 900;
       font-family: 'JetBrains Mono', monospace;
       border: var(--memphis-border-thin);
@@ -673,30 +701,31 @@
       border: var(--memphis-border-thin);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-offset-xs);
-      padding: 16px 18px;
-      margin-bottom: 16px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
     .action-header {
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--memphis-black);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .action-name {
-      font-size: 15px;
+      font-size: 13.5px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .action-reason {
-      font-size: 12px;
+      font-size: 11.5px;
       color: var(--text-secondary);
-      margin-top: 4px;
-      line-height: 1.4;
+      margin-top: 2px;
+      line-height: 1.35;
     }
 
     .evidence-panel {
@@ -1033,18 +1062,133 @@
     .graph-card {
       display: flex;
       flex-direction: column;
-      height: 600px;
-      padding: 18px;
+      height: clamp(420px, calc(100vh - 150px), 520px);
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
     }
     .graph-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-      border-bottom: 3px solid var(--memphis-black);
-      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+      border-bottom: 2.5px solid var(--memphis-black);
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .graph-toolbar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .graph-toolbar-title b {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+    }
+    #physics-status {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .graph-toolbar-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+    .graph-toolbar-actions button {
+      font-size: 10.5px;
+      padding: 4px 8px;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    /* Active Attack Route Traversal Bar (Subway Stepper directly above canvas) */
+    .graph-subway-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      background: var(--memphis-yellow-light);
+      border: 2px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-offset-xs);
+      overflow-x: auto;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .subway-strip-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--memphis-black);
+      flex-shrink: 0;
+    }
+    .subway-strip-label svg {
+      color: var(--memphis-coral);
+    }
+    .subway-route-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+    .subway-node-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--memphis-black);
+      cursor: pointer;
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+      transition: transform 0.1s, background 0.1s;
+      white-space: nowrap;
+    }
+    .subway-node-badge:hover {
+      background: var(--memphis-yellow);
+      transform: translateY(-1px);
+    }
+    .subway-node-badge.crown-jewel {
+      background: var(--memphis-coral-light);
+      border-color: var(--memphis-coral);
+      color: #991B1B;
+      font-weight: 900;
+    }
+    .subway-edge-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--text-muted);
+      background: #F1F5F9;
+      border: 1px dashed var(--memphis-black);
+      padding: 1px 4px;
+      border-radius: 3px;
+      user-select: none;
+      white-space: nowrap;
     }
 
     #forces-drawer {
@@ -1052,9 +1196,23 @@
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      margin-bottom: 12px;
-      padding: 14px 18px;
-      font-size: 11px;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      font-size: 10.5px;
+      flex-shrink: 0;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      min-height: 240px;
+      overflow: hidden;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      background: var(--memphis-canvas);
+      background-image: radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px);
+      background-size: 24px 24px;
     }
 
     /* Tactile Memphis Sliders */
@@ -1062,69 +1220,95 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: #FFFFFF;
       border: 1.5px solid var(--memphis-black);
-      border-radius: 4px;
+      border-radius: 3px;
       outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
       background: var(--memphis-yellow);
-      border: 2px solid var(--memphis-black);
+      border: 1.5px solid var(--memphis-black);
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 2px 2px 0px var(--memphis-black);
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
     }
     input[type="range"]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
+      width: 15px;
+      height: 15px;
       background: var(--memphis-yellow);
-      border: 2px solid var(--memphis-black);
+      border: 1.5px solid var(--memphis-black);
       border-radius: 50%;
       cursor: pointer;
-      box-shadow: 2px 2px 0px var(--memphis-black);
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
     }
 
     /* Floating Node Inspector */
     #node-inspector {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 280px;
+      top: 12px;
+      right: 12px;
+      width: 260px;
       background: #FFFFFF;
       border: var(--memphis-border-thick);
       border-radius: var(--radius-md);
-      padding: 14px 16px;
+      padding: 10px 12px;
       z-index: 25;
-      box-shadow: var(--shadow-offset-lg);
+      box-shadow: var(--shadow-offset-md);
+      max-height: calc(100% - 24px);
+      overflow-y: auto;
     }
 
-    /* Semantic Graph Legend */
+    /* Semantic Graph Legend with Interactive Entity Filters */
     .graph-legend {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      padding-top: 12px;
-      margin-top: 12px;
-      border-top: 2.5px solid var(--memphis-black);
-      font-size: 11px;
+      gap: 8px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-top: 8px;
+      margin-top: 8px;
+      border-top: 2px solid var(--memphis-black);
+      font-size: 10.5px;
       font-weight: 700;
+      flex-shrink: 0;
     }
-    .legend-item {
-      display: flex;
+    .legend-pill {
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 2px 7px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--memphis-black);
+      cursor: pointer;
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+      transition: transform 0.1s, background 0.1s;
+      white-space: nowrap;
+    }
+    .legend-pill:hover {
+      background: var(--memphis-yellow-light);
+      transform: translateY(-1px);
+    }
+    .legend-pill.active {
+      background: var(--memphis-yellow);
+      box-shadow: var(--shadow-offset-active);
+      transform: translateY(1px);
     }
     .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
+      width: 10px;
+      height: 10px;
+      border-radius: 2.5px;
       border: 1.5px solid var(--memphis-black);
+      flex-shrink: 0;
     }
 
     /* ==========================================================================
@@ -1316,10 +1500,14 @@
           "decision"
           "graph"
           "matrix"
+          "cypher"
           "trace";
       }
       .graph-card {
-        height: 520px;
+        height: 460px;
+      }
+      .graph-toolbar {
+        flex-wrap: wrap;
       }
     }
 
@@ -1427,251 +1615,247 @@
 <main>
   <div class="dashboard-grid">
     <!-- Left Column: Threat Intelligence & Decision Deck -->
-    <div class="analysis-stack">
-      
-      <!-- Decision Card -->
-      <section class="card" id="decision-card">
-        <div class="card-header">
-          <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            Threat Analysis & Containment
-          </span>
-          <span id="inv-id" class="badge" style="font-size:10px;">AWAITING RUN</span>
-        </div>
+    <section class="card" id="decision-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Threat Analysis & Containment
+        </span>
+        <span id="inv-id" class="badge" style="font-size:10px;">AWAITING RUN</span>
+      </div>
 
-        <div id="decision-content">
-          <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
-        </div>
-      </section>
-
-      <!-- Containment Matrix Card -->
-      <section class="card" id="matrix-card">
-        <div class="card-header">
-          <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            Pareto Action Simulation Matrix
-          </span>
-          <span style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
-        </div>
-
-        <div id="matrix-container" class="table-container" data-lenis-prevent>
-          <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
-        </div>
-      </section>
-
-      <!-- Agent Trace Card -->
-      <section class="card" id="trace-card">
-        <div class="card-header">
-          <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-            Investigation Execution Trace
-          </span>
-          <span id="trace-step-count" style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">0 steps</span>
-        </div>
-
-        <div id="trace" class="trace-list" data-lenis-prevent>
-          <p style="color:var(--text-ethereal); font-size:12px; padding:8px 0;">Awaiting investigation dispatch...</p>
-        </div>
-      </section>
-
-    </div>
+      <div id="decision-content">
+        <p style="color:var(--text-muted); padding: 20px 0;">Choose <b>Run guided demo</b> to trace the preloaded synthetic alert. NEXUS will show the graph evidence, risk score, and response trade-offs before asking you to approve any graph change.</p>
+      </div>
+    </section>
 
     <!-- Right Column: Interactive Attack Graph Workspace -->
-    <div id="graph-card" style="display:flex; flex-direction:column; gap:20px;">
-      <section class="card graph-card">
-        <div class="graph-toolbar">
-          <div>
-            <div style="font-size:14px; font-weight:900; color:var(--text-primary); letter-spacing:-0.2px;">Attack Path Traversal Topology</div>
-            <div id="physics-status" style="font-size:11px; font-weight:800; color:var(--text-secondary); font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:6px;">
-              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span>
-              Obsidian Force-Directed Physics Active · Drag nodes to deform network
-            </div>
-          </div>
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button id="physics-pause-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Pause or Resume Live Force-Directed Physics">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-              <span id="pause-btn-text">Pause</span>
-            </button>
-            <button id="relayout-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Re-run Initial CoSE Global Convergence Layout">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-              Re-layout
-            </button>
-            <button id="path-spotlight-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Highlight Attack Path to Crown Jewel">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              Attack Path
-            </button>
-            <button id="forces-toggle-btn" class="secondary" style="font-size:11px; padding:5px 10px;" title="Adjust Obsidian Physics Simulation Parameters">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              Forces
-            </button>
-            <button id="fit-btn" class="secondary" style="font-size:11px; padding:5px 10px;" disabled>
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Fit View
-            </button>
+    <section class="card graph-card" id="graph-card">
+      <div class="graph-toolbar">
+        <div class="graph-toolbar-title">
+          <b>Attack Path Traversal Topology</b>
+          <div id="physics-status">
+            <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span>
+            Obsidian Force-Directed Physics Active · Drag nodes to deform network
           </div>
         </div>
-
-        <!-- Force Controls Drawer -->
-        <div id="forces-drawer" data-lenis-prevent style="display:none;">
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:14px; align-items:center;">
-            <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
-                <span>Repulsion</span>
-                <span id="repel-label" style="font-family:'JetBrains Mono';">18000</span>
-              </div>
-              <input type="range" id="repel-slider" aria-label="Node repulsion force" min="2000" max="40000" step="1000" value="18000">
-            </div>
-            <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
-                <span>Link Distance</span>
-                <span id="link-dist-label" style="font-family:'JetBrains Mono';">220</span>
-              </div>
-              <input type="range" id="link-dist-slider" aria-label="Link distance" min="100" max="350" step="10" value="220">
-            </div>
-            <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
-                <span>Spring Force</span>
-                <span id="spring-label" style="font-family:'JetBrains Mono';">0.032</span>
-              </div>
-              <input type="range" id="spring-slider" aria-label="Spring force" min="0.01" max="0.10" step="0.005" value="0.032">
-            </div>
-            <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
-                <span>Gravity</span>
-                <span id="grav-label" style="font-family:'JetBrains Mono';">0.0006</span>
-              </div>
-              <input type="range" id="grav-slider" aria-label="Centroid gravity" min="0.0001" max="0.003" step="0.0001" value="0.0006">
-            </div>
-            <div>
-              <div style="display:flex; justify-content:space-between; margin-bottom:3px; font-weight:800; color:var(--memphis-black);">
-                <span>Damping</span>
-                <span id="damp-label" style="font-family:'JetBrains Mono';">0.84</span>
-              </div>
-              <input type="range" id="damp-slider" aria-label="Velocity damping" min="0.70" max="0.96" step="0.01" value="0.84">
-            </div>
-            <div style="display:flex; gap:6px; justify-content:flex-end;">
-              <button id="reset-forces-btn" class="secondary" aria-label="Reset physics defaults" style="font-size:10px; padding:4px 10px; margin-top:10px;">Reset Defaults</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Canvas Container with Floating Inspector and Zoom Controls -->
-        <div style="position:relative; flex:1; width:100%; height:100%; overflow:hidden; border:var(--memphis-border-thin); border-radius:var(--radius-sm); background:var(--memphis-canvas); background-image:radial-gradient(var(--memphis-canvas-dot) 1.5px, transparent 1.5px); background-size:24px 24px;">
-          <div id="cy" style="width:100%; height:100%;"></div>
-
-          <!-- Floating Sandbox Diff Preview HUD Overlay -->
-          <div id="sandbox-preview-hud" class="sandbox-hud hidden">
-            <div class="sandbox-hud-header">
-              <span class="sandbox-hud-title">⚡ WHAT-IF SANDBOX PREVIEW</span>
-              <span id="sb-hud-tag" class="pill-tag pill-pareto">PARETO CANDIDATE</span>
-            </div>
-            <div class="sandbox-hud-action">
-              <span id="sb-hud-action-name" style="font-family:'JetBrains Mono'; font-weight:900; color:var(--memphis-coral); text-transform:uppercase;">quarantine_host</span>
-              <code id="sb-hud-target" style="font-family:'JetBrains Mono'; font-weight:800; font-size:12px; background:#FFFFFF; border:1.5px solid var(--memphis-black); padding:2px 7px; border-radius:3px;">srv-jump-01</code>
-            </div>
-            <div class="sandbox-hud-stats">
-              <span class="sb-stat">Simulated Risk: <b id="sb-hud-risk" style="color:var(--memphis-coral);">38/100</b></span>
-              <span class="sb-stat">Paths Broken: <b id="sb-hud-broken">2 / 2</b></span>
-              <span class="sb-stat">Disruption: <b id="sb-hud-impact">MEDIUM (45)</b></span>
-            </div>
-            <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
-          </div>
-
-          <!-- Floating Node Inspector Overlay -->
-          <div id="node-inspector" style="display:none;" aria-label="Node details inspector">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--memphis-black);">
-              <div style="display:flex; align-items:center; gap:7px;">
-                <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span>
-                <span id="inspect-title" style="font-weight:900; font-size:13px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
-              </div>
-              <button id="inspect-close" aria-label="Close entity inspector" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:14px; font-weight:900; box-shadow:none;">✕</button>
-            </div>
-            <div style="font-size:11px; display:flex; flex-direction:column; gap:8px;">
-              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
-                <span style="font-weight:700; color:var(--text-muted);">Node ID</span>
-                <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
-              </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
-                <span style="font-weight:700; color:var(--text-muted);">Entity Kind</span>
-                <span id="inspect-kind" style="color:var(--memphis-black); font-weight:800;">-</span>
-              </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
-                <span style="font-weight:700; color:var(--text-muted);">Status</span>
-                <span id="inspect-status" class="pill-tag">-</span>
-              </div>
-              <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:4px;">
-                <span style="font-weight:700; color:var(--text-muted);">Connections</span>
-                <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
-              </div>
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
-                <span style="font-weight:700; color:var(--text-muted);">Position Lock</span>
-                <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:4px 8px;">Pin Node</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Floating Canvas Zoom Controls -->
-          <div style="position:absolute; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:15;">
-            <button id="zoom-in-btn" class="secondary" aria-label="Zoom in" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom In">+</button>
-            <button id="zoom-out-btn" class="secondary" aria-label="Zoom out" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px;" title="Zoom Out">−</button>
-            <button id="fit-canvas-btn" class="secondary" aria-label="Fit graph to viewport" style="width:32px; height:32px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Memphis Semantic Node Legend -->
-        <div class="graph-legend">
-          <span style="font-weight:900; color:var(--text-primary); text-transform:uppercase; margin-right:4px;">Entities:</span>
-          <div class="legend-item"><div class="legend-dot" style="background:#A78BFA;"></div> Person</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#38BDF8;"></div> Device</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#34D399;"></div> Server</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#FDE047;"></div> ServiceAccount</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#F472B6;"></div> Service</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#FF6B6B;"></div> DataStore (Crown Jewel)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></div> Quarantined</div>
-        </div>
-      </section>
-
-      <!-- Live FalkorDB OpenCypher Explorer Card -->
-      <section class="card" id="cypher-card">
-        <div class="card-header">
-          <span class="card-title">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Live FalkorDB OpenCypher Explorer
-          </span>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span id="cypher-latency-pill" class="badge" style="font-size:11px; font-weight:800; background:#FFFFFF;">⚡ Ready</span>
-            <span class="badge" style="background:var(--memphis-mint); font-size:10px;">FALKORDB ENGINE</span>
-          </div>
-        </div>
-
-        <div class="cypher-chips-bar">
-          <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">1-Click Cypher:</span>
-          <button class="cypher-chip" data-query="MATCH p = (a:Alert)-[*1..7]->(d:DataStore) RETURN p LIMIT 5">⚡ 7-Hop Attack Radius</button>
-          <button class="cypher-chip" data-query="MATCH (u:Person)-[:OWNS]->(d:Device)-[:LOGS_INTO]->(s:Server)-[:HOSTS_CREDENTIAL]->(c) RETURN u.name, d.name, s.name, c.name LIMIT 5">🛡️ Privilege Escalation</button>
-          <button class="cypher-chip" data-query="MATCH (d:DataStore) RETURN d.name, d.criticality ORDER BY d.criticality DESC LIMIT 6">💎 Crown Jewels</button>
-          <button class="cypher-chip" data-query="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC">📊 Topology Distribution</button>
-        </div>
-
-        <div class="cypher-editor-row">
-          <div class="cypher-input-wrap">
-            <span class="cypher-prompt">CYPHER &gt;</span>
-            <input type="text" id="cypher-input" aria-label="OpenCypher query input" value="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC" placeholder="Enter OpenCypher query..." spellcheck="false" autocomplete="off">
-          </div>
-          <button id="run-cypher-btn" class="primary" aria-label="Execute OpenCypher query" style="padding:7px 18px; font-size:12px; font-weight:900;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run Cypher
+        <div class="graph-toolbar-actions">
+          <button id="physics-pause-btn" class="secondary" title="Pause or Resume Live Force-Directed Physics">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            <span id="pause-btn-text">Pause</span>
+          </button>
+          <button id="relayout-btn" class="secondary" title="Re-run Initial CoSE Global Convergence Layout">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Re-layout
+          </button>
+          <button id="path-spotlight-btn" class="secondary" title="Highlight Attack Path to Crown Jewel">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Attack Path
+          </button>
+          <button id="forces-toggle-btn" class="secondary" title="Adjust Obsidian Physics Simulation Parameters">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Forces
+          </button>
+          <button id="fit-btn" class="secondary" disabled>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Fit View
           </button>
         </div>
+      </div>
 
-        <div id="cypher-result-container" class="table-container" style="max-height:220px; min-height:100px; overflow-y:auto;" data-lenis-prevent>
-          <div id="cypher-empty-state" style="color:var(--text-muted); font-size:12px; padding:18px; text-align:center;">
-            Click a 1-click query chip above or type any OpenCypher query to execute in real-time against FalkorDB.
+      <!-- Force Controls Drawer -->
+      <div id="forces-drawer" data-lenis-prevent style="display:none;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap:10px; align-items:center;">
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-weight:800; font-size:10.5px; color:var(--memphis-black);">
+              <span>Repulsion</span>
+              <span id="repel-label" style="font-family:'JetBrains Mono';">18000</span>
+            </div>
+            <input type="range" id="repel-slider" aria-label="Node repulsion force" min="2000" max="40000" step="1000" value="18000">
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-weight:800; font-size:10.5px; color:var(--memphis-black);">
+              <span>Link Distance</span>
+              <span id="link-dist-label" style="font-family:'JetBrains Mono';">220</span>
+            </div>
+            <input type="range" id="link-dist-slider" aria-label="Link distance" min="100" max="350" step="10" value="220">
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-weight:800; font-size:10.5px; color:var(--memphis-black);">
+              <span>Spring Force</span>
+              <span id="spring-label" style="font-family:'JetBrains Mono';">0.032</span>
+            </div>
+            <input type="range" id="spring-slider" aria-label="Spring force" min="0.01" max="0.10" step="0.005" value="0.032">
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-weight:800; font-size:10.5px; color:var(--memphis-black);">
+              <span>Gravity</span>
+              <span id="grav-label" style="font-family:'JetBrains Mono';">0.0006</span>
+            </div>
+            <input type="range" id="grav-slider" aria-label="Centroid gravity" min="0.0001" max="0.003" step="0.0001" value="0.0006">
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px; font-weight:800; font-size:10.5px; color:var(--memphis-black);">
+              <span>Damping</span>
+              <span id="damp-label" style="font-family:'JetBrains Mono';">0.84</span>
+            </div>
+            <input type="range" id="damp-slider" aria-label="Velocity damping" min="0.70" max="0.96" step="0.01" value="0.84">
+          </div>
+          <div style="display:flex; gap:6px; justify-content:flex-end;">
+            <button id="reset-forces-btn" class="secondary" aria-label="Reset physics defaults" style="font-size:10px; padding:3px 8px;">Reset Defaults</button>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+
+      <!-- Active Attack Traversal Route Stepper Bar (Docked directly above canvas) -->
+      <div id="graph-subway-container" class="graph-subway-bar" style="display:none;" data-lenis-prevent></div>
+
+      <!-- Canvas Container with Floating Inspector and Zoom Controls -->
+      <div class="canvas-wrap">
+        <div id="cy" style="width:100%; height:100%;"></div>
+
+        <!-- Floating Sandbox Diff Preview HUD Overlay -->
+        <div id="sandbox-preview-hud" class="sandbox-hud hidden">
+          <div class="sandbox-hud-header">
+            <span class="sandbox-hud-title">⚡ WHAT-IF SANDBOX PREVIEW</span>
+            <span id="sb-hud-tag" class="pill-tag pill-pareto">PARETO CANDIDATE</span>
+          </div>
+          <div class="sandbox-hud-action">
+            <span id="sb-hud-action-name" style="font-family:'JetBrains Mono'; font-weight:900; color:var(--memphis-coral); text-transform:uppercase;">quarantine_host</span>
+            <code id="sb-hud-target" style="font-family:'JetBrains Mono'; font-weight:800; font-size:11px; background:#FFFFFF; border:1.5px solid var(--memphis-black); padding:2px 6px; border-radius:3px;">srv-jump-01</code>
+          </div>
+          <div class="sandbox-hud-stats">
+            <span class="sb-stat">Simulated Risk: <b id="sb-hud-risk" style="color:var(--memphis-coral);">38/100</b></span>
+            <span class="sb-stat">Paths Broken: <b id="sb-hud-broken">2 / 2</b></span>
+            <span class="sb-stat">Disruption: <b id="sb-hud-impact">MEDIUM (45)</b></span>
+          </div>
+          <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
+        </div>
+
+        <!-- Floating Node Inspector Overlay -->
+        <div id="node-inspector" style="display:none;" aria-label="Node details inspector">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:5px; border-bottom:2px solid var(--memphis-black);">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span>
+              <span id="inspect-title" style="font-weight:900; font-size:12px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
+            </div>
+            <button id="inspect-close" aria-label="Close entity inspector" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:13px; font-weight:900; box-shadow:none;">✕</button>
+          </div>
+          <div style="font-size:10.5px; display:flex; flex-direction:column; gap:6px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+              <span style="font-weight:700; color:var(--text-muted);">Node ID</span>
+              <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+              <span style="font-weight:700; color:var(--text-muted);">Entity Kind</span>
+              <span id="inspect-kind" style="color:var(--memphis-black); font-weight:800;">-</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+              <span style="font-weight:700; color:var(--text-muted);">Status</span>
+              <span id="inspect-status" class="pill-tag">-</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+              <span style="font-weight:700; color:var(--text-muted);">Connections</span>
+              <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:3px;">
+              <span style="font-weight:700; color:var(--text-muted);">Position Lock</span>
+              <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 7px;">Pin Node</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Canvas Zoom Controls -->
+        <div style="position:absolute; bottom:12px; right:12px; display:flex; flex-direction:column; gap:5px; z-index:15;">
+          <button id="zoom-in-btn" class="secondary" aria-label="Zoom in" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px;" title="Zoom In">+</button>
+          <button id="zoom-out-btn" class="secondary" aria-label="Zoom out" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px;" title="Zoom Out">−</button>
+          <button id="fit-canvas-btn" class="secondary" aria-label="Fit graph to viewport" style="width:28px; height:28px; padding:0; display:flex; align-items:center; justify-content:center;" title="Fit to Viewport">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Memphis Semantic Node Legend with Interactive Entity Filters -->
+      <div class="graph-legend" data-lenis-prevent>
+        <span style="font-weight:900; color:var(--text-primary); text-transform:uppercase; margin-right:2px; font-size:10.5px;">Filter:</span>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Person')" title="Click to isolate Person entities"><span class="legend-dot" style="background:#A78BFA;"></span> Person</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Device')" title="Click to isolate Device entities"><span class="legend-dot" style="background:#38BDF8;"></span> Device</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Server')" title="Click to isolate Server entities"><span class="legend-dot" style="background:#34D399;"></span> Server</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('ServiceAccount')" title="Click to isolate ServiceAccount entities"><span class="legend-dot" style="background:#FDE047;"></span> ServiceAccount</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Service')" title="Click to isolate Service entities"><span class="legend-dot" style="background:#F472B6;"></span> Service</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('DataStore')" title="Click to isolate Crown Jewels"><span class="legend-dot" style="background:#FF6B6B;"></span> DataStore (Crown Jewel)</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('bad')" title="Click to isolate Quarantined entities"><span class="legend-dot" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></span> Quarantined</button>
+      </div>
+    </section>
+
+    <!-- Containment Matrix Card -->
+    <section class="card" id="matrix-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          Pareto Action Simulation Matrix
+        </span>
+        <span style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">GRAPH.COPY sandboxes</span>
+      </div>
+
+      <div id="matrix-container" class="table-container" data-lenis-prevent>
+        <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
+      </div>
+    </section>
+
+    <!-- Live FalkorDB OpenCypher Explorer Card -->
+    <section class="card" id="cypher-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Live FalkorDB OpenCypher Explorer
+        </span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span id="cypher-latency-pill" class="badge" style="font-size:11px; font-weight:800; background:#FFFFFF;">⚡ Ready</span>
+          <span class="badge" style="background:var(--memphis-mint); font-size:10px;">FALKORDB ENGINE</span>
+        </div>
+      </div>
+
+      <div class="cypher-chips-bar">
+        <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">1-Click Cypher:</span>
+        <button class="cypher-chip" data-query="MATCH p = (a:Alert)-[*1..7]->(d:DataStore) RETURN p LIMIT 5">⚡ 7-Hop Attack Radius</button>
+        <button class="cypher-chip" data-query="MATCH (u:Person)-[:OWNS]->(d:Device)-[:LOGS_INTO]->(s:Server)-[:HOSTS_CREDENTIAL]->(c) RETURN u.name, d.name, s.name, c.name LIMIT 5">🛡️ Privilege Escalation</button>
+        <button class="cypher-chip" data-query="MATCH (d:DataStore) RETURN d.name, d.criticality ORDER BY d.criticality DESC LIMIT 6">💎 Crown Jewels</button>
+        <button class="cypher-chip" data-query="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC">📊 Topology Distribution</button>
+      </div>
+
+      <div class="cypher-editor-row">
+        <div class="cypher-input-wrap">
+          <span class="cypher-prompt">CYPHER &gt;</span>
+          <input type="text" id="cypher-input" aria-label="OpenCypher query input" value="MATCH (n) RETURN labels(n)[0] AS EntityType, count(n) AS TotalCount ORDER BY TotalCount DESC" placeholder="Enter OpenCypher query..." spellcheck="false" autocomplete="off">
+        </div>
+        <button id="run-cypher-btn" class="primary" aria-label="Execute OpenCypher query" style="padding:7px 18px; font-size:12px; font-weight:900;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Run Cypher
+        </button>
+      </div>
+
+      <div id="cypher-result-container" class="table-container" style="max-height:220px; min-height:100px; overflow-y:auto;" data-lenis-prevent>
+        <div id="cypher-empty-state" style="color:var(--text-muted); font-size:12px; padding:18px; text-align:center;">
+          Click a 1-click query chip above or type any OpenCypher query to execute in real-time against FalkorDB.
+        </div>
+      </div>
+    </section>
+
+    <!-- Agent Trace Card -->
+    <section class="card" id="trace-card">
+      <div class="card-header">
+        <span class="card-title">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Investigation Execution Trace
+        </span>
+        <span id="trace-step-count" style="font-size:11px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">0 steps</span>
+      </div>
+
+      <div id="trace" class="trace-list" data-lenis-prevent>
+        <p style="color:var(--text-ethereal); font-size:12px; padding:8px 0;">Awaiting investigation dispatch...</p>
+      </div>
+    </section>
   </div>
 </main>
 
@@ -1934,10 +2118,48 @@ window.inspectNodeById = function(nodeId) {
   if (!n || n.length === 0) return;
   cy.animate({
     center: { eles: n },
-    zoom: 1.4,
+    zoom: Math.min(Math.max(cy.zoom(), 1.25), 1.7),
     duration: 350
   });
   window.inspectNode(n[0]);
+};
+
+window.highlightNodeHover = function(nodeId, enter) {
+  if (!cy || !nodeId) return;
+  const n = cy.getElementById(nodeId);
+  if (!n || n.length === 0) return;
+  if (enter) {
+    if (isAttackPathSpotlightActive) return;
+    const neighborhood = n.closedNeighborhood();
+    cy.elements().difference(neighborhood).addClass('obsidian-dimmed');
+    neighborhood.addClass('obsidian-focused');
+    n.addClass('obsidian-active');
+  } else {
+    if (isAttackPathSpotlightActive) return;
+    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+  }
+};
+
+let activeKindFilter = null;
+window.filterByKind = function(kind) {
+  if (!cy) return;
+  if (activeKindFilter === kind) {
+    activeKindFilter = null;
+    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+    document.querySelectorAll('.legend-pill').forEach(p => p.classList.remove('active'));
+    return;
+  }
+  activeKindFilter = kind;
+  document.querySelectorAll('.legend-pill').forEach(p => {
+    p.classList.toggle('active', p.textContent.includes(kind) || (kind === 'bad' && p.textContent.includes('Quarantined')));
+  });
+  const matched = kind === 'bad' 
+    ? cy.elements('[bad = 1]') 
+    : cy.nodes(`[kind = "${kind}"]`);
+  const connected = matched.connectedEdges();
+  cy.elements().addClass('obsidian-dimmed').removeClass('obsidian-focused');
+  matched.removeClass('obsidian-dimmed').addClass('obsidian-focused');
+  connected.removeClass('obsidian-dimmed').addClass('obsidian-focused');
 };
 
 window.triggerGraphShockwave = function(targetId) {
@@ -2353,7 +2575,7 @@ async function runGuidedDemo() {
   $('auto').checked = false;
   ACTION_NOTICE = '';
   await run();
-  $('decision-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  $('decision-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 async function run() {
@@ -2423,6 +2645,12 @@ async function resetDemo() {
     if ($('path-spotlight-btn')) $('path-spotlight-btn').classList.remove('active');
     if ($('pause-btn-text')) $('pause-btn-text').textContent = 'Pause';
     $('fit-btn').disabled = true;
+    if ($('graph-subway-container')) {
+      $('graph-subway-container').innerHTML = '';
+      $('graph-subway-container').style.display = 'none';
+    }
+    activeKindFilter = null;
+    document.querySelectorAll('.legend-pill').forEach(pill => pill.classList.remove('active'));
     $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
     $('matrix-container').innerHTML = `<p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>`;
     $('trace').innerHTML = `<p style="color:var(--text-ethereal); font-size:12px; padding:8px 0;">Pristine state restored.</p>`;
@@ -2467,28 +2695,28 @@ function render(data) {
   if (rec.action !== 'monitor_only' && !ex) {
     const btnClass = rec.requires_approval ? 'danger' : 'success';
     const label = rec.requires_approval ? 'AUTHORIZE & CONTAIN' : 'APPROVE & APPLY CONTAINMENT';
-    actionButton = `<button id="contain" class="${btnClass}" style="width:100%; padding:12px; font-size:13.5px; justify-content:center; margin-top:16px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    actionButton = `<button id="contain" class="${btnClass}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       ${label}
     </button>`;
   } else if (ex) {
-    actionButton = `<button id="rollback" class="danger" style="width:100%; padding:12px; font-size:13.5px; justify-content:center; margin-top:16px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    actionButton = `<button id="rollback" class="danger">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
       ROLLBACK CONTAINMENT (RESTORE GRAPH)
     </button>`;
   }
 
   const mutationWarning = ex 
     ? `<div class="mutation-alert">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         <div><b>Containment is active on the synthetic graph:</b> ${esc(ex.action)} ${esc(ex.target || '')}. The change can be reversed with Rollback.</div>
       </div>`
     : '';
 
   const postRiskInfo = ex 
-    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--memphis-mint-light); border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:10px 14px; margin-top:12px; box-shadow:var(--shadow-offset-xs);">
-        <span style="font-size:12px; color:var(--memphis-black); font-weight:800;">Live risk after containment:</span>
-        <span style="font-family:'JetBrains Mono', monospace; font-size:17px; font-weight:900; color:var(--status-success-text);">${ex.before} → ${ex.after} / 100</span>
+    ? `<div style="display:flex; justify-content:space-between; align-items:center; background:var(--memphis-mint-light); border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:8px; box-shadow:var(--shadow-offset-xs);">
+        <span style="font-size:11.5px; color:var(--memphis-black); font-weight:800;">Live risk after containment:</span>
+        <span style="font-family:'JetBrains Mono', monospace; font-size:15px; font-weight:900; color:var(--status-success-text);">${ex.before} → ${ex.after} / 100</span>
       </div>`
     : '';
 
@@ -2497,7 +2725,7 @@ function render(data) {
     : (recRow?.residual_risk ?? 0);
 
   const verificationInfo = ex
-    ? `<div class="evidence-panel"><h4>Post-action verification</h4><p>The live graph score is <b>${ex.after}/100</b>; the simulation predicted <b>${simResidual}/100</b>. ${ex.verified ? 'These scores match within the engine’s 1-point tolerance.' : 'The scores did not match. Treat the action as unverified and inspect the graph before relying on it.'}</p></div>`
+    ? `<div class="evidence-panel" style="margin-top:6px; margin-bottom:8px; padding:10px 14px;"><h4>Post-action verification</h4><p style="margin:0;">The live graph score is <b>${ex.after}/100</b>; the simulation predicted <b>${simResidual}/100</b>. ${ex.verified ? 'These scores match within the engine’s 1-point tolerance.' : 'The scores did not match. Treat the action as unverified and inspect the graph before relying on it.'}</p></div>`
     : '';
 
   const recommendationExplanation = describeRecommendation(rec, recRow, ini);
@@ -2508,27 +2736,30 @@ function render(data) {
   const circumference = 276.46;
   const initialOffset = circumference - (circumference * currentScore) / 100;
 
-  // Active Multi-Hop Attack Route Stepper (Subway)
-  let subwayPathHtml = '';
-  if (data.evidence_paths && data.evidence_paths.length > 0) {
-    const p0 = data.evidence_paths[0];
-    const hops = p0.ids.map((id, idx) => {
-      const isLast = idx === p0.ids.length - 1;
-      const rel = p0.types[idx];
-      const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : ''}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')">${esc(id)}</button>`;
-      const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
-      return nodeBadge + edgeBadge;
-    }).join('');
-    subwayPathHtml = `
-      <div class="subway-path-card">
-        <div class="subway-title">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Active Attack Traversal Route (${p0.ids.length - 1} Hops to Crown Jewel)
-        </div>
+  // Active Multi-Hop Attack Route Stepper (Docked above Cytoscape Canvas)
+  const subwayBar = $('graph-subway-container');
+  if (subwayBar) {
+    if (data.evidence_paths && data.evidence_paths.length > 0) {
+      const p0 = data.evidence_paths[0];
+      const hops = p0.ids.map((id, idx) => {
+        const isLast = idx === p0.ids.length - 1;
+        const rel = p0.types[idx];
+        const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : ''}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${esc(id)}</button>`;
+        const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
+        return nodeBadge + edgeBadge;
+      }).join('');
+      subwayBar.innerHTML = `
+        <span class="subway-strip-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Active Attack Route (${p0.ids.length - 1} Hops):
+        </span>
         <div class="subway-route-wrap">${hops}</div>
-        <div style="font-size:10.5px; color:var(--text-muted); font-weight:700; margin-top:4px;">Click any entity badge above to spotlight and inspect in Cytoscape.</div>
-      </div>
-    `;
+      `;
+      subwayBar.style.display = 'flex';
+    } else {
+      subwayBar.innerHTML = '';
+      subwayBar.style.display = 'none';
+    }
   }
 
   // Decision Trade-Off Comparison (Why this action vs alternatives)
@@ -2557,11 +2788,11 @@ function render(data) {
         </div>` : ''}
       </div>
       <p style="margin-top:8px;">The 0–100 risk score is a deterministic heuristic over this seeded graph. It is not a probability that an attack will occur.</p>
-      <details style="margin-top:10px;">
+      <details style="margin-top:8px;">
         <summary>Inspect graph evidence and risk inputs (${data.evidence_path_count ?? 0} route${data.evidence_path_count === 1 ? '' : 's'})</summary>
-        <p style="margin-top:8px;">Routes found from the alert-linked identity to high-criticality data stores:</p>
+        <p style="margin-top:6px;">Routes found from the alert-linked identity to high-criticality data stores:</p>
         <ul>${evidencePaths || '<li>No qualifying critical-data route was found.</li>'}</ul>
-        ${riskDrivers ? `<p style="margin-top:8px;">Risk inputs by data store:</p><ul>${riskDrivers}</ul>` : ''}
+        ${riskDrivers ? `<p style="margin-top:6px;">Risk inputs by data store:</p><ul>${riskDrivers}</ul>` : ''}
       </details>
     </div>
   `;
@@ -2597,35 +2828,36 @@ function render(data) {
 
       <div class="risk-meta">
         <span class="risk-band-pill ${esc(currentLabel)}-bg">${esc(currentLabel)} RISK</span>
-        <div style="font-size:13px; font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">${ex ? `Live Risk Mitigated: ${ex.before} → ${ex.after}/100` : `${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered`}</div>
-        <div style="font-size:11px; font-weight:600; color:var(--text-muted);">${ex ? 'Containment Applied on FalkorDB' : 'Live Seeded Topology Heuristic'}</div>
+        <div style="font-size:12.5px; font-weight:800; color:var(--text-primary); font-family:'JetBrains Mono';">${ex ? `Live Risk Mitigated: ${ex.before} → ${ex.after}/100` : `${data.matrix[0]?.paths_before ?? 0} Critical Paths Discovered`}</div>
+        <div style="font-size:10.5px; font-weight:600; color:var(--text-muted);">${ex ? 'Containment Applied on FalkorDB' : 'Live Seeded Topology Heuristic'}</div>
       </div>
     </div>
 
     <div class="action-banner">
       <div class="action-header">Recommended Response Policy</div>
       <div class="action-name">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-success-text);"><polyline points="20 6 9 17 4 12"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--status-success-text);"><polyline points="20 6 9 17 4 12"/></svg>
         ${esc(actionText)}
       </div>
       <div class="action-reason">${esc(rec.why)}</div>
     </div>
 
-    ${subwayPathHtml}
+    ${actionButton}
 
     ${ACTION_NOTICE ? `<div class="action-notice ${ACTION_NOTICE.startsWith('CHECK') ? 'mismatch' : ''}" role="status">${esc(ACTION_NOTICE)}</div>` : ''}
 
     ${mutationWarning}
     ${postRiskInfo}
     ${verificationInfo}
-    ${tradeoffComparison}
-    ${memoryFeed}
-    ${actionButton}
 
-    <details style="margin-top:14px; background:#FFFFFF; border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:10px 14px; box-shadow:var(--shadow-offset-xs);">
-      <summary style="font-weight:800; font-size:11.5px; cursor:pointer;">View Deterministic Risk Formula Proof</summary>
-      <pre style="margin-top:8px; font-family:'JetBrains Mono', monospace; font-size:11px; white-space:pre-wrap; overflow-x:auto;">${esc(JSON.stringify(ini, null, 2))}</pre>
-    </details>
+    <div class="evidence-scroll-wrap" data-lenis-prevent>
+      ${tradeoffComparison}
+      ${memoryFeed}
+      <details style="margin-top:6px; background:#FFFFFF; border:var(--memphis-border-thin); border-radius:var(--radius-sm); padding:8px 12px; box-shadow:var(--shadow-offset-xs);">
+        <summary style="font-weight:800; font-size:11px; cursor:pointer;">View Deterministic Risk Formula Proof</summary>
+        <pre style="margin-top:6px; font-family:'JetBrains Mono', monospace; font-size:10.5px; white-space:pre-wrap; overflow-x:auto;">${esc(JSON.stringify(ini, null, 2))}</pre>
+      </details>
+    </div>
   `;
 
   const scoreCounter = $('score-counter');
