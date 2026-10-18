@@ -1548,6 +1548,72 @@
       white-space: nowrap;
     }
 
+    /* Interactive Graph Live Search Input */
+    .graph-search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .graph-search-icon {
+      position: absolute;
+      left: 6px;
+      width: 10px;
+      height: 10px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    #entity-search {
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 2px 6px 2px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      width: 125px;
+      box-shadow: 1px 1px 0px var(--memphis-black);
+      transition: width 0.2s ease, background-color 0.2s ease;
+    }
+    #entity-search:focus {
+      width: 165px;
+      outline: none;
+      background: var(--memphis-yellow-light);
+    }
+
+    /* Cyber Topology View Mode Switcher */
+    .view-mode-group {
+      display: inline-flex;
+      align-items: center;
+      background: #F1F5F9;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 1px;
+      gap: 1px;
+      box-shadow: 1px 1px 0px var(--memphis-black);
+    }
+    .view-mode-btn {
+      background: transparent;
+      border: none;
+      border-radius: 2px;
+      padding: 2px 6px;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+      box-shadow: none !important;
+      transition: all 0.12s ease;
+    }
+    .view-mode-btn:hover {
+      background: #E2E8F0;
+      color: var(--text-primary);
+      transform: none !important;
+    }
+    .view-mode-btn.active {
+      background: var(--memphis-black) !important;
+      color: var(--memphis-yellow) !important;
+    }
+
     /* Active Attack Route Traversal Bar (Subway Stepper directly above canvas) */
     .graph-subway-bar {
       display: flex;
@@ -1745,6 +1811,9 @@
     .legend-dot.dot-person { border-radius: 50%; }
     .legend-dot.dot-device { border-radius: 2px; }
     .legend-dot.dot-server { border-radius: 2px; }
+    .legend-dot.dot-ip { border-radius: 2px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); width: 10px; height: 10px; }
+    .legend-dot.dot-vuln { border-radius: 1px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); width: 10px; height: 10px; }
+    .legend-dot.dot-alert { transform: rotate(45deg); width: 8px; height: 8px; margin: 0 1px; border-radius: 1px; }
     .legend-dot.dot-svc-acct { transform: rotate(45deg); width: 8px; height: 8px; margin: 0 1px; border-radius: 1px; }
     .legend-dot.dot-service { border-radius: 3px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); width: 11px; height: 11px; }
     .legend-dot.dot-datastore { border-radius: 2px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); width: 11px; height: 11px; }
@@ -2070,6 +2139,17 @@
           </div>
         </div>
         <div class="graph-toolbar-actions">
+          <!-- Entity Search Bar -->
+          <div class="graph-search-wrap">
+            <svg class="graph-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="entity-search" placeholder="Search entity/IP..." autocomplete="off" spellcheck="false" aria-label="Search graph entities">
+          </div>
+          <!-- Cyber Topology View Modes -->
+          <div class="view-mode-group">
+            <button type="button" class="view-mode-btn active" id="view-corridor-btn" title="Focus Attack Corridor" onclick="window.setViewMode && window.setViewMode('corridor')">Corridor</button>
+            <button type="button" class="view-mode-btn" id="view-fabric-btn" title="View Full Threat Fabric" onclick="window.setViewMode && window.setViewMode('fabric')">Fabric</button>
+            <button type="button" class="view-mode-btn" id="view-blast-btn" title="Inspect Microservice Blast Radius" onclick="window.setViewMode && window.setViewMode('blast')">Blast</button>
+          </div>
           <button id="physics-pause-btn" class="secondary" title="Pause or Resume Live Force-Directed Physics">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
             <span id="pause-btn-text">Pause</span>
@@ -2162,35 +2242,47 @@
           <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
         </div>
 
-        <!-- Floating Node Inspector Overlay -->
+        <!-- Floating Node Inspector Overlay with Cyber Intelligence -->
         <div id="node-inspector" style="display:none;" aria-label="Node details inspector">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; padding-bottom:5px; border-bottom:2px solid var(--memphis-black);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; padding-bottom:5px; border-bottom:2px solid var(--memphis-black);">
             <div style="display:flex; align-items:center; gap:6px;">
               <span id="inspect-dot" style="display:inline-block; width:10px; height:10px; border-radius:2px; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span>
-              <span id="inspect-title" style="font-weight:900; font-size:12px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
+              <span id="inspect-title" style="font-weight:900; font-size:11.5px; color:var(--memphis-black); text-transform:uppercase;">Entity Inspector</span>
             </div>
             <button id="inspect-close" aria-label="Close entity inspector" style="background:transparent; border:none; color:var(--memphis-black); cursor:pointer; padding:2px 4px; font-size:13px; font-weight:900; box-shadow:none;">✕</button>
           </div>
-          <div style="font-size:10.5px; display:flex; flex-direction:column; gap:6px;">
-            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+          <div style="font-size:10px; display:flex; flex-direction:column; gap:4px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:2px;">
               <span style="font-weight:700; color:var(--text-muted);">Node ID</span>
               <span id="inspect-id" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
             </div>
-            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:2px;">
               <span style="font-weight:700; color:var(--text-muted);">Entity Kind</span>
               <span id="inspect-kind" style="color:var(--memphis-black); font-weight:800;">-</span>
             </div>
-            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:2px;">
               <span style="font-weight:700; color:var(--text-muted);">Status</span>
               <span id="inspect-status" class="pill-tag">-</span>
             </div>
-            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:3px;">
+            <div style="display:flex; justify-content:space-between; border-bottom:1.5px solid #E2E8F0; padding-bottom:2px;">
               <span style="font-weight:700; color:var(--text-muted);">Connections</span>
               <span id="inspect-degree" style="font-family:'JetBrains Mono'; color:var(--memphis-black); font-weight:800;">-</span>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:3px;">
-              <span style="font-weight:700; color:var(--text-muted);">Position Lock</span>
-              <button id="inspect-lock-btn" class="secondary" style="font-size:10px; padding:3px 7px;">Pin Node</button>
+            
+            <!-- MITRE ATT&CK Mapping Card -->
+            <div id="inspect-mitre-row" style="background:#FEF3C7; border:1px solid var(--memphis-black); border-radius:3px; padding:4px 6px; margin-top:2px; display:none;">
+              <div style="font-size:8.5px; font-weight:900; color:#92400E; text-transform:uppercase;">MITRE ATT&CK Tactic</div>
+              <div id="inspect-mitre" style="font-size:9.5px; font-weight:800; font-family:'JetBrains Mono'; color:#78350F;">-</div>
+            </div>
+
+            <!-- Dynamic Cyber Intelligence Properties -->
+            <div id="inspect-props" style="display:none; flex-direction:column; gap:2px; font-size:9.5px; background:#F8FAFC; border:1px solid #CBD5E1; border-radius:3px; padding:4px 6px; margin-top:2px; font-family:'JetBrains Mono';"></div>
+
+            <!-- Interactive Action Buttons -->
+            <div style="display:flex; gap:4px; margin-top:4px;">
+              <button id="inspect-expand-btn" class="secondary" style="font-size:9.5px; padding:3px 6px; flex:1;" title="Query FalkorDB to expand 1-hop connected neighborhood">➕ Expand</button>
+              <button id="inspect-focus-btn" class="secondary" style="font-size:9.5px; padding:3px 6px; flex:1;" title="Isolate 1-hop neighborhood">🎯 Subnet</button>
+              <button id="inspect-lock-btn" class="secondary" style="font-size:9.5px; padding:3px 6px;" title="Pin or unpin node in physics simulation">Pin Node</button>
             </div>
           </div>
         </div>
@@ -2208,9 +2300,12 @@
       <!-- Memphis Semantic Node Legend with Interactive Entity Filters -->
       <div class="graph-legend" data-lenis-prevent>
         <span style="font-weight:900; color:var(--text-primary); text-transform:uppercase; margin-right:2px; font-size:10.5px;">Filter:</span>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('IPAddress')" title="Click to isolate External Ingress IPs"><span class="legend-dot dot-ip" style="background:#FB923C;"></span> External IP</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Alert')" title="Click to isolate Detection Alerts"><span class="legend-dot dot-alert" style="background:#FACC15;"></span> Alert</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Person')" title="Click to isolate Person entities"><span class="legend-dot dot-person" style="background:#A78BFA;"></span> Person</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Device')" title="Click to isolate Device entities"><span class="legend-dot dot-device" style="background:#38BDF8;"></span> Device</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Server')" title="Click to isolate Server entities"><span class="legend-dot dot-server" style="background:#34D399;"></span> Server</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Vulnerability')" title="Click to isolate Vulnerabilities"><span class="legend-dot dot-vuln" style="background:#EF4444;"></span> Vulnerability</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('ServiceAccount')" title="Click to isolate ServiceAccount entities"><span class="legend-dot dot-svc-acct" style="background:#FDE047;"></span> ServiceAccount</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Service')" title="Click to isolate Service entities"><span class="legend-dot dot-service" style="background:#F472B6;"></span> Service</button>
         <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('DataStore')" title="Click to isolate Crown Jewels"><span class="legend-dot dot-datastore" style="background:#FF6B6B;"></span> DataStore (Crown Jewel)</button>
@@ -2537,33 +2632,273 @@ window.inspectNode = function(node) {
   const p = physicsNodeMap.get(node.id());
   if (p && !p.isLocked) {
     const angle = Math.random() * Math.PI * 2;
-    p.vx += Math.cos(angle) * 10;
-    p.vy += Math.sin(angle) * 10;
+    p.vx += Math.cos(angle) * 8;
+    p.vy += Math.sin(angle) * 8;
+    if (window.wakePhysics) window.wakePhysics();
   }
   
   const kind = node.data('kind');
   const name = node.data('label') || node.id();
   const bad = node.data('bad');
   const degree = node.connectedEdges().length;
+  const props = node.data('props') || {};
+
   const colorMap = {
     Person: '#A78BFA',
     Device: '#38BDF8',
     Server: '#34D399',
     ServiceAccount: '#FDE047',
     Service: '#F472B6',
-    DataStore: '#FF6B6B'
+    DataStore: '#FF6B6B',
+    IPAddress: '#FB923C',
+    Vulnerability: '#EF4444',
+    Alert: '#FACC15'
   };
-  $('inspect-dot').style.background = colorMap[kind] || '#FFE033';
-  $('inspect-title').textContent = name;
-  $('inspect-id').textContent = node.id();
-  $('inspect-kind').textContent = kind || 'Entity';
-  $('inspect-status').textContent = bad ? 'CONTAINED' : 'ACTIVE';
-  $('inspect-status').className = bad ? 'pill-tag pill-dominated' : 'pill-tag pill-pareto';
-  $('inspect-degree').textContent = `${degree} active connection${degree === 1 ? '' : 's'}`;
+
+  const mitreMap = {
+    Person: 'TA0001 Initial Access · T1078 Valid Accounts',
+    IPAddress: 'TA0011 Command & Control · T1190 Exploit Public-Facing App',
+    Device: 'TA0008 Lateral Movement · T1021 Remote Desktop/SSH',
+    Server: 'TA0002 Execution · T1059 Command & Scripting Interpreter',
+    Vulnerability: 'TA0004 Privilege Escalation · T1068 Exploit Vulnerability',
+    ServiceAccount: 'TA0006 Credential Access · T1550 Use Alternate Auth Material',
+    Service: 'TA0009 Collection · T1005 Data from Local System',
+    DataStore: 'TA0010 Exfiltration · T1530 Data from Cloud/Enterprise Store',
+    Alert: 'TA0000 Detection Telemetry · SIEM / EDR Security Signal'
+  };
+
+  if ($('inspect-dot')) $('inspect-dot').style.background = colorMap[kind] || '#FFE033';
+  if ($('inspect-title')) $('inspect-title').textContent = name;
+  if ($('inspect-id')) $('inspect-id').textContent = node.id();
+  if ($('inspect-kind')) $('inspect-kind').textContent = kind || 'Entity';
+  if ($('inspect-status')) {
+    $('inspect-status').textContent = bad ? 'CONTAINED' : (node.data('is_path_node') ? 'ATTACK PATH' : 'ACTIVE');
+    $('inspect-status').className = bad ? 'pill-tag pill-dominated' : (node.data('is_path_node') ? 'pill-tag pill-pareto' : 'pill-tag');
+  }
+  if ($('inspect-degree')) $('inspect-degree').textContent = `${degree} active connection${degree === 1 ? '' : 's'}`;
+
+  // MITRE ATT&CK Mapping
+  const mitreRow = $('inspect-mitre-row');
+  const mitreEl = $('inspect-mitre');
+  if (mitreRow && mitreEl) {
+    const mitreText = mitreMap[kind];
+    if (mitreText) {
+      mitreEl.textContent = mitreText;
+      mitreRow.style.display = 'block';
+    } else {
+      mitreRow.style.display = 'none';
+    }
+  }
+
+  // Dynamic Cyber Properties
+  const propsEl = $('inspect-props');
+  if (propsEl) {
+    const propRows = [];
+    if (props.cvss !== undefined) propRows.push(`<div><span>CVSS Score:</span> <b style="color:#DC2626;">${props.cvss} / 10.0 (CRITICAL)</b></div>`);
+    if (props.exploitability !== undefined) propRows.push(`<div><span>Exploitability:</span> <b>${props.exploitability * 100}%</b></div>`);
+    if (props.record_count !== undefined) propRows.push(`<div><span>Record Count:</span> <b>${Number(props.record_count).toLocaleString()} records</b></div>`);
+    if (props.data_class) propRows.push(`<div><span>Data Class:</span> <b style="color:#DC2626;">${esc(props.data_class)}</b></div>`);
+    if (props.privilege !== undefined) propRows.push(`<div><span>Privilege Level:</span> <b>${props.privilege >= 0.8 ? 'DOMAIN_ADMIN (HIGH)' : props.privilege}</b></div>`);
+    if (props.token_age_days !== undefined) propRows.push(`<div><span>Token Age:</span> <b>${props.token_age_days} days (${props.rotated ? 'Rotated' : 'Unrotated'})</b></div>`);
+    if (props.region) propRows.push(`<div><span>Geo Region:</span> <b>${esc(props.region)}</b></div>`);
+    if (props.reputation) propRows.push(`<div><span>Threat Rep:</span> <b style="color:#D97706;">${esc(props.reputation)}</b></div>`);
+    if (props.patched !== undefined) propRows.push(`<div><span>Patch Status:</span> <b>${props.patched ? 'Patched' : 'Vulnerable (Unpatched)'}</b></div>`);
+    if (props.owner_id) propRows.push(`<div><span>Assigned Owner:</span> <b>${esc(props.owner_id)}</b></div>`);
+    if (props.note) propRows.push(`<div><span>Security Note:</span> <i>${esc(props.note)}</i></div>`);
+
+    if (propRows.length > 0) {
+      propsEl.innerHTML = propRows.join('');
+      propsEl.style.display = 'flex';
+    } else {
+      propsEl.style.display = 'none';
+    }
+  }
+
+  // Wire Dynamic Expand & Subnet buttons
+  const expandBtn = $('inspect-expand-btn');
+  if (expandBtn) {
+    expandBtn.onclick = () => window.expandNode && window.expandNode(node.id());
+  }
+  const focusBtn = $('inspect-focus-btn');
+  if (focusBtn) {
+    focusBtn.onclick = () => window.focusSubnet && window.focusSubnet(node.id());
+  }
+
   const isLocked = p ? p.isLocked : node.hasClass('node-pinned');
-  $('inspect-lock-btn').textContent = isLocked ? 'Unpin Node' : 'Pin Node';
-  $('inspect-lock-btn').classList.toggle('active', isLocked);
+  if ($('inspect-lock-btn')) {
+    $('inspect-lock-btn').textContent = isLocked ? 'Unpin Node' : 'Pin Node';
+    $('inspect-lock-btn').classList.toggle('active', isLocked);
+  }
   $('node-inspector').style.display = 'block';
+};
+
+window.inspectEdge = function(edge) {
+  if (!edge) return;
+  const src = edge.source().id();
+  const tgt = edge.target().id();
+  const rel = edge.data('label') || edge.data('type') || 'CONNECTED_TO';
+  const isPath = edge.data('is_path') || false;
+
+  $('inspect-dot').style.background = isPath ? '#FF3366' : '#2563EB';
+  $('inspect-title').textContent = `${rel}`;
+  $('inspect-id').textContent = `${src} → ${tgt}`;
+  $('inspect-kind').textContent = 'Relationship Edge';
+  $('inspect-status').textContent = isPath ? 'CRITICAL PATH' : 'TELEMETRY';
+  $('inspect-status').className = isPath ? 'pill-tag pill-pareto' : 'pill-tag';
+  $('inspect-degree').textContent = `Direction: ${src} to ${tgt}`;
+
+  const mitreRow = $('inspect-mitre-row');
+  if (mitreRow) mitreRow.style.display = 'none';
+
+  const propsEl = $('inspect-props');
+  if (propsEl) {
+    propsEl.innerHTML = `
+      <div><span>Source:</span> <b>${esc(src)}</b></div>
+      <div><span>Target:</span> <b>${esc(tgt)}</b></div>
+      <div><span>Vector:</span> <b>${esc(rel)}</b></div>
+      <div><span>Exploit Weight:</span> <b>${isPath ? '0.92 (High Traversal)' : '0.50 (Context)'}</b></div>
+    `;
+    propsEl.style.display = 'flex';
+  }
+  $('node-inspector').style.display = 'block';
+};
+
+window.expandNode = async function(nodeId) {
+  if (!cy || !nodeId) return;
+  const expandBtn = $('inspect-expand-btn');
+  if (expandBtn) {
+    expandBtn.disabled = true;
+    expandBtn.textContent = 'Expanding...';
+  }
+
+  try {
+    const res = await (await fetch(`/api/graph/expand/${encodeURIComponent(nodeId)}`)).json();
+    if (!res.ok || !res.nodes) return;
+
+    const parentNode = cy.getElementById(nodeId);
+    const parentPos = parentNode.length > 0 ? parentNode.position() : { x: 300, y: 300 };
+
+    let addedCount = 0;
+    res.nodes.forEach((n, idx) => {
+      if (cy.getElementById(n.id).length === 0) {
+        const angle = (idx / Math.max(res.nodes.length, 1)) * Math.PI * 2;
+        const dist = 90 + Math.random() * 40;
+        const newPos = {
+          x: parentPos.x + Math.cos(angle) * dist,
+          y: parentPos.y + Math.sin(angle) * dist
+        };
+        const cyNode = cy.add({
+          group: 'nodes',
+          data: {
+            id: n.id,
+            label: n.name || n.id,
+            kind: n.label,
+            bad: n.status !== 'ACTIVE' ? 1 : 0,
+            is_path_node: false,
+            props: n.properties || {}
+          },
+          position: newPos
+        });
+        physicsNodeMap.set(n.id, {
+          id: n.id,
+          node: cyNode,
+          x: newPos.x,
+          y: newPos.y,
+          vx: Math.cos(angle) * 4,
+          vy: Math.sin(angle) * 4,
+          fx: 0,
+          fy: 0,
+          mass: 1.2,
+          phase: Math.random() * 5,
+          isGrabbed: false,
+          isLocked: false
+        });
+        addedCount++;
+      }
+    });
+
+    res.edges.forEach(e => {
+      const edgeId = `${e.source}->${e.target}`;
+      if (cy.getElementById(edgeId).length === 0) {
+        const cyEdge = cy.add({
+          group: 'edges',
+          data: {
+            id: edgeId,
+            source: e.source,
+            target: e.target,
+            label: e.type,
+            bad: 0,
+            is_path: false
+          }
+        });
+        physicsEdgesList.push({
+          sourceId: e.source,
+          targetId: e.target,
+          edge: cyEdge
+        });
+      }
+    });
+
+    if (parentNode.length > 0) {
+      $('inspect-degree').textContent = `${parentNode.connectedEdges().length} active connections`;
+    }
+
+    if (window.wakePhysics) window.wakePhysics(2.5);
+  } catch (err) {
+    console.error('Dynamic expansion failed:', err);
+  } finally {
+    if (expandBtn) {
+      expandBtn.disabled = false;
+      expandBtn.textContent = '➕ Expand';
+    }
+  }
+};
+
+window.focusSubnet = function(nodeId) {
+  if (!cy || !nodeId) return;
+  const n = cy.getElementById(nodeId);
+  if (!n || n.length === 0) return;
+  const neighborhood = n.closedNeighborhood();
+  cy.elements().difference(neighborhood).addClass('obsidian-dimmed');
+  neighborhood.removeClass('obsidian-dimmed').addClass('obsidian-focused');
+  cy.animate({
+    center: { eles: neighborhood },
+    zoom: Math.min(Math.max(cy.zoom(), 1.15), 1.6),
+    duration: 350
+  });
+};
+
+window.setViewMode = function(mode) {
+  if (!cy) return;
+  document.querySelectorAll('.view-mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.id === `view-${mode}-btn`);
+  });
+
+  cy.elements().removeClass('obsidian-dimmed obsidian-focused blast-focus blast-dimmed');
+
+  if (mode === 'corridor') {
+    const pathNodes = cy.nodes().filter(n => n.data('is_path_node') === true);
+    const pathEdges = cy.edges().filter(e => e.data('is_path') === true);
+    const pathCorridor = pathNodes.union(pathEdges);
+    cy.elements().difference(pathCorridor).addClass('obsidian-dimmed');
+    pathNodes.addClass('obsidian-focused');
+    pathEdges.addClass('obsidian-focused');
+    if (pathNodes.length > 0) {
+      cy.animate({ center: { eles: pathNodes }, duration: 400 });
+    }
+  } else if (mode === 'blast') {
+    const crownStores = cy.nodes('[kind = "DataStore"]');
+    const dependentServices = cy.edges('[label = "DEPENDS_ON"]').sources().union(cy.edges('[label = "DEPENDS_ON"]').targets());
+    const blastSet = crownStores.union(dependentServices).union(crownStores.connectedEdges());
+    cy.elements().difference(blastSet).addClass('obsidian-dimmed');
+    blastSet.addClass('obsidian-focused');
+    if (blastSet.length > 0) {
+      cy.animate({ center: { eles: blastSet }, duration: 400 });
+    }
+  } else {
+    // Full Fabric
+    cy.animate({ fit: { padding: 45 }, duration: 350 });
+  }
 };
 
 window.inspectNodeById = function(nodeId) {
@@ -2635,6 +2970,7 @@ window.triggerGraphShockwave = function(targetId) {
     p.vx += Math.cos(angle) * power;
     p.vy += Math.sin(angle) * power;
   });
+  if (window.wakePhysics) window.wakePhysics();
 };
 
 function initObsidianPhysics(cyInstance) {
@@ -2653,14 +2989,14 @@ function initObsidianPhysics(cyInstance) {
   cyInstance.nodes().forEach((n, idx) => {
     const pos = n.position();
     const kind = n.data('kind');
-    const mass = kind === 'DataStore' ? 2.2 : (kind === 'Server' ? 1.6 : 1.0);
+    const mass = kind === 'DataStore' ? 2.5 : (kind === 'Server' ? 1.8 : (kind === 'Service' ? 1.5 : 1.1));
     nodeMap.set(n.id(), {
       id: n.id(),
       node: n,
       x: pos.x,
       y: pos.y,
-      vx: 0,
-      vy: 0,
+      vx: (Math.random() - 0.5) * 5.0,
+      vy: (Math.random() - 0.5) * 5.0,
       fx: 0,
       fy: 0,
       mass: mass,
@@ -2680,15 +3016,18 @@ function initObsidianPhysics(cyInstance) {
 
   let lastGrabPos = null;
   let dragVel = { vx: 0, vy: 0 };
+  let isAnyGrabbed = false;
 
   cyInstance.on('grab', 'node', e => {
     const p = nodeMap.get(e.target.id());
     if (p) {
       p.isGrabbed = true;
+      isAnyGrabbed = true;
       p.vx = 0;
       p.vy = 0;
       lastGrabPos = { ...e.target.position() };
       dragVel = { vx: 0, vy: 0 };
+      if (window.wakePhysics) window.wakePhysics();
     }
   });
 
@@ -2703,11 +3042,13 @@ function initObsidianPhysics(cyInstance) {
         dragVel.vy = (currentPos.y - lastGrabPos.y) * 0.7;
         lastGrabPos = { ...currentPos };
       }
+      if (window.wakePhysics) window.wakePhysics();
     }
   });
 
   cyInstance.on('free', 'node', e => {
     const p = nodeMap.get(e.target.id());
+    isAnyGrabbed = false;
     if (p) {
       p.isGrabbed = false;
       const currentPos = e.target.position();
@@ -2718,20 +3059,25 @@ function initObsidianPhysics(cyInstance) {
         p.vy = Math.max(-25, Math.min(25, dragVel.vy));
       }
       lastGrabPos = null;
+      if (window.wakePhysics) window.wakePhysics();
     }
   });
 
-  const nodesArray = Array.from(nodeMap.values());
-  const numNodes = nodesArray.length;
   let lastTimestamp = performance.now();
 
   function stepPhysics(now) {
-    if (cy !== cyInstance) return;
+    if (cy !== cyInstance) {
+      jiggleLoopId = null;
+      return;
+    }
 
     const dt = Math.min((now - lastTimestamp) / 1000, 0.033) || 0.016;
     lastTimestamp = now;
 
     if (!isPhysicsPaused) {
+      const nodesArray = Array.from(nodeMap.values());
+      const numNodes = nodesArray.length;
+
       let cx = 0;
       let cySum = 0;
       for (let i = 0; i < numNodes; i++) {
@@ -2743,7 +3089,7 @@ function initObsidianPhysics(cyInstance) {
       cx /= Math.max(numNodes, 1);
       cySum /= Math.max(numNodes, 1);
 
-      // Node Repulsion & Collision Prevention (Generous clearance for labels)
+      // Node Repulsion & Collision Prevention (Generous clearance for cyber badges)
       for (let i = 0; i < numNodes; i++) {
         const p1 = nodesArray[i];
         for (let j = i + 1; j < numNodes; j++) {
@@ -2786,7 +3132,8 @@ function initObsidianPhysics(cyInstance) {
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
         const dist = Math.hypot(dx, dy) || 0.001;
-        const delta = dist - obsidianParams.linkDistance;
+        const targetDist = edge.edge.data('label') === 'AFFECTED_BY' ? obsidianParams.linkDistance * 0.6 : (edge.edge.data('label') === 'DEPENDS_ON' ? obsidianParams.linkDistance * 0.8 : obsidianParams.linkDistance);
+        const delta = dist - targetDist;
         const springForce = delta * obsidianParams.springK;
 
         const fx = (dx / dist) * springForce;
@@ -2798,28 +3145,8 @@ function initObsidianPhysics(cyInstance) {
         p2.fy -= fy;
       }
 
-      // Screen boundary containment: keep all nodes strictly within visible screen
-      const extent = cyInstance.extent();
-      const margin = 48;
-      for (let i = 0; i < numNodes; i++) {
-        const p = nodesArray[i];
-        if (p.x < extent.x1 + margin) {
-          p.fx += (extent.x1 + margin - p.x) * 0.25;
-          p.vx *= 0.6;
-        } else if (p.x > extent.x2 - margin) {
-          p.fx -= (p.x - (extent.x2 - margin)) * 0.25;
-          p.vx *= 0.6;
-        }
-        if (p.y < extent.y1 + margin) {
-          p.fy += (extent.y1 + margin - p.y) * 0.25;
-          p.vy *= 0.6;
-        } else if (p.y > extent.y2 - margin) {
-          p.fy -= (p.y - (extent.y2 - margin)) * 0.25;
-          p.vy *= 0.6;
-        }
-      }
-
-      // Euler-Verlet Integration Step
+      // Euler-Verlet Integration Step with Thermal Settling
+      let totalKinetic = 0;
       for (let i = 0; i < numNodes; i++) {
         const p = nodesArray[i];
         if (p.isGrabbed || p.isLocked) {
@@ -2834,23 +3161,40 @@ function initObsidianPhysics(cyInstance) {
         p.vx = Math.max(-25, Math.min(25, p.vx));
         p.vy = Math.max(-25, Math.min(25, p.vy));
 
-        // Micro-jitter sleep below perceptual motion threshold
-        if (Math.abs(p.vx) < 0.02) p.vx = 0;
-        if (Math.abs(p.vy) < 0.02) p.vy = 0;
+        if (Math.abs(p.vx) < 0.015) p.vx = 0;
+        if (Math.abs(p.vy) < 0.015) p.vy = 0;
+
+        totalKinetic += p.vx * p.vx + p.vy * p.vy;
 
         p.x += p.vx;
         p.y += p.vy;
 
-        // Viewport hard clamp ensuring no node ever exits the visible screen
-        p.x = Math.max(extent.x1 + 35, Math.min(extent.x2 - 35, p.x));
-        p.y = Math.max(extent.y1 + 35, Math.min(extent.y2 - 35, p.y));
-
         p.node.position({ x: p.x, y: p.y });
+      }
+
+      // Sleep condition: when thermal energy cools below threshold and no user is dragging
+      if (!isAnyGrabbed && totalKinetic < 0.04) {
+        jiggleLoopId = null;
+        return;
       }
     }
 
     jiggleLoopId = requestAnimationFrame(stepPhysics);
   }
+
+  window.wakePhysics = function(boost = 1.0) {
+    if (isPhysicsPaused || cy !== cyInstance) return;
+    if (!jiggleLoopId) {
+      nodeMap.forEach(p => {
+        if (!p.isLocked && !p.isGrabbed) {
+          p.vx += (Math.random() - 0.5) * 2.0 * boost;
+          p.vy += (Math.random() - 0.5) * 2.0 * boost;
+        }
+      });
+      lastTimestamp = performance.now();
+      jiggleLoopId = requestAnimationFrame(stepPhysics);
+    }
+  };
 
   jiggleLoopId = requestAnimationFrame(stepPhysics);
 }
@@ -3015,6 +3359,52 @@ async function init() {
   if ($('inspect-lock-btn')) {
     $('inspect-lock-btn').onclick = () => {
       if (window.toggleCurrentNodeLock) window.toggleCurrentNodeLock();
+    };
+  }
+
+  // Interactive Live Entity Search
+  const searchInput = $('entity-search');
+  if (searchInput) {
+    searchInput.oninput = () => {
+      if (!cy) return;
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) {
+        cy.elements().removeClass('obsidian-dimmed obsidian-focused');
+        return;
+      }
+      const matches = cy.nodes().filter(n => {
+        const id = (n.id() || '').toLowerCase();
+        const lbl = (n.data('label') || '').toLowerCase();
+        const k = (n.data('kind') || '').toLowerCase();
+        return id.includes(q) || lbl.includes(q) || k.includes(q);
+      });
+      if (matches.length > 0) {
+        cy.elements().addClass('obsidian-dimmed').removeClass('obsidian-focused');
+        matches.removeClass('obsidian-dimmed').addClass('obsidian-focused');
+        matches.connectedEdges().removeClass('obsidian-dimmed').addClass('obsidian-focused');
+      } else {
+        cy.elements().removeClass('obsidian-dimmed obsidian-focused');
+      }
+    };
+    searchInput.onkeydown = e => {
+      if (e.key === 'Enter') {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!cy || !q) return;
+        const matches = cy.nodes().filter(n => {
+          const id = (n.id() || '').toLowerCase();
+          const lbl = (n.data('label') || '').toLowerCase();
+          return id.includes(q) || lbl.includes(q);
+        });
+        if (matches.length > 0) {
+          const first = matches[0];
+          cy.animate({
+            center: { eles: first },
+            zoom: Math.min(Math.max(cy.zoom(), 1.3), 1.8),
+            duration: 350
+          });
+          window.inspectNode(first);
+        }
+      }
     };
   }
 
@@ -3867,25 +4257,61 @@ async function drawGraph() {
     if (existingBenignBadge) existingBenignBadge.remove();
   }
 
-  const total = (data.nodes && data.nodes.length) || 1;
-  const elements = data.nodes.map((n, idx) => ({
-    data: {
-      id: n.id,
-      label: n.name || n.id,
-      kind: n.label,
-      bad: inactive.has(n.id) ? 1 : 0
-    },
-    position: {
-      x: 350 + Math.cos((idx / total) * 2 * Math.PI) * 180 + (idx % 2 ? 15 : -15),
-      y: 260 + Math.sin((idx / total) * 2 * Math.PI) * 180 + (idx % 3 ? 15 : -15)
-    }
-  })).concat(data.edges.map(e => ({
+  const nodesByZone = {};
+  data.nodes.forEach(n => {
+    let zoneKey = n.label;
+    if (n.label === 'Service' && !n.is_path_node) zoneKey = 'BlastService';
+    if (!nodesByZone[zoneKey]) nodesByZone[zoneKey] = [];
+    nodesByZone[zoneKey].push(n);
+  });
+
+  const zoneX = {
+    IPAddress: 80,
+    Alert: 90,
+    Person: 240,
+    Device: 400,
+    Server: 560,
+    Vulnerability: 620,
+    ServiceAccount: 760,
+    Service: 930,
+    DataStore: 1100,
+    BlastService: 1260
+  };
+
+  const elements = data.nodes.map(n => {
+    let zoneKey = n.label;
+    if (n.label === 'Service' && !n.is_path_node) zoneKey = 'BlastService';
+    const zoneList = nodesByZone[zoneKey] || [n];
+    const indexInZone = zoneList.findIndex(item => item.id === n.id);
+    const countInZone = zoneList.length;
+
+    const baseX = zoneX[zoneKey] || 500;
+    const centerY = 260;
+    const spacingY = 90;
+    const baseY = centerY + (indexInZone - (countInZone - 1) / 2) * spacingY;
+
+    return {
+      data: {
+        id: n.id,
+        label: n.name || n.id,
+        kind: n.label,
+        bad: inactive.has(n.id) ? 1 : 0,
+        is_path_node: !!n.is_path_node,
+        props: n.properties || {}
+      },
+      position: {
+        x: data.is_benign ? 350 + Math.cos((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseX,
+        y: data.is_benign ? 260 + Math.sin((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseY
+      }
+    };
+  }).concat(data.edges.map(e => ({
     data: {
       id: `${e.source}->${e.target}`,
       source: e.source,
       target: e.target,
       label: e.type,
-      bad: (inactive.has(e.source) || inactive.has(e.target)) ? 1 : 0
+      bad: (inactive.has(e.source) || inactive.has(e.target)) ? 1 : 0,
+      is_path: !!e.is_path
     }
   })));
 
@@ -3982,6 +4408,39 @@ async function drawGraph() {
         }
       },
       {
+        selector: 'node[kind = "IPAddress"]',
+        style: {
+          'shape': 'octagon',
+          'width': 40,
+          'height': 40,
+          'border-color': '#0F172A',
+          'background-color': '#FB923C'
+        }
+      },
+      {
+        selector: 'node[kind = "Vulnerability"]',
+        style: {
+          'shape': 'round-diamond',
+          'width': 42,
+          'height': 42,
+          'border-color': '#0F172A',
+          'border-width': 3.5,
+          'background-color': '#EF4444',
+          'color': '#0F172A'
+        }
+      },
+      {
+        selector: 'node[kind = "Alert"]',
+        style: {
+          'shape': 'diamond',
+          'width': 40,
+          'height': 40,
+          'border-color': '#0F172A',
+          'border-style': 'dashed',
+          'background-color': '#FACC15'
+        }
+      },
+      {
         selector: 'node[bad = 1]',
         style: {
           'border-color': '#0F172A',
@@ -4016,6 +4475,54 @@ async function drawGraph() {
           'target-arrow-shape': 'triangle',
           'target-arrow-color': '#0F172A',
           'arrow-scale': 1.2
+        }
+      },
+      {
+        selector: 'edge[label = "USED_BY"]',
+        style: {
+          'line-color': '#FB923C',
+          'line-style': 'dashed',
+          'line-dash-pattern': [6, 4],
+          'target-arrow-color': '#FB923C',
+          'text-background-color': '#FFEDD5',
+          'text-border-color': '#FB923C',
+          'color': '#C2410C'
+        }
+      },
+      {
+        selector: 'edge[label = "AFFECTED_BY"]',
+        style: {
+          'line-color': '#EF4444',
+          'line-style': 'dashed',
+          'line-dash-pattern': [6, 4],
+          'target-arrow-color': '#EF4444',
+          'text-background-color': '#FEE2E2',
+          'text-border-color': '#EF4444',
+          'color': '#DC2626'
+        }
+      },
+      {
+        selector: 'edge[label = "DEPENDS_ON"]',
+        style: {
+          'line-color': '#38BDF8',
+          'line-style': 'dotted',
+          'line-dash-pattern': [3, 4],
+          'target-arrow-color': '#38BDF8',
+          'text-background-color': '#E0F2FE',
+          'text-border-color': '#38BDF8',
+          'color': '#0284C7'
+        }
+      },
+      {
+        selector: 'edge[label = "ABOUT"]',
+        style: {
+          'line-color': '#FACC15',
+          'line-style': 'dotted',
+          'line-dash-pattern': [3, 4],
+          'target-arrow-color': '#FACC15',
+          'text-background-color': '#FEF9C3',
+          'text-border-color': '#FACC15',
+          'color': '#A16207'
         }
       },
       {
@@ -4206,6 +4713,9 @@ async function drawGraph() {
 
   cy.on('tap', 'node', e => {
     window.inspectNode(e.target);
+  });
+  cy.on('tap', 'edge', e => {
+    window.inspectEdge(e.target);
   });
   cy.on('tap', e => {
     if (e.target === cy) {

@@ -240,28 +240,34 @@ def subgraph(investigation_id: str):
     record = store.get(investigation_id)
     if not record:
         raise HTTPException(404, "unknown investigation")
-    ids = sorted({node_id for path in record["base_paths"] for node_id in path["ids"]})
+    path_node_ids = set()
+    edges = set()
+    for path in record.get("base_paths", []):
+        for node_id in path["ids"]:
+            path_node_ids.add(node_id)
+        for index, relationship in enumerate(path["types"]):
+            edges.add((path["ids"][index], path["ids"][index + 1], relationship, True))
     
     # If 0 critical paths found, fetch the local benign ego-network around the subject
-    if not ids and record.get("subject"):
+    if not path_node_ids and record.get("subject"):
         subj = record["subject"]
         ego_res = graph().query(
             """
             MATCH (s {id:$subj})-[r:OWNS|LOGS_INTO|AUTHENTICATES_TO|USED_BY|ABOUT*1..2]-(m)
-            RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE'),
-                   m.id, labels(m)[0], m.name, coalesce(m.status, 'ACTIVE')
-            LIMIT 15
+            RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE'), properties(s),
+                   m.id, labels(m)[0], m.name, coalesce(m.status, 'ACTIVE'), properties(m)
+            LIMIT 20
             """,
             {"subj": subj}
         ).result_set
         ego_nodes = {}
         for r in ego_res:
-            ego_nodes[r[0]] = {"id": r[0], "label": r[1], "name": r[2], "status": r[3]}
-            ego_nodes[r[4]] = {"id": r[4], "label": r[5], "name": r[6], "status": r[7]}
+            ego_nodes[r[0]] = {"id": r[0], "label": r[1], "name": r[2], "status": r[3], "properties": dict(r[4] or {})}
+            ego_nodes[r[5]] = {"id": r[5], "label": r[6], "name": r[7], "status": r[8], "properties": dict(r[9] or {})}
         if not ego_nodes:
-            s_row = graph().query("MATCH (s {id:$subj}) RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE')", {"subj": subj}).result_set
+            s_row = graph().query("MATCH (s {id:$subj}) RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE'), properties(s)", {"subj": subj}).result_set
             if s_row:
-                ego_nodes[subj] = {"id": s_row[0][0], "label": s_row[0][1], "name": s_row[0][2], "status": s_row[0][3]}
+                ego_nodes[subj] = {"id": s_row[0][0], "label": s_row[0][1], "name": s_row[0][2], "status": s_row[0][3], "properties": dict(s_row[0][4] or {})}
         edge_res = graph().query(
             """
             MATCH (a)-[r]->(b)
@@ -272,21 +278,144 @@ def subgraph(investigation_id: str):
         ).result_set if ego_nodes else []
         return {
             "nodes": list(ego_nodes.values()),
-            "edges": [{"source": r[0], "target": r[1], "type": r[2]} for r in edge_res],
+            "edges": [{"source": r[0], "target": r[1], "type": r[2], "is_path": False} for r in edge_res],
             "is_benign": True,
         }
 
-    query = """MATCH (n) WHERE n.id IN $ids
-RETURN n.id, labels(n)[0], n.name, coalesce(n.status, 'ACTIVE')"""
-    rows = graph().query(query, {"ids": ids}).result_set
-    edges = set()
-    for path in record["base_paths"]:
-        for index, relationship in enumerate(path["types"]):
-            edges.add((path["ids"][index], path["ids"][index + 1], relationship))
+    # 1. Query path nodes with full properties
+    path_nodes_res = graph().query(
+        """
+        MATCH (n) WHERE n.id IN $path_ids
+        RETURN n.id, labels(n)[0], n.name, coalesce(n.status, 'ACTIVE'), properties(n)
+        """,
+        {"path_ids": list(path_node_ids)}
+    ).result_set
+
+    all_nodes = {}
+    for r in path_nodes_res:
+        all_nodes[r[0]] = {
+            "id": r[0],
+            "label": r[1],
+            "name": r[2] or r[0],
+            "status": r[3],
+            "is_path_node": True,
+            "properties": dict(r[4] or {}),
+        }
+
+    # 2. Query contextual cyber intelligence around path nodes
+    alert_id = record.get("alert_id")
+
+    ctx_out = graph().query(
+        """
+        MATCH (n)-[r]->(m)
+        WHERE n.id IN $path_ids AND type(r) IN ['AFFECTED_BY', 'DEPENDS_ON', 'USED_BY', 'ABOUT']
+        RETURN n.id, type(r), m.id, labels(m)[0], m.name, coalesce(m.status, 'ACTIVE'), properties(m)
+        """,
+        {"path_ids": list(path_node_ids)}
+    ).result_set
+
+    ctx_in = graph().query(
+        """
+        MATCH (m)-[r]->(n)
+        WHERE n.id IN $path_ids AND type(r) IN ['AFFECTED_BY', 'DEPENDS_ON', 'USED_BY', 'ABOUT']
+        RETURN m.id, type(r), n.id, labels(m)[0], m.name, coalesce(m.status, 'ACTIVE'), properties(m)
+        """,
+        {"path_ids": list(path_node_ids)}
+    ).result_set
+
+    for src, rel, tgt, label, name, status, props in ctx_out:
+        if label == "Alert" and tgt != alert_id:
+            continue
+        if tgt not in all_nodes:
+            all_nodes[tgt] = {
+                "id": tgt,
+                "label": label,
+                "name": name or tgt,
+                "status": status,
+                "is_path_node": False,
+                "properties": dict(props or {}),
+            }
+        edges.add((src, tgt, rel, False))
+
+    for src, rel, tgt, label, name, status, props in ctx_in:
+        if label == "Alert" and src != alert_id:
+            continue
+        if src not in all_nodes:
+            all_nodes[src] = {
+                "id": src,
+                "label": label,
+                "name": name or src,
+                "status": status,
+                "is_path_node": False,
+                "properties": dict(props or {}),
+            }
+        edges.add((src, tgt, rel, False))
+
+    formatted_edges = [
+        {"source": src, "target": tgt, "type": rel, "is_path": is_path}
+        for src, tgt, rel, is_path in sorted(edges, key=lambda x: (not x[3], x[0], x[1]))
+    ]
+
     return {
-        "nodes": [{"id": row[0], "label": row[1], "name": row[2], "status": row[3]} for row in rows],
-        "edges": [{"source": source, "target": target, "type": kind} for source, target, kind in sorted(edges)],
+        "nodes": list(all_nodes.values()),
+        "edges": formatted_edges,
         "is_benign": False,
+    }
+
+
+@app.get("/api/graph/expand/{node_id}")
+def expand_node(node_id: str):
+    g = graph()
+    res_out = g.query(
+        """
+        MATCH (a {id: $id})-[r]->(b)
+        RETURN a.id, type(r), b.id, labels(b)[0], b.name, coalesce(b.status, 'ACTIVE'), properties(b), coalesce(r.exploit, 0.5)
+        LIMIT 15
+        """,
+        {"id": node_id}
+    ).result_set
+    res_in = g.query(
+        """
+        MATCH (b)-[r]->(a {id: $id})
+        RETURN b.id, type(r), a.id, labels(b)[0], b.name, coalesce(b.status, 'ACTIVE'), properties(b), coalesce(r.exploit, 0.5)
+        LIMIT 15
+        """,
+        {"id": node_id}
+    ).result_set
+
+    nodes = {}
+    edges = set()
+    for row in res_out:
+        src, rel, tgt, label, name, status, props, weight = row
+        if tgt not in nodes:
+            nodes[tgt] = {
+                "id": tgt,
+                "label": label,
+                "name": name or tgt,
+                "status": status,
+                "is_path_node": False,
+                "properties": dict(props or {}),
+            }
+        edges.add((src, tgt, rel, float(weight)))
+
+    for row in res_in:
+        src, rel, tgt, label, name, status, props, weight = row
+        if src not in nodes:
+            nodes[src] = {
+                "id": src,
+                "label": label,
+                "name": name or src,
+                "status": status,
+                "is_path_node": False,
+                "properties": dict(props or {}),
+            }
+        edges.add((src, tgt, rel, float(weight)))
+
+    return {
+        "ok": True,
+        "node_id": node_id,
+        "nodes": list(nodes.values()),
+        "edges": [{"source": s, "target": t, "type": r, "weight": w, "is_path": False} for s, t, r, w in sorted(edges)],
     }
 
 
