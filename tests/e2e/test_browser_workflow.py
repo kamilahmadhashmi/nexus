@@ -246,13 +246,31 @@ def test_persistent_memory_path_switcher_and_risk_drivers():
         expect(tab_buttons.first).to_have_class(re.compile(r"active"))
         expect(page.locator(".choke-point-callout")).to_contain_text("LAPTOP-042")
 
-        # Switch to Route 2
+        # Wait for Cytoscape to finish rendering and apply path highlights
+        page.wait_for_function("typeof cy !== 'undefined' && cy.elements('.path-selected-node').length > 0")
+
+        # Verify all 3 routes are shown/selected by default
+        all_routes_active = page.evaluate("""() => {
+            return cy.getElementById('DEV-SERVER-03').hasClass('path-selected-node') &&
+                   cy.getElementById('DEV-SERVER-07').hasClass('path-selected-node') &&
+                   cy.getElementById('JUMPBOX-01').hasClass('path-selected-node');
+        }""")
+        assert all_routes_active, "All 3 routes should be shown on the graph by default"
+        page.screenshot(path=str(SCREENSHOT_DIR / "nexus-all-routes-default.png"), full_page=True)
+
+        # Switch to Route 1 - isolates Route 1 and dims alternative paths
         tab_buttons.nth(1).click()
         expect(tab_buttons.nth(1)).to_have_class(re.compile(r"active"))
         expect(tab_buttons.first).not_to_have_class(re.compile(r"active"))
 
-        # Verify Cytoscape path highlighting classes
-        page.wait_for_function("cy.elements('.path-selected-node, .path-selected-edge').length > 0")
+        # Verify Cytoscape path highlighting classes: Route 1 selected, alternative paths dimmed
+        page.wait_for_function("cy.getElementById('DEV-SERVER-03').hasClass('path-selected-node') && cy.getElementById('DEV-SERVER-07').hasClass('obsidian-dimmed')")
+        route1_isolated = page.evaluate("""() => {
+            return cy.getElementById('DEV-SERVER-03').hasClass('path-selected-node') &&
+                   cy.getElementById('DEV-SERVER-07').hasClass('obsidian-dimmed') &&
+                   cy.getElementById('JUMPBOX-01').hasClass('obsidian-dimmed');
+        }""")
+        assert route1_isolated, "Route 1 button click should isolate Route 1 and dim other routes"
 
         # Screenshot the multi-route stepper and risk breakdown
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-multi-path-risk-drivers.png"), full_page=True)

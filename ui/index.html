@@ -3566,45 +3566,82 @@ function describeRecommendation(rec, row, initial) {
 }
 
 let currentInvestigationData = null;
-let activePathIdx = 0;
+let activePathIdx = 'all';
 
 window.selectAttackPath = function(idx) {
   if (!window.currentInvestigationData || !window.currentInvestigationData.evidence_paths) return;
   const paths = window.currentInvestigationData.evidence_paths;
-  if (idx < 0 || idx >= paths.length) return;
-  activePathIdx = idx;
+  if (paths.length === 0) return;
+
+  // Clicking an already selected single route toggles back to 'all'
+  if (activePathIdx === idx && idx !== 'all') {
+    activePathIdx = 'all';
+  } else {
+    activePathIdx = idx;
+  }
+
   renderSubway(window.currentInvestigationData, activePathIdx);
 
   if (cy) {
     cy.elements().removeClass('path-selected-node path-selected-edge obsidian-dimmed');
-    const selectedPath = paths[idx];
-    const nodeIds = selectedPath.ids;
-    const targetNodes = cy.nodes().filter(n => nodeIds.includes(n.id()));
 
-    for (let i = 0; i < nodeIds.length - 1; i++) {
-      const src = nodeIds[i];
-      const tgt = nodeIds[i + 1];
-      const edges = cy.edges().filter(e =>
-        (e.source().id() === src && e.target().id() === tgt) ||
-        (e.source().id() === tgt && e.target().id() === src)
-      );
-      edges.addClass('path-selected-edge');
-    }
-    targetNodes.addClass('path-selected-node');
-
-    const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
-    cy.elements().difference(activeElements).addClass('obsidian-dimmed');
-
-    if (targetNodes.length > 0) {
-      cy.animate({
-        center: { eles: targetNodes },
-        duration: 350
+    if (activePathIdx === 'all') {
+      // Highlight ALL routes simultaneously
+      const allNodeIds = new Set();
+      paths.forEach(p => {
+        p.ids.forEach(id => allNodeIds.add(id));
+        for (let i = 0; i < p.ids.length - 1; i++) {
+          const src = p.ids[i];
+          const tgt = p.ids[i + 1];
+          const edges = cy.edges().filter(e =>
+            (e.source().id() === src && e.target().id() === tgt) ||
+            (e.source().id() === tgt && e.target().id() === src)
+          );
+          edges.addClass('path-selected-edge');
+        }
       });
+      const targetNodes = cy.nodes().filter(n => allNodeIds.has(n.id()));
+      targetNodes.addClass('path-selected-node');
+
+      const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
+      cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+
+      if (targetNodes.length > 0) {
+        cy.animate({
+          center: { eles: targetNodes },
+          duration: 350
+        });
+      }
+    } else {
+      const selectedPath = paths[activePathIdx] || paths[0];
+      const nodeIds = selectedPath.ids;
+      const targetNodes = cy.nodes().filter(n => nodeIds.includes(n.id()));
+
+      for (let i = 0; i < nodeIds.length - 1; i++) {
+        const src = nodeIds[i];
+        const tgt = nodeIds[i + 1];
+        const edges = cy.edges().filter(e =>
+          (e.source().id() === src && e.target().id() === tgt) ||
+          (e.source().id() === tgt && e.target().id() === src)
+        );
+        edges.addClass('path-selected-edge');
+      }
+      targetNodes.addClass('path-selected-node');
+
+      const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
+      cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+
+      if (targetNodes.length > 0) {
+        cy.animate({
+          center: { eles: targetNodes },
+          duration: 350
+        });
+      }
     }
   }
 };
 
-function renderSubway(data, selectedIdx = 0) {
+function renderSubway(data, selectedIdx = 'all') {
   const subwayBar = $('graph-subway-container');
   if (!subwayBar) return;
   const paths = data.evidence_paths || [];
@@ -3624,31 +3661,39 @@ function renderSubway(data, selectedIdx = 0) {
     return;
   }
 
-  const p = paths[selectedIdx] || paths[0];
-  const tabs = paths.map((path, idx) => {
-    return `<button type="button" class="path-tab-btn ${idx === selectedIdx ? 'active' : ''}" onclick="window.selectAttackPath(${idx})" title="Route ${idx + 1} (${path.ids.length - 1} Hops)">Route ${idx + 1}</button>`;
+  const isAll = (selectedIdx === 'all' || selectedIdx === undefined);
+  const allBtn = paths.length > 1 ? `<button type="button" class="path-tab-btn ${isAll ? 'active' : ''}" onclick="window.selectAttackPath('all')" title="Show all ${paths.length} attack routes on graph">All Routes</button>` : '';
+  const routeTabs = paths.map((path, idx) => {
+    return `<button type="button" class="path-tab-btn ${(!isAll && idx === selectedIdx) ? 'active' : ''}" onclick="window.selectAttackPath(${idx})" title="Highlight Route ${idx + 1} (${path.ids.length - 1} Hops)">Route ${idx + 1}</button>`;
   }).join('');
+  const tabs = allBtn + routeTabs;
 
-  const hops = p.ids.map((id, idx) => {
-    const isLast = idx === p.ids.length - 1;
-    const isFirst = idx === 0;
-    const rel = p.types[idx];
-    const cyNode = (cy && cy.getElementById(id)) || null;
-    const kind = (cyNode && cyNode.data('kind')) || '';
-    const kindColors = {
-      'Person': '#A78BFA',
-      'Device': '#38BDF8',
-      'Server': '#34D399',
-      'ServiceAccount': '#FDE047',
-      'Service': '#F472B6',
-      'DataStore': '#FF6B6B'
-    };
-    const dotColor = kindColors[kind] || (isLast ? '#FF6B6B' : (isFirst ? '#A78BFA' : '#38BDF8'));
-    const dotHtml = `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${dotColor}; border:1px solid #0F172A; margin-right:3px;"></span>`;
-    const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${dotHtml}${esc(id)}</button>`;
-    const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
-    return nodeBadge + edgeBadge;
-  }).join('');
+  let hops = '';
+  if (isAll) {
+    hops = `<span style="display:inline-flex; align-items:center; gap:4px; font-size:8.5px; font-weight:800; font-family:'JetBrains Mono', monospace; color:var(--memphis-black); background:#FFFFFF; border:1px solid var(--memphis-black); padding:1px 6px; border-radius:3px; box-shadow:1px 1px 0 var(--memphis-black);"><span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10B981; border:1px solid #0F172A;"></span>All ${paths.length} Routes Visible · Click Route 1, 2, or 3 to isolate</span>`;
+  } else {
+    const p = paths[selectedIdx] || paths[0];
+    hops = p.ids.map((id, idx) => {
+      const isLast = idx === p.ids.length - 1;
+      const isFirst = idx === 0;
+      const rel = p.types[idx];
+      const cyNode = (cy && cy.getElementById(id)) || null;
+      const kind = (cyNode && cyNode.data('kind')) || '';
+      const kindColors = {
+        'Person': '#A78BFA',
+        'Device': '#38BDF8',
+        'Server': '#34D399',
+        'ServiceAccount': '#FDE047',
+        'Service': '#F472B6',
+        'DataStore': '#FF6B6B'
+      };
+      const dotColor = kindColors[kind] || (isLast ? '#FF6B6B' : (isFirst ? '#A78BFA' : '#38BDF8'));
+      const dotHtml = `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${dotColor}; border:1px solid #0F172A; margin-right:3px;"></span>`;
+      const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${dotHtml}${esc(id)}</button>`;
+      const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
+      return nodeBadge + edgeBadge;
+    }).join('');
+  }
 
   let chokePoint = null;
   if (paths.length > 1) {
@@ -3749,7 +3794,7 @@ function render(data) {
   const initialOffset = circumference - (circumference * currentScore) / 100;
 
   // Render Multi-Route Stepper (Item 3)
-  activePathIdx = 0;
+  activePathIdx = 'all';
   renderSubway(data, activePathIdx);
 
   // Decision Trade-Off Comparison (Why this action vs alternatives)
@@ -4776,6 +4821,9 @@ async function drawGraph() {
     cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
   });
 
+  if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths && window.currentInvestigationData.evidence_paths.length > 0) {
+    window.selectAttackPath(activePathIdx || 'all');
+  }
   const graphInstance = cy;
   const layout = graphInstance.layout(initialLayout);
   graphInstance.one('layoutstop', () => {
@@ -4783,7 +4831,7 @@ async function drawGraph() {
     graphInstance.fit(undefined, 50);
     initObsidianPhysics(graphInstance);
     if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths && window.currentInvestigationData.evidence_paths.length > 0) {
-      window.selectAttackPath(activePathIdx || 0);
+      window.selectAttackPath(activePathIdx || 'all');
     }
   });
   layout.run();
