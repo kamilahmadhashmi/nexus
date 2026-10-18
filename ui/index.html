@@ -539,56 +539,19 @@
     }
 
     /* ==========================================================================
-       COCKPIT 3-COLUMN CENTER STAGE (EXPANDABLE RAILS ARCHITECTURE)
+       COCKPIT 2-COLUMN STAGE (GRAPH HERO & RIGHT THREAT DECK)
        ========================================================================== */
     .cockpit-stage {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       align-items: stretch;
-      height: clamp(500px, calc(100vh - 125px), 610px);
+      height: clamp(520px, calc(100vh - 130px), 640px);
       width: 100%;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       position: relative;
     }
 
-    /* Expandable Side Panels */
-    .expandable-panel {
-      position: relative;
-      z-index: 20;
-      flex-shrink: 0;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      border: var(--memphis-border-thick);
-      border-radius: var(--radius-md);
-      background: var(--memphis-card-bg);
-      box-shadow: var(--shadow-offset-md);
-      transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-      will-change: width;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 10px 12px;
-    }
-    .expandable-panel:hover,
-    .expandable-panel:focus-within,
-    .expandable-panel.is-expanded {
-      box-shadow: var(--shadow-offset-xl);
-      z-index: 25;
-    }
-
-    /* Left Side Panel: Pareto Action Simulation Matrix */
-    #matrix-card {
-      width: 320px;
-      min-width: 320px;
-    }
-    #matrix-card:hover,
-    #matrix-card:focus-within,
-    #matrix-card.is-expanded {
-      width: 560px;
-      min-width: 560px;
-    }
-
-    /* Center Panel: Attack Path Traversal Topology (Hero Center Canvas) */
+    /* Left/Center Stage: Attack Path Traversal Topology (Hero Canvas taking majority of screen) */
     #graph-card {
       flex: 1;
       min-width: 0;
@@ -608,14 +571,38 @@
 
     /* Right Side Panel: Threat Analysis & Containment */
     #decision-card {
-      width: 300px;
-      min-width: 300px;
+      width: 380px;
+      min-width: 340px;
+      max-width: 420px;
+      flex-shrink: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      background: var(--memphis-card-bg);
+      box-shadow: var(--shadow-offset-md);
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 12px 14px;
+      position: relative;
+      z-index: 20;
     }
-    #decision-card:hover,
-    #decision-card:focus-within,
-    #decision-card.is-expanded {
-      width: 480px;
-      min-width: 480px;
+
+    /* ==========================================================================
+       PARETO ACTION SIMULATION MATRIX (FULL WIDTH BELOW COCKPIT STAGE)
+       ========================================================================== */
+    #matrix-card {
+      width: 100%;
+      min-width: 0;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      border: var(--memphis-border-thick);
+      border-radius: var(--radius-md);
+      background: var(--memphis-card-bg);
+      box-shadow: var(--shadow-offset-md);
+      padding: 14px 18px;
     }
 
     /* Panel Cue Strip (Visual indicator for min info & expansion) */
@@ -680,50 +667,30 @@
     }
 
     /* Responsive Head Grid for Decision Card */
+    /* Head Grid for Decision Card */
     .decision-head-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-      align-items: stretch;
-      margin-bottom: 4px;
-      flex-shrink: 0;
-      transition: grid-template-columns 0.3s ease;
-    }
-    #decision-card:hover .decision-head-grid,
-    #decision-card:focus-within .decision-head-grid,
-    #decision-card.is-expanded .decision-head-grid {
-      grid-template-columns: 135px minmax(0, 1fr);
+      grid-template-columns: 130px minmax(0, 1fr);
       gap: 8px;
+      align-items: stretch;
+      margin-bottom: 6px;
+      flex-shrink: 0;
     }
 
     /* Action Buttons in Decision Card */
     #decision-card #contain, #decision-card #rollback {
       width: 100%;
-      padding: 6px 6px;
-      font-size: 10px;
+      padding: 7px 12px;
+      font-size: 11px;
       justify-content: center;
-      margin-top: 3px;
-      margin-bottom: 5px;
+      margin-top: 4px;
+      margin-bottom: 6px;
       flex-shrink: 0;
       text-align: center;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: padding 0.25s ease, font-size 0.25s ease;
     }
-    #decision-card:hover #contain,
-    #decision-card:hover #rollback,
-    #decision-card.is-expanded #contain,
-    #decision-card.is-expanded #rollback {
-      padding: 7px 12px;
-      font-size: 11px;
-    }
-    #decision-card .btn-text-full { display: none; }
-    #decision-card .btn-text-min { display: inline; }
-    #decision-card:hover .btn-text-full,
-    #decision-card.is-expanded .btn-text-full { display: inline; }
-    #decision-card:hover .btn-text-min,
-    #decision-card.is-expanded .btn-text-min { display: none; }
+    #decision-card .btn-text-full { display: inline; }
+    #decision-card .btn-text-min { display: none; }
 
     .evidence-scroll-wrap {
       display: flex;
@@ -838,13 +805,18 @@
       background: #FEF3C7;
       border: 1.5px solid var(--memphis-black);
       border-radius: var(--radius-sm);
-      padding: 5px 8px;
-      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
-      margin-bottom: 5px;
+      padding: 8px 14px;
+      box-shadow: var(--shadow-offset-xs);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
       flex-shrink: 0;
     }
     .mhb-title {
-      font-size: 8.5px;
+      font-size: 9.5px;
       font-weight: 900;
       color: #92400E;
       text-transform: uppercase;
@@ -852,26 +824,25 @@
       margin-bottom: 2px;
     }
     .mhb-action {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 900;
       color: var(--text-primary);
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
     .mhb-action code {
       background: #FFFFFF;
       border: 1px solid var(--memphis-black);
-      padding: 1px 4px;
-      border-radius: 2px;
-      font-size: 9.5px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
     }
     .mhb-metrics {
       display: flex;
-      gap: 8px;
-      font-size: 8.5px;
+      gap: 14px;
+      font-size: 11px;
       color: var(--text-muted);
-      margin-top: 3px;
       font-weight: 600;
     }
     .mhb-metrics b {
@@ -881,16 +852,12 @@
 
     /* Candidate Action Reason in Matrix (Item 4) */
     .matrix-action-reason {
-      font-size: 8.5px;
+      font-size: 10px;
       font-weight: 600;
       color: var(--text-muted);
-      line-height: 1.25;
-      margin-top: 2px;
-      max-width: 200px;
-    }
-    #matrix-card:hover .matrix-action-reason,
-    #matrix-card.is-expanded .matrix-action-reason {
-      max-width: 320px;
+      line-height: 1.35;
+      margin-top: 3px;
+      max-width: none;
     }
 
     /* Subway Header and Path Switcher Tabs (Item 3) */
@@ -960,9 +927,10 @@
     }
 
     /* Responsive Table Padding for Matrix Card */
+    /* Responsive Table Styling for Matrix Card */
     #matrix-card .card-header {
-      margin-bottom: 4px;
-      padding-bottom: 4px;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
     }
     #matrix-card .table-container {
       width: 100%;
@@ -971,7 +939,6 @@
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
       background: #FFFFFF;
-      flex: 1;
       min-height: 120px;
     }
     #matrix-card table {
@@ -987,30 +954,16 @@
       letter-spacing: 0.5px;
       border-bottom: 2px solid var(--memphis-black);
       white-space: nowrap;
-      padding: 4px 6px;
-      font-size: 9.5px;
-      transition: padding 0.25s ease, font-size 0.25s ease;
+      padding: 7px 12px;
+      font-size: 11px;
     }
     #matrix-card td {
       border-bottom: 1.5px solid #E2E8F0;
       color: var(--text-primary);
       vertical-align: middle;
       white-space: nowrap;
-      padding: 4px 6px;
-      font-size: 10px;
-      transition: padding 0.25s ease, font-size 0.25s ease;
-    }
-    #matrix-card:hover th,
-    #matrix-card:focus-within th,
-    #matrix-card.is-expanded th {
-      padding: 6px 10px;
-      font-size: 10.5px;
-    }
-    #matrix-card:hover td,
-    #matrix-card:focus-within td,
-    #matrix-card.is-expanded td {
-      padding: 5px 10px;
-      font-size: 11px;
+      padding: 7px 12px;
+      font-size: 11.5px;
     }
 
     /* Lower Section: OpenCypher & Trace Cards */
@@ -1986,6 +1939,7 @@
       #decision-card, #matrix-card {
         width: 100% !important;
         min-width: 0 !important;
+        max-width: none !important;
         height: auto;
         max-height: none;
       }
@@ -2099,31 +2053,7 @@
 <!-- Main Investigation Workspace -->
 <main>
   <div class="cockpit-stage">
-    <!-- Left Column: Pareto Action Simulation Matrix (Min Info -> Expands on Hover) -->
-    <section class="card expandable-panel" id="matrix-card" aria-label="Pareto Action Simulation Matrix">
-      <div class="card-header">
-        <span class="card-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-          Simulation Matrix
-        </span>
-        <div style="display:flex; align-items:center; gap:5px;">
-          <span style="font-size:9.5px; font-weight:800; color:var(--text-muted); font-family:'JetBrains Mono';">SANDBOX</span>
-          <button type="button" class="panel-pin-btn" onclick="window.togglePanelPin && window.togglePanelPin('matrix-card')" title="Pin / Lock expanded matrix">📌</button>
-        </div>
-      </div>
-
-      <div class="panel-cue-strip" title="Hover over this panel to expand full simulation matrix">
-        <span style="display:flex; align-items:center; gap:5px;"><span class="cue-dot"></span> <b>MIN INFO</b></span>
-        <span class="hover-tag">HOVER TO EXPAND ⤢</span>
-      </div>
-
-      <div id="matrix-quick-summary"></div>
-      <div id="matrix-container" class="table-container" data-lenis-prevent>
-        <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
-      </div>
-    </section>
-
-    <!-- Center Column: Interactive Attack Graph Workspace (Hero Stage) -->
+    <!-- Left/Center Column: Interactive Attack Graph Workspace (Hero Stage taking majority of screen) -->
     <section class="card graph-card" id="graph-card" aria-label="Attack Path Traversal Topology">
       <div class="graph-toolbar">
         <div class="graph-toolbar-title">
@@ -2282,8 +2212,8 @@
       </div>
     </section>
 
-    <!-- Right Column: Threat Intelligence & Decision Deck (Min Info -> Expands on Hover) -->
-    <section class="card expandable-panel" id="decision-card" aria-label="Threat Analysis & Containment">
+    <!-- Right Column: Threat Intelligence & Decision Deck -->
+    <section class="card" id="decision-card" aria-label="Threat Analysis & Containment">
       <div class="card-header">
         <span class="card-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -2291,13 +2221,7 @@
         </span>
         <div style="display:flex; align-items:center; gap:5px;">
           <span id="inv-id" class="badge" style="font-size:9.5px;">AWAITING RUN</span>
-          <button type="button" class="panel-pin-btn" onclick="window.togglePanelPin && window.togglePanelPin('decision-card')" title="Pin / Lock expanded threat analysis">📌</button>
         </div>
-      </div>
-
-      <div class="panel-cue-strip" title="Hover over this panel to expand evidence & trade-offs">
-        <span style="display:flex; align-items:center; gap:5px;"><span class="cue-dot"></span> <b>MIN INFO</b></span>
-        <span class="hover-tag">HOVER TO EXPAND ⤢</span>
       </div>
 
       <div id="decision-content">
@@ -2305,6 +2229,25 @@
       </div>
     </section>
   </div>
+
+  <!-- Pareto Action Simulation Matrix (Full Width Stage Below Cockpit) -->
+  <section class="card" id="matrix-card" aria-label="Pareto Action Simulation Matrix">
+    <div class="card-header">
+      <span class="card-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        Pareto Action Simulation Matrix
+      </span>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span class="badge" style="font-size:10px; background:var(--memphis-mint-light);">PARETO OPTIMAL</span>
+        <span class="badge" style="font-size:10px; background:var(--memphis-yellow-light);">FALKORDB GRAPH.COPY SANDBOX</span>
+      </div>
+    </div>
+
+    <div id="matrix-quick-summary"></div>
+    <div id="matrix-container" class="table-container" data-lenis-prevent>
+      <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
+    </div>
+  </section>
 
   <div class="dashboard-grid">
 
