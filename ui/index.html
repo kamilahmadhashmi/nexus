@@ -1535,18 +1535,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      padding-bottom: 5px;
-      margin-bottom: 5px;
+      gap: 8px 12px;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
       border-bottom: 2px solid var(--memphis-black);
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       flex-shrink: 0;
     }
     .graph-toolbar-title {
       display: flex;
       flex-direction: column;
       gap: 2px;
-      min-width: 0;
+      flex-shrink: 0;
     }
     .graph-toolbar-title b {
       font-size: 13px;
@@ -1564,14 +1564,12 @@
       align-items: center;
       gap: 6px;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     .graph-toolbar-actions {
       display: flex;
+      align-items: center;
       gap: 5px;
-      flex-wrap: nowrap;
-      flex-shrink: 0;
+      flex-wrap: wrap;
     }
     .graph-toolbar-actions button {
       font-size: 10.5px;
