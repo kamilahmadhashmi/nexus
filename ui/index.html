@@ -4082,13 +4082,10 @@ function initObsidianPhysics(cyInstance) {
     const dt = Math.min((now - lastTimestamp) / 1000, 0.033) || 0.016;
     lastTimestamp = now;
 
-    if (!isPhysicsPaused) {
-      if (isPhysicsSettled && !isAnyGrabbed) {
-        // Network in stable equilibrium: zero coordinate drift on resting nodes
-        // Physics loop remains resumed and active to immediately respond to node dragging
-        jiggleLoopId = requestAnimationFrame(stepPhysics);
-        return;
-      }
+    if (isPhysicsPaused) {
+      jiggleLoopId = requestAnimationFrame(stepPhysics);
+      return;
+    }
 
       settlingStepCount++;
       const nodesArray = Array.from(nodeMap.values());
@@ -4161,52 +4158,43 @@ function initObsidianPhysics(cyInstance) {
         p2.fy -= fy;
       }
 
-      // Adaptive Cooling Damping
-      const cooling = Math.max(0.60, obsidianParams.damping - (settlingStepCount * 0.005));
-      let totalKinetic = 0;
+    // Continuous Live Force-Directed Damping
+    const cooling = obsidianParams.damping;
+    let totalKinetic = 0;
 
-      for (let i = 0; i < numNodes; i++) {
-        const p = nodesArray[i];
-        if (p.isGrabbed || p.isLocked) {
-          p.vx = 0;
-          p.vy = 0;
-          continue;
-        }
-
-        p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * cooling;
-        p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * cooling;
-
-        p.vx = Math.max(-4, Math.min(4, p.vx));
-        p.vy = Math.max(-4, Math.min(4, p.vy));
-
-        if (Math.abs(p.vx) < 0.02) p.vx = 0;
-        if (Math.abs(p.vy) < 0.02) p.vy = 0;
-
-        totalKinetic += p.vx * p.vx + p.vy * p.vy;
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        p.node.position({ x: p.x, y: p.y });
-        savedNodePositions.set(p.id, { x: p.x, y: p.y });
+    for (let i = 0; i < numNodes; i++) {
+      const p = nodesArray[i];
+      if (p.isGrabbed || p.isLocked) {
+        p.vx = 0;
+        p.vy = 0;
+        continue;
       }
 
-      // Settle Condition: when thermal energy cools below threshold after settling frames, or max settling frames reached
-      if (!isAnyGrabbed && settlingStepCount >= 15 && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
-        nodesArray.forEach(p => {
-          p.vx = 0;
-          p.vy = 0;
-          const pos = p.node.position();
-          p.x = pos.x;
-          p.y = pos.y;
-          savedNodePositions.set(p.id, { x: pos.x, y: pos.y });
-        });
+      p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * cooling;
+      p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * cooling;
+
+      p.vx = Math.max(-5, Math.min(5, p.vx));
+      p.vy = Math.max(-5, Math.min(5, p.vy));
+
+      if (Math.abs(p.vx) < 0.008) p.vx = 0;
+      if (Math.abs(p.vy) < 0.008) p.vy = 0;
+
+      totalKinetic += p.vx * p.vx + p.vy * p.vy;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      p.node.position({ x: p.x, y: p.y });
+      savedNodePositions.set(p.id, { x: p.x, y: p.y });
+    }
+
+    // Mark settled when initial forces reach dynamic equilibrium (does NOT stop continuous physics!)
+    if (!isAnyGrabbed && (totalKinetic < 0.03 || settlingStepCount >= 60)) {
+      if (!isPhysicsSettled) {
         isPhysicsSettled = true;
         if ($('physics-status')) {
           $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Resumed (Drag nodes to deform network)`;
         }
-        jiggleLoopId = requestAnimationFrame(stepPhysics);
-        return;
       }
     }
 

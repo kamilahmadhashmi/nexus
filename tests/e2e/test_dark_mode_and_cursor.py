@@ -27,10 +27,14 @@ def test_theme_toggle_persistence_and_zero_drift():
         page.wait_for_function("typeof cy !== 'undefined' && cy !== null && cy.nodes().length > 0")
         page.wait_for_timeout(1000)
 
+        # Pause physics to isolate theme toggle from continuous force integration
+        page.locator("#physics-pause-btn").click()
+        page.wait_for_timeout(200)
+
         initial_positions = page.evaluate(
             "() => cy.nodes().map(n => ({ id: n.id(), x: n.position('x'), y: n.position('y') }))"
         )
-        print(f"Populated graph with {len(initial_positions)} nodes")
+        print(f"Populated graph with {len(initial_positions)} nodes (physics paused for theme toggle stability test)")
 
         # 3. Toggle to Dark Mode
         page.click("#theme-toggle-btn")
@@ -111,5 +115,10 @@ def test_theme_toggle_persistence_and_zero_drift():
             right_margin = w - (btn_box["x"] + btn_box["width"])
             print(f"Viewport {w}px -> Theme toggle right margin: {right_margin:.1f}px")
             assert right_margin >= 18, f"Viewport {w}px theme toggle right margin too small: {right_margin}px"
+
+        # Resume physics
+        page.locator("#physics-pause-btn").click()
+        page.wait_for_timeout(200)
+        assert page.evaluate("() => !isPhysicsPaused && !!jiggleLoopId") is True
 
         browser.close()

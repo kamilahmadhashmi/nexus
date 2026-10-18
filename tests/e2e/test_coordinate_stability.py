@@ -52,11 +52,13 @@ def test_initial_highlighting_and_coordinate_stability():
             opacity = page.evaluate(f"() => cy.getElementById('{node_id}').style('opacity')")
             assert float(opacity) >= 0.9, f"Background node {node_id} should be full brightness (1.0), got {opacity}"
 
-        # 4. Wait for initial physics settling to complete and lock coordinates
-        page.wait_for_function("isPhysicsSettled === true || jiggleLoopId === null", timeout=6000)
-        time.sleep(0.5)
+        # 4. Verify continuous live physics by default, then pause specifically for static button checks
+        assert page.evaluate("() => !isPhysicsPaused && !!jiggleLoopId") is True, "Physics should be active by default"
+        page.locator('#physics-pause-btn').click()
+        time.sleep(0.3)
+        assert page.evaluate("() => isPhysicsPaused") is True, "Physics should be paused after clicking Pause"
 
-        # Record settled baseline positions
+        # Record baseline positions during paused investigation
         initial_positions = page.evaluate("""() => {
             const pos = {};
             cy.nodes().forEach(n => {
@@ -160,5 +162,11 @@ def test_initial_highlighting_and_coordinate_stability():
         page.locator('#contain').wait_for()
         time.sleep(0.5)
         assert_positions_unchanged("Rollback Containment Action")
+
+        # 6. Specifically turn physics back ON via Resume button and verify live continuous physics
+        page.locator('#physics-pause-btn').click()
+        time.sleep(0.3)
+        resumed = page.evaluate("() => !isPhysicsPaused && !!jiggleLoopId")
+        assert resumed is True, "Physics should resume after clicking Pause/Resume button"
 
         browser.close()

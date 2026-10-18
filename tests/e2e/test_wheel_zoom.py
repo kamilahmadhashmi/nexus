@@ -70,17 +70,36 @@ def test_attack_path_topology_scroll_wheel_zoom():
             assert scroll_y == initial_scroll_y, f"Step {step}: Scroll leaked to window ({scroll_y} != {initial_scroll_y})"
             curr_zoom = new_zoom
 
-        # 5. Verify Node Coordinate Stability (model coordinates must not drift during zoom)
-        after_positions = page.evaluate(
+        # 5. Verify Node Coordinate Invariance during wheel zoom (zoom modifies viewport, not node positions)
+        # Specifically pause physics to isolate viewport zoom transformation from continuous force integration
+        page.locator("#physics-pause-btn").click()
+        page.wait_for_timeout(200)
+        assert page.evaluate("() => isPhysicsPaused") is True, "Physics should be paused"
+
+        paused_initial_pos = page.evaluate(
+            "() => cy.nodes().map(n => ({ id: n.id(), x: n.position('x'), y: n.position('y') }))"
+        )
+        # Wheel zoom in and out while paused
+        page.mouse.wheel(0, -100)
+        page.wait_for_timeout(100)
+        page.mouse.wheel(0, 100)
+        page.wait_for_timeout(100)
+
+        paused_after_pos = page.evaluate(
             "() => cy.nodes().map(n => ({ id: n.id(), x: n.position('x'), y: n.position('y') }))"
         )
         max_drift = 0.0
-        for p_init, p_after in zip(initial_positions, after_positions):
+        for p_init, p_after in zip(paused_initial_pos, paused_after_pos):
             dx = abs(p_init["x"] - p_after["x"])
             dy = abs(p_init["y"] - p_after["y"])
             max_drift = max(max_drift, dx, dy)
 
-        print(f"Max model coordinate drift after wheel zooming: {max_drift:.6f}px")
-        assert max_drift < 0.001, f"Model coordinates drifted during zoom: {max_drift}px"
+        print(f"Max model coordinate drift after wheel zooming (paused): {max_drift:.6f}px")
+        assert max_drift < 0.001, f"Model coordinates mutated by zoom transform: {max_drift}px"
+
+        # Resume physics and confirm continuous physics resumes
+        page.locator("#physics-pause-btn").click()
+        page.wait_for_timeout(200)
+        assert page.evaluate("() => !isPhysicsPaused && !!jiggleLoopId") is True, "Physics should resume after unpausing"
 
         browser.close()
