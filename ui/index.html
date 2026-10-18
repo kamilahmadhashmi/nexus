@@ -2566,31 +2566,23 @@ function animateScoreCounter(el, targetScore, duration = 0.6) {
   }
 }
 
-// Cytoscape initial CoSE layout for clean un-overlapped topology
+// Cytoscape initial preset layout for clean kill-chain cyber topology
 const initialLayout = {
-  name: 'cose',
-  animate: false,
+  name: 'preset',
   fit: true,
-  padding: 35,
-  componentSpacing: 160,
-  nodeRepulsion: node => 22000,
-  nodeOverlap: 50,
-  idealEdgeLength: edge => 240,
-  edgeElasticity: edge => 80,
-  gravity: 0.10,
-  numIter: 800
+  padding: 40
 };
 
 // ==============================================================
 // 3. CONTINUOUS FORCE-DIRECTED PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
-  repulsion: 18000,
-  linkDistance: 220,
-  springK: 0.032,
-  gravity: 0.0006,
-  damping: 0.84,
-  collisionRadius: 95
+  repulsion: 4500,
+  linkDistance: 130,
+  springK: 0.025,
+  gravity: 0.0004,
+  damping: 0.78,
+  collisionRadius: 75
 };
 
 let obsidianParams = { ...obsidianDefaults };
@@ -2631,7 +2623,7 @@ window.rerunInitialLayout = function() {
   const layout = targetCy.layout(initialLayout);
   targetCy.one('layoutstop', () => {
     if (cy !== targetCy) return;
-    targetCy.fit(undefined, 50);
+    targetCy.fit(undefined, 40);
     initObsidianPhysics(targetCy);
     if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
       window.selectAttackPath(activePathIdx || 'all');
@@ -3193,8 +3185,8 @@ function initObsidianPhysics(cyInstance) {
         p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * cooling;
         p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * cooling;
 
-        p.vx = Math.max(-15, Math.min(15, p.vx));
-        p.vy = Math.max(-15, Math.min(15, p.vy));
+        p.vx = Math.max(-4, Math.min(4, p.vx));
+        p.vy = Math.max(-4, Math.min(4, p.vy));
 
         if (Math.abs(p.vx) < 0.02) p.vx = 0;
         if (Math.abs(p.vy) < 0.02) p.vy = 0;
@@ -3210,10 +3202,14 @@ function initObsidianPhysics(cyInstance) {
 
       // Settle Condition: when thermal energy cools below threshold or max settling frames reached
       if (!isAnyGrabbed && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
+        cyInstance.fit(undefined, 40);
         nodesArray.forEach(p => {
           p.vx = 0;
           p.vy = 0;
-          savedNodePositions.set(p.id, { x: p.x, y: p.y });
+          const pos = p.node.position();
+          p.x = pos.x;
+          p.y = pos.y;
+          savedNodePositions.set(p.id, { x: pos.x, y: pos.y });
         });
         jiggleLoopId = null;
         isPhysicsSettled = true;
@@ -4439,17 +4435,36 @@ async function drawGraph() {
     nodesByZone[zoneKey].push(n);
   });
 
+  const semanticKnownMap = {
+    'IP-203-0-113-77':    { x: 100, y: 130 },
+    'ALT-1042':           { x: 100, y: 265 },
+    'ALT-1043':           { x: 100, y: 395 },
+    'IP-203-0-113-99':    { x: 100, y: 520 },
+    'U-ALEX':             { x: 260, y: 200 },
+    'LAPTOP-042':         { x: 260, y: 380 },
+    'DEV-SERVER-07':      { x: 460, y: 150 },
+    'DEV-SERVER-03':      { x: 460, y: 325 },
+    'JUMPBOX-01':         { x: 460, y: 500 },
+    'SYNTH-VULN-2026-01': { x: 630, y: 215 },
+    'SVC-ACCT-09':        { x: 630, y: 380 },
+    'WEB-FRONTEND':       { x: 800, y: 150 },
+    'PROD-API':           { x: 800, y: 340 },
+    'MOBILE-APP':         { x: 800, y: 510 },
+    'PAYMENTS-SVC':       { x: 940, y: 160 },
+    'CUSTOMER-DB':        { x: 940, y: 350 }
+  };
+
   const zoneX = {
-    IPAddress: 80,
-    Alert: 90,
-    Person: 240,
-    Device: 400,
-    Server: 560,
-    Vulnerability: 620,
-    ServiceAccount: 760,
-    Service: 930,
-    DataStore: 1100,
-    BlastService: 1260
+    IPAddress: 100,
+    Alert: 100,
+    Person: 260,
+    Device: 260,
+    Server: 460,
+    Vulnerability: 630,
+    ServiceAccount: 630,
+    Service: 800,
+    BlastService: 800,
+    DataStore: 940
   };
 
   const hasExistingPositions = data.nodes.some(n => savedNodePositions.has(n.id));
@@ -4461,16 +4476,24 @@ async function drawGraph() {
     const indexInZone = zoneList.findIndex(item => item.id === n.id);
     const countInZone = zoneList.length;
 
-    const baseX = zoneX[zoneKey] || 500;
-    const centerY = 260;
-    const spacingY = 90;
-    const baseY = centerY + (indexInZone - (countInZone - 1) / 2) * spacingY;
-
     const savedPos = savedNodePositions.get(n.id);
-    const initialPos = savedPos ? { ...savedPos } : {
-      x: data.is_benign ? 350 + Math.cos((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseX,
-      y: data.is_benign ? 260 + Math.sin((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseY
-    };
+    let initialPos;
+    if (savedPos) {
+      initialPos = { ...savedPos };
+    } else if (data.is_benign) {
+      initialPos = {
+        x: 450 + Math.cos((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160,
+        y: 280 + Math.sin((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160
+      };
+    } else if (semanticKnownMap[n.id]) {
+      initialPos = { ...semanticKnownMap[n.id] };
+    } else {
+      const baseX = zoneX[zoneKey] || 500;
+      const centerY = 320;
+      const spacingY = 95;
+      const baseY = centerY + (indexInZone - (countInZone - 1) / 2) * spacingY;
+      initialPos = { x: baseX, y: baseY };
+    }
 
     return {
       data: {
@@ -4926,7 +4949,7 @@ async function drawGraph() {
 
   if (hasExistingPositions) {
     // Preserve existing settled positions across state refreshes (e.g. containment or rollback)
-    cy.fit(undefined, 50);
+    cy.fit(undefined, 40);
     initObsidianPhysics(cy);
     isPhysicsSettled = true;
     if (jiggleLoopId) {
@@ -4937,12 +4960,12 @@ async function drawGraph() {
       window.selectAttackPath(activePathIdx || 'all');
     }
   } else {
-    // First run for this alert: run CoSE layout, let it settle, save coordinates, and lock!
+    // First run for this alert: preset layout positions nodes according to lateral movement flow, then gently settles & locks!
     const graphInstance = cy;
     const layout = graphInstance.layout(initialLayout);
     graphInstance.one('layoutstop', () => {
       if (cy !== graphInstance) return;
-      graphInstance.fit(undefined, 50);
+      graphInstance.fit(undefined, 40);
       initObsidianPhysics(graphInstance);
       if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
         window.selectAttackPath(activePathIdx || 'all');
