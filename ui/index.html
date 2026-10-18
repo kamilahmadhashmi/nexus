@@ -915,9 +915,8 @@
 
     /* Cytoscape Highlighted Path Classes */
     .path-selected-node {
-      border-width: 4px !important;
-      border-color: var(--memphis-coral) !important;
-      background-color: var(--memphis-yellow) !important;
+      border-width: 5px !important;
+      border-color: #0F172A !important;
     }
     .path-selected-edge {
       line-color: var(--memphis-coral) !important;
@@ -1739,10 +1738,17 @@
     .legend-dot {
       width: 10px;
       height: 10px;
-      border-radius: 2.5px;
       border: 1.5px solid var(--memphis-black);
       flex-shrink: 0;
+      box-shadow: 1px 1px 0px rgba(15,23,42,0.3);
     }
+    .legend-dot.dot-person { border-radius: 50%; }
+    .legend-dot.dot-device { border-radius: 2px; }
+    .legend-dot.dot-server { border-radius: 2px; }
+    .legend-dot.dot-svc-acct { transform: rotate(45deg); width: 8px; height: 8px; margin: 0 1px; border-radius: 1px; }
+    .legend-dot.dot-service { border-radius: 3px; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); width: 11px; height: 11px; }
+    .legend-dot.dot-datastore { border-radius: 2px; clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%); width: 11px; height: 11px; }
+    .legend-dot.dot-quarantined { border-radius: 2px; }
 
     /* ==========================================================================
        WHAT-IF SANDBOX DIFF PREVIEW & PARETO HOVER AFFORDANCE
@@ -2202,13 +2208,13 @@
       <!-- Memphis Semantic Node Legend with Interactive Entity Filters -->
       <div class="graph-legend" data-lenis-prevent>
         <span style="font-weight:900; color:var(--text-primary); text-transform:uppercase; margin-right:2px; font-size:10.5px;">Filter:</span>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Person')" title="Click to isolate Person entities"><span class="legend-dot" style="background:#A78BFA;"></span> Person</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Device')" title="Click to isolate Device entities"><span class="legend-dot" style="background:#38BDF8;"></span> Device</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Server')" title="Click to isolate Server entities"><span class="legend-dot" style="background:#34D399;"></span> Server</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('ServiceAccount')" title="Click to isolate ServiceAccount entities"><span class="legend-dot" style="background:#FDE047;"></span> ServiceAccount</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Service')" title="Click to isolate Service entities"><span class="legend-dot" style="background:#F472B6;"></span> Service</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('DataStore')" title="Click to isolate Crown Jewels"><span class="legend-dot" style="background:#FF6B6B;"></span> DataStore (Crown Jewel)</button>
-        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('bad')" title="Click to isolate Quarantined entities"><span class="legend-dot" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></span> Quarantined</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Person')" title="Click to isolate Person entities"><span class="legend-dot dot-person" style="background:#A78BFA;"></span> Person</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Device')" title="Click to isolate Device entities"><span class="legend-dot dot-device" style="background:#38BDF8;"></span> Device</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Server')" title="Click to isolate Server entities"><span class="legend-dot dot-server" style="background:#34D399;"></span> Server</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('ServiceAccount')" title="Click to isolate ServiceAccount entities"><span class="legend-dot dot-svc-acct" style="background:#FDE047;"></span> ServiceAccount</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('Service')" title="Click to isolate Service entities"><span class="legend-dot dot-service" style="background:#F472B6;"></span> Service</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('DataStore')" title="Click to isolate Crown Jewels"><span class="legend-dot dot-datastore" style="background:#FF6B6B;"></span> DataStore (Crown Jewel)</button>
+        <button type="button" class="legend-pill" onclick="window.filterByKind && window.filterByKind('bad')" title="Click to isolate Quarantined entities"><span class="legend-dot dot-quarantined" style="background:#FEE2E2; border:1.5px dashed #0F172A;"></span> Quarantined</button>
       </div>
     </section>
 
@@ -3199,7 +3205,19 @@ function renderSubway(data, selectedIdx = 0) {
     const isLast = idx === p.ids.length - 1;
     const isFirst = idx === 0;
     const rel = p.types[idx];
-    const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${esc(id)}</button>`;
+    const cyNode = (cy && cy.getElementById(id)) || null;
+    const kind = (cyNode && cyNode.data('kind')) || '';
+    const kindColors = {
+      'Person': '#A78BFA',
+      'Device': '#38BDF8',
+      'Server': '#34D399',
+      'ServiceAccount': '#FDE047',
+      'Service': '#F472B6',
+      'DataStore': '#FF6B6B'
+    };
+    const dotColor = kindColors[kind] || (isLast ? '#FF6B6B' : (isFirst ? '#A78BFA' : '#38BDF8'));
+    const dotHtml = `<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:${dotColor}; border:1px solid #0F172A; margin-right:4px;"></span>`;
+    const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${dotHtml}${esc(id)}</button>`;
     const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
     return nodeBadge + edgeBadge;
   }).join('');
@@ -4067,9 +4085,11 @@ async function drawGraph() {
         selector: 'node.attack-path-highlight',
         style: {
           'opacity': 1,
-          'border-width': 4.5,
+          'border-width': 5,
           'border-color': '#0F172A',
-          'background-color': '#FF6B6B'
+          'underlay-color': '#FF6B6B',
+          'underlay-padding': 7,
+          'underlay-opacity': 0.85
         }
       },
       {
@@ -4097,9 +4117,11 @@ async function drawGraph() {
           'opacity': 1,
           'border-width': 5,
           'border-color': '#0F172A',
-          'background-color': '#FFE033',
-          'width': 48,
-          'height': 48,
+          'underlay-color': '#FFE033',
+          'underlay-padding': 7,
+          'underlay-opacity': 0.85,
+          'width': 44,
+          'height': 44,
           'z-index': 100
         }
       },
