@@ -2472,7 +2472,12 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 let INV = null;
 let ACTION_NOTICE = '';
 let cy = null;
+window.cyInstance = null;
 let jiggleLoopId = null;
+let savedNodePositions = new Map();
+let isPhysicsSettled = false;
+let lastLoadedAlertId = null;
+
 
 // ==============================================================
 // 1. LIVE TELEMETRY CLOCK
@@ -2607,21 +2612,18 @@ window.togglePhysicsPause = function() {
   if ($('physics-status')) {
     $('physics-status').innerHTML = isPhysicsPaused
       ? `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-coral); border:1.5px solid var(--memphis-black);"></span> Physics Paused · Static View`
-      : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Drag nodes to deform network`;
+      : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Settled · Topology Stable`;
   }
   if (!isPhysicsPaused) {
-    physicsNodeMap.forEach(p => {
-      if (!p.isLocked) {
-        p.vx += (Math.random() - 0.5) * 2;
-        p.vy += (Math.random() - 0.5) * 2;
-      }
-    });
+    if (window.wakePhysics) window.wakePhysics(0.4);
   }
 };
 
 window.rerunInitialLayout = function() {
   const targetCy = physicsCy || cy;
   if (!targetCy) return;
+  savedNodePositions.clear();
+  isPhysicsSettled = false;
   if (jiggleLoopId) {
     cancelAnimationFrame(jiggleLoopId);
     jiggleLoopId = null;
@@ -2631,6 +2633,9 @@ window.rerunInitialLayout = function() {
     if (cy !== targetCy) return;
     targetCy.fit(undefined, 50);
     initObsidianPhysics(targetCy);
+    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
+      window.selectAttackPath(activePathIdx || 'all');
+    }
   });
   layout.run();
 };
@@ -2686,13 +2691,8 @@ window.toggleCurrentNodeLock = function() {
 window.inspectNode = function(node) {
   if (!node) return;
   currentInspectedNode = node;
-  const p = physicsNodeMap.get(node.id());
-  if (p && !p.isLocked) {
-    const angle = Math.random() * Math.PI * 2;
-    p.vx += Math.cos(angle) * 8;
-    p.vy += Math.sin(angle) * 8;
-    if (window.wakePhysics) window.wakePhysics();
-  }
+  // Node inspected without physics kick or viewport movement to ensure spatial stability
+
   
   const kind = node.data('kind');
   const name = node.data('label') || node.id();
@@ -2781,6 +2781,7 @@ window.inspectNode = function(node) {
     focusBtn.onclick = () => window.focusSubnet && window.focusSubnet(node.id());
   }
 
+  const p = (typeof physicsNodeMap !== 'undefined' && physicsNodeMap) ? physicsNodeMap.get(node.id()) : null;
   const isLocked = p ? p.isLocked : node.hasClass('node-pinned');
   if ($('inspect-lock-btn')) {
     $('inspect-lock-btn').textContent = isLocked ? 'Unpin Node' : 'Pin Node';
@@ -2940,21 +2941,17 @@ window.setViewMode = function(mode) {
     cy.elements().difference(pathCorridor).addClass('obsidian-dimmed');
     pathNodes.addClass('obsidian-focused');
     pathEdges.addClass('obsidian-focused');
-    if (pathNodes.length > 0) {
-      cy.animate({ center: { eles: pathNodes }, duration: 400 });
-    }
   } else if (mode === 'blast') {
     const crownStores = cy.nodes('[kind = "DataStore"]');
     const dependentServices = cy.edges('[label = "DEPENDS_ON"]').sources().union(cy.edges('[label = "DEPENDS_ON"]').targets());
     const blastSet = crownStores.union(dependentServices).union(crownStores.connectedEdges());
     cy.elements().difference(blastSet).addClass('obsidian-dimmed');
     blastSet.addClass('obsidian-focused');
-    if (blastSet.length > 0) {
-      cy.animate({ center: { eles: blastSet }, duration: 400 });
-    }
   } else {
-    // Full Fabric
-    cy.animate({ fit: { padding: 45 }, duration: 350 });
+    // Full Fabric - re-apply active attack path selection
+    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
+      window.selectAttackPath(activePathIdx || 'all');
+    }
   }
 };
 
@@ -2962,11 +2959,6 @@ window.inspectNodeById = function(nodeId) {
   if (!cy || !nodeId) return;
   const n = cy.getElementById(nodeId);
   if (!n || n.length === 0) return;
-  cy.animate({
-    center: { eles: n },
-    zoom: Math.min(Math.max(cy.zoom(), 1.25), 1.7),
-    duration: 350
-  });
   window.inspectNode(n[0]);
 };
 
@@ -2976,13 +2968,11 @@ window.highlightNodeHover = function(nodeId, enter) {
   if (!n || n.length === 0) return;
   if (enter) {
     if (isAttackPathSpotlightActive) return;
-    const neighborhood = n.closedNeighborhood();
-    cy.elements().difference(neighborhood).addClass('obsidian-dimmed');
-    neighborhood.addClass('obsidian-focused');
+    n.closedNeighborhood().addClass('obsidian-focused');
     n.addClass('obsidian-active');
   } else {
     if (isAttackPathSpotlightActive) return;
-    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+    cy.elements().removeClass('obsidian-focused obsidian-active');
   }
 };
 
@@ -2991,8 +2981,12 @@ window.filterByKind = function(kind) {
   if (!cy) return;
   if (activeKindFilter === kind) {
     activeKindFilter = null;
-    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
     document.querySelectorAll('.legend-pill').forEach(p => p.classList.remove('active'));
+    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
+      window.selectAttackPath(activePathIdx || 'all');
+    } else {
+      cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+    }
     return;
   }
   activeKindFilter = kind;
@@ -3009,25 +3003,12 @@ window.filterByKind = function(kind) {
 };
 
 window.triggerGraphShockwave = function(targetId) {
-  const targetMap = (physicsCy && physicsNodeMap.size > 0) ? physicsNodeMap : null;
-  if (!targetMap) return;
-  const origin = targetId ? targetMap.get(targetId) : null;
-  targetMap.forEach((p, id) => {
-    let angle, power;
-    if (origin && id !== targetId) {
-      const dx = p.x - origin.x;
-      const dy = p.y - origin.y;
-      angle = Math.atan2(dy, dx);
-      const dist = Math.hypot(dx, dy) || 1;
-      power = Math.max(14, 45 - dist * 0.07);
-    } else {
-      angle = Math.random() * Math.PI * 2;
-      power = 24;
-    }
-    p.vx += Math.cos(angle) * power;
-    p.vy += Math.sin(angle) * power;
-  });
-  if (window.wakePhysics) window.wakePhysics();
+  // Pure visual highlight without scrambling node coordinates
+  if (!cy || !targetId) return;
+  const targetNode = cy.getElementById(targetId);
+  if (targetNode.length > 0) {
+    targetNode.flashClass('sandbox-target', 1200);
+  }
 };
 
 function initObsidianPhysics(cyInstance) {
@@ -3052,8 +3033,8 @@ function initObsidianPhysics(cyInstance) {
       node: n,
       x: pos.x,
       y: pos.y,
-      vx: (Math.random() - 0.5) * 5.0,
-      vy: (Math.random() - 0.5) * 5.0,
+      vx: (Math.random() - 0.5) * 2.5,
+      vy: (Math.random() - 0.5) * 2.5,
       fx: 0,
       fy: 0,
       mass: mass,
@@ -3084,7 +3065,6 @@ function initObsidianPhysics(cyInstance) {
       p.vy = 0;
       lastGrabPos = { ...e.target.position() };
       dragVel = { vx: 0, vy: 0 };
-      if (window.wakePhysics) window.wakePhysics();
     }
   });
 
@@ -3094,12 +3074,7 @@ function initObsidianPhysics(cyInstance) {
       const currentPos = e.target.position();
       p.x = currentPos.x;
       p.y = currentPos.y;
-      if (lastGrabPos) {
-        dragVel.vx = (currentPos.x - lastGrabPos.x) * 0.7;
-        dragVel.vy = (currentPos.y - lastGrabPos.y) * 0.7;
-        lastGrabPos = { ...currentPos };
-      }
-      if (window.wakePhysics) window.wakePhysics();
+      savedNodePositions.set(e.target.id(), { x: currentPos.x, y: currentPos.y });
     }
   });
 
@@ -3111,15 +3086,15 @@ function initObsidianPhysics(cyInstance) {
       const currentPos = e.target.position();
       p.x = currentPos.x;
       p.y = currentPos.y;
-      if (!p.isLocked) {
-        p.vx = Math.max(-25, Math.min(25, dragVel.vx));
-        p.vy = Math.max(-25, Math.min(25, dragVel.vy));
-      }
+      p.vx = 0;
+      p.vy = 0;
+      savedNodePositions.set(e.target.id(), { x: currentPos.x, y: currentPos.y });
       lastGrabPos = null;
-      if (window.wakePhysics) window.wakePhysics();
     }
   });
 
+  let settlingStepCount = 0;
+  const maxSettlingSteps = 45; // ~700ms bounded settling period
   let lastTimestamp = performance.now();
 
   function stepPhysics(now) {
@@ -3132,6 +3107,7 @@ function initObsidianPhysics(cyInstance) {
     lastTimestamp = now;
 
     if (!isPhysicsPaused) {
+      settlingStepCount++;
       const nodesArray = Array.from(nodeMap.values());
       const numNodes = nodesArray.length;
 
@@ -3146,7 +3122,7 @@ function initObsidianPhysics(cyInstance) {
       cx /= Math.max(numNodes, 1);
       cySum /= Math.max(numNodes, 1);
 
-      // Node Repulsion & Collision Prevention (Generous clearance for cyber badges)
+      // Node Repulsion & Collision Prevention
       for (let i = 0; i < numNodes; i++) {
         const p1 = nodesArray[i];
         for (let j = i + 1; j < numNodes; j++) {
@@ -3202,8 +3178,10 @@ function initObsidianPhysics(cyInstance) {
         p2.fy -= fy;
       }
 
-      // Euler-Verlet Integration Step with Thermal Settling
+      // Adaptive Cooling Damping
+      const cooling = Math.max(0.60, obsidianParams.damping - (settlingStepCount * 0.005));
       let totalKinetic = 0;
+
       for (let i = 0; i < numNodes; i++) {
         const p = nodesArray[i];
         if (p.isGrabbed || p.isLocked) {
@@ -3212,14 +3190,14 @@ function initObsidianPhysics(cyInstance) {
           continue;
         }
 
-        p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * obsidianParams.damping;
-        p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * obsidianParams.damping;
+        p.vx = (p.vx + (p.fx / p.mass) * dt * 60) * cooling;
+        p.vy = (p.vy + (p.fy / p.mass) * dt * 60) * cooling;
 
-        p.vx = Math.max(-25, Math.min(25, p.vx));
-        p.vy = Math.max(-25, Math.min(25, p.vy));
+        p.vx = Math.max(-15, Math.min(15, p.vx));
+        p.vy = Math.max(-15, Math.min(15, p.vy));
 
-        if (Math.abs(p.vx) < 0.015) p.vx = 0;
-        if (Math.abs(p.vy) < 0.015) p.vy = 0;
+        if (Math.abs(p.vx) < 0.02) p.vx = 0;
+        if (Math.abs(p.vy) < 0.02) p.vy = 0;
 
         totalKinetic += p.vx * p.vx + p.vy * p.vy;
 
@@ -3227,11 +3205,21 @@ function initObsidianPhysics(cyInstance) {
         p.y += p.vy;
 
         p.node.position({ x: p.x, y: p.y });
+        savedNodePositions.set(p.id, { x: p.x, y: p.y });
       }
 
-      // Sleep condition: when thermal energy cools below threshold and no user is dragging
-      if (!isAnyGrabbed && totalKinetic < 0.04) {
+      // Settle Condition: when thermal energy cools below threshold or max settling frames reached
+      if (!isAnyGrabbed && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
+        nodesArray.forEach(p => {
+          p.vx = 0;
+          p.vy = 0;
+          savedNodePositions.set(p.id, { x: p.x, y: p.y });
+        });
         jiggleLoopId = null;
+        isPhysicsSettled = true;
+        if ($('physics-status')) {
+          $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Settled · Topology Stable`;
+        }
         return;
       }
     }
@@ -3241,11 +3229,13 @@ function initObsidianPhysics(cyInstance) {
 
   window.wakePhysics = function(boost = 1.0) {
     if (isPhysicsPaused || cy !== cyInstance) return;
+    settlingStepCount = 0;
+    isPhysicsSettled = false;
     if (!jiggleLoopId) {
       nodeMap.forEach(p => {
         if (!p.isLocked && !p.isGrabbed) {
-          p.vx += (Math.random() - 0.5) * 2.0 * boost;
-          p.vy += (Math.random() - 0.5) * 2.0 * boost;
+          p.vx = (Math.random() - 0.5) * 1.5 * boost;
+          p.vy = (Math.random() - 0.5) * 1.5 * boost;
         }
       });
       lastTimestamp = performance.now();
@@ -3253,6 +3243,8 @@ function initObsidianPhysics(cyInstance) {
     }
   };
 
+  settlingStepCount = 0;
+  isPhysicsSettled = false;
   jiggleLoopId = requestAnimationFrame(stepPhysics);
 }
 
@@ -3487,8 +3479,14 @@ async function run() {
   $('trace').innerHTML = '';
   
   try {
+    const alertVal = $('alert').value;
+    if (lastLoadedAlertId !== alertVal) {
+      savedNodePositions.clear();
+      isPhysicsSettled = false;
+      lastLoadedAlertId = alertVal;
+    }
     const data = await post('/api/investigate', {
-      alert_id: $('alert').value,
+      alert_id: alertVal,
       mode: $('mode').value,
       autonomous: $('auto').checked
     });
@@ -3533,11 +3531,15 @@ async function resetDemo() {
     const result = await post('/api/reset', {});
     INV = null;
     ACTION_NOTICE = '';
+    savedNodePositions.clear();
+    lastLoadedAlertId = null;
+    isPhysicsSettled = false;
+    activePathIdx = 'all';
     if (jiggleLoopId) {
       cancelAnimationFrame(jiggleLoopId);
       jiggleLoopId = null;
     }
-    if (cy) { cy.destroy(); cy = null; }
+    if (cy) { cy.destroy(); cy = null; window.cyInstance = null; }
     if ($('node-inspector')) $('node-inspector').style.display = 'none';
     currentInspectedNode = null;
     isPhysicsPaused = false;
@@ -3588,8 +3590,9 @@ let currentInvestigationData = null;
 let activePathIdx = 'all';
 
 window.selectAttackPath = function(idx) {
-  if (!window.currentInvestigationData || !window.currentInvestigationData.evidence_paths) return;
-  const paths = window.currentInvestigationData.evidence_paths;
+  if (!window.currentInvestigationData) return;
+  const data = window.currentInvestigationData;
+  const paths = data.evidence_paths || [];
   if (paths.length === 0) return;
 
   // Clicking an already selected single route toggles back to 'all'
@@ -3604,59 +3607,129 @@ window.selectAttackPath = function(idx) {
   if (cy) {
     cy.elements().removeClass('path-selected-node path-selected-edge obsidian-dimmed');
 
+    const alertId = data.alert_id || (window.currentInvestigationData?.initial?.alert_id) || ($('alert') ? $('alert').value : null);
+    const subjectId = (data.initial && data.initial.subject) || (paths[0] && paths[0].ids[0]);
+
+    const targetNodeIds = new Set();
+    const targetEdgeIds = new Set();
+
     if (activePathIdx === 'all') {
       // Highlight ALL routes simultaneously
-      const allNodeIds = new Set();
       paths.forEach(p => {
-        p.ids.forEach(id => allNodeIds.add(id));
+        p.ids.forEach(id => targetNodeIds.add(id));
         for (let i = 0; i < p.ids.length - 1; i++) {
           const src = p.ids[i];
           const tgt = p.ids[i + 1];
-          const edges = cy.edges().filter(e =>
-            (e.source().id() === src && e.target().id() === tgt) ||
-            (e.source().id() === tgt && e.target().id() === src)
-          );
-          edges.addClass('path-selected-edge');
+          cy.edges().forEach(e => {
+            if ((e.source().id() === src && e.target().id() === tgt) ||
+                (e.source().id() === tgt && e.target().id() === src)) {
+              targetEdgeIds.add(e.id());
+            }
+          });
         }
       });
-      const targetNodes = cy.nodes().filter(n => allNodeIds.has(n.id()));
-      targetNodes.addClass('path-selected-node');
 
-      const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
-      cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+      // Include active Alert node, threat source IP, and vulnerability affecting path servers
+      if (alertId) targetNodeIds.add(alertId);
 
-      if (targetNodes.length > 0) {
-        cy.animate({
-          center: { eles: targetNodes },
-          duration: 350
-        });
-      }
+      cy.nodes().forEach(n => {
+        const k = n.data('kind');
+        const nid = n.id();
+        if (k === 'Alert' && nid === alertId) {
+          targetNodeIds.add(nid);
+        }
+        if (k === 'IPAddress') {
+          const alertNode = cy.getElementById(alertId);
+          const rawText = alertNode.length > 0 ? (alertNode.data('props')?.raw_text || '') : '';
+          const ipClean = nid.replace(/^IP-/, '').replace(/-/g, '.');
+          const isMentionedInAlert = rawText.includes(ipClean) || rawText.includes(nid);
+          const isConnectedToSubject = n.connectedEdges().some(e =>
+            e.source().id() === subjectId || e.target().id() === subjectId ||
+            e.source().id() === alertId || e.target().id() === alertId
+          );
+          if (isMentionedInAlert || (!rawText && isConnectedToSubject)) {
+            targetNodeIds.add(nid);
+          }
+        }
+        if (k === 'Vulnerability') {
+          const isConnectedToPath = n.connectedEdges().some(e => {
+            const otherId = e.source().id() === nid ? e.target().id() : e.source().id();
+            return targetNodeIds.has(otherId);
+          });
+          if (isConnectedToPath) {
+            targetNodeIds.add(nid);
+          }
+        }
+      });
+
+      // Highlight connecting incident telemetry edges (Alert->Subject, IP->Subject, Server->Vuln)
+      cy.edges().forEach(e => {
+        if (targetNodeIds.has(e.source().id()) && targetNodeIds.has(e.target().id())) {
+          targetEdgeIds.add(e.id());
+        }
+      });
+
     } else {
+      // Single route selected (Route 1, Route 2, or Route 3)
       const selectedPath = paths[activePathIdx] || paths[0];
-      const nodeIds = selectedPath.ids;
-      const targetNodes = cy.nodes().filter(n => nodeIds.includes(n.id()));
+      const nodeIds = selectedPath ? selectedPath.ids : [];
+      nodeIds.forEach(id => targetNodeIds.add(id));
 
       for (let i = 0; i < nodeIds.length - 1; i++) {
         const src = nodeIds[i];
         const tgt = nodeIds[i + 1];
-        const edges = cy.edges().filter(e =>
-          (e.source().id() === src && e.target().id() === tgt) ||
-          (e.source().id() === tgt && e.target().id() === src)
-        );
-        edges.addClass('path-selected-edge');
-      }
-      targetNodes.addClass('path-selected-node');
-
-      const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
-      cy.elements().difference(activeElements).addClass('obsidian-dimmed');
-
-      if (targetNodes.length > 0) {
-        cy.animate({
-          center: { eles: targetNodes },
-          duration: 350
+        cy.edges().forEach(e => {
+          if ((e.source().id() === src && e.target().id() === tgt) ||
+              (e.source().id() === tgt && e.target().id() === src)) {
+            targetEdgeIds.add(e.id());
+          }
         });
       }
+
+      // Include active alert & threat source IP
+      if (alertId) targetNodeIds.add(alertId);
+
+      cy.nodes().forEach(n => {
+        const k = n.data('kind');
+        const nid = n.id();
+        if (k === 'Alert' && nid === alertId) targetNodeIds.add(nid);
+        if (k === 'IPAddress') {
+          const alertNode = cy.getElementById(alertId);
+          const rawText = alertNode.length > 0 ? (alertNode.data('props')?.raw_text || '') : '';
+          const ipClean = nid.replace(/^IP-/, '').replace(/-/g, '.');
+          const isMentionedInAlert = rawText.includes(ipClean) || rawText.includes(nid);
+          const isConnectedToSubject = n.connectedEdges().some(e =>
+            e.source().id() === subjectId || e.target().id() === subjectId
+          );
+          if (isMentionedInAlert || (!rawText && isConnectedToSubject)) {
+            targetNodeIds.add(nid);
+          }
+        }
+        if (k === 'Vulnerability') {
+          // Highlight vulnerability ONLY if it connects to a server on THIS route
+          const isConnectedToThisRoute = n.connectedEdges().some(e => {
+            const otherId = e.source().id() === nid ? e.target().id() : e.source().id();
+            return nodeIds.includes(otherId);
+          });
+          if (isConnectedToThisRoute) targetNodeIds.add(nid);
+        }
+      });
+
+      cy.edges().forEach(e => {
+        if (targetNodeIds.has(e.source().id()) && targetNodeIds.has(e.target().id())) {
+          targetEdgeIds.add(e.id());
+        }
+      });
     }
+
+    const targetNodes = cy.nodes().filter(n => targetNodeIds.has(n.id()));
+    const targetEdges = cy.edges().filter(e => targetEdgeIds.has(e.id()));
+
+    targetNodes.addClass('path-selected-node');
+    targetEdges.addClass('path-selected-edge');
+
+    const activeElements = targetNodes.union(targetEdges);
+    cy.elements().difference(activeElements).addClass('obsidian-dimmed');
   }
 };
 
@@ -4328,10 +4401,11 @@ async function act(url) {
         : `CHECK containment applied, but live risk ${result.after}/100 did not match the simulated result (${result.simulated_residual}/100).`;
     }
     render(refreshed);
-    await drawGraph();
-    if (window.triggerGraphShockwave) {
-      window.triggerGraphShockwave(refreshed.executed?.target);
+    // Preserve existing node coordinates so containment and rollback do not scramble the graph
+    if (cy) {
+      cy.nodes().forEach(n => savedNodePositions.set(n.id(), n.position()));
     }
+    await drawGraph();
   } catch (error) {
     alert('Action execution failed: ' + error.message);
   }
@@ -4378,6 +4452,8 @@ async function drawGraph() {
     BlastService: 1260
   };
 
+  const hasExistingPositions = data.nodes.some(n => savedNodePositions.has(n.id));
+
   const elements = data.nodes.map(n => {
     let zoneKey = n.label;
     if (n.label === 'Service' && !n.is_path_node) zoneKey = 'BlastService';
@@ -4390,6 +4466,12 @@ async function drawGraph() {
     const spacingY = 90;
     const baseY = centerY + (indexInZone - (countInZone - 1) / 2) * spacingY;
 
+    const savedPos = savedNodePositions.get(n.id);
+    const initialPos = savedPos ? { ...savedPos } : {
+      x: data.is_benign ? 350 + Math.cos((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseX,
+      y: data.is_benign ? 260 + Math.sin((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseY
+    };
+
     return {
       data: {
         id: n.id,
@@ -4399,10 +4481,7 @@ async function drawGraph() {
         is_path_node: !!n.is_path_node,
         props: n.properties || {}
       },
-      position: {
-        x: data.is_benign ? 350 + Math.cos((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseX,
-        y: data.is_benign ? 260 + Math.sin((indexInZone / Math.max(countInZone, 1)) * 2 * Math.PI) * 160 : baseY
-      }
+      position: initialPos
     };
   }).concat(data.edges.map(e => ({
     data: {
@@ -4830,30 +4909,47 @@ async function drawGraph() {
   cy.on('mouseover', 'node', e => {
     if (isAttackPathSpotlightActive) return;
     const node = e.target;
-    const neighborhood = node.closedNeighborhood();
-    cy.elements().difference(neighborhood).addClass('obsidian-dimmed');
-    neighborhood.addClass('obsidian-focused');
+    node.closedNeighborhood().addClass('obsidian-focused');
     node.addClass('obsidian-active');
   });
   cy.on('mouseout', 'node', () => {
     if (isAttackPathSpotlightActive) return;
-    cy.elements().removeClass('obsidian-dimmed obsidian-focused obsidian-active');
+    cy.elements().removeClass('obsidian-focused obsidian-active');
   });
 
-  if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths && window.currentInvestigationData.evidence_paths.length > 0) {
+  window.cyInstance = cy;
+
+  // CRITICAL: Apply attack path highlighting immediately upon graph creation
+  if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
     window.selectAttackPath(activePathIdx || 'all');
   }
-  const graphInstance = cy;
-  const layout = graphInstance.layout(initialLayout);
-  graphInstance.one('layoutstop', () => {
-    if (cy !== graphInstance) return;
-    graphInstance.fit(undefined, 50);
-    initObsidianPhysics(graphInstance);
-    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths && window.currentInvestigationData.evidence_paths.length > 0) {
+
+  if (hasExistingPositions) {
+    // Preserve existing settled positions across state refreshes (e.g. containment or rollback)
+    cy.fit(undefined, 50);
+    initObsidianPhysics(cy);
+    isPhysicsSettled = true;
+    if (jiggleLoopId) {
+      cancelAnimationFrame(jiggleLoopId);
+      jiggleLoopId = null;
+    }
+    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
       window.selectAttackPath(activePathIdx || 'all');
     }
-  });
-  layout.run();
+  } else {
+    // First run for this alert: run CoSE layout, let it settle, save coordinates, and lock!
+    const graphInstance = cy;
+    const layout = graphInstance.layout(initialLayout);
+    graphInstance.one('layoutstop', () => {
+      if (cy !== graphInstance) return;
+      graphInstance.fit(undefined, 50);
+      initObsidianPhysics(graphInstance);
+      if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
+        window.selectAttackPath(activePathIdx || 'all');
+      }
+    });
+    layout.run();
+  }
 }
 
 window.togglePanelPin = function(panelId) {
@@ -4863,7 +4959,6 @@ window.togglePanelPin = function(panelId) {
     if (typeof cy !== 'undefined' && cy) {
       setTimeout(() => {
         cy.resize();
-        cy.fit(undefined, 35);
       }, 360);
     }
   }
@@ -4886,16 +4981,9 @@ window.toggleGraphMaximize = function() {
 };
 
 if (typeof window !== 'undefined' && window.ResizeObserver) {
-  let cyFitTimer = null;
   const cyObserver = new ResizeObserver(() => {
     if (typeof cy !== 'undefined' && cy) {
       cy.resize();
-      if (cyFitTimer) cancelAnimationFrame(cyFitTimer);
-      cyFitTimer = requestAnimationFrame(() => {
-        if (typeof cy !== 'undefined' && cy) {
-          cy.fit(undefined, 35);
-        }
-      });
     }
   });
   const cyEl = document.getElementById('cy');
@@ -4907,7 +4995,6 @@ if (typeof window !== 'undefined' && window.ResizeObserver) {
 window.addEventListener('resize', () => {
   if (typeof cy !== 'undefined' && cy) {
     cy.resize();
-    cy.fit(undefined, 40);
   }
 });
 
