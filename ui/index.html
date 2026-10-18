@@ -2225,7 +2225,7 @@
           <b>Attack Path Traversal Topology</b>
           <div id="physics-status">
             <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span>
-            Obsidian Force-Directed Physics Active · Drag nodes to deform network
+            Obsidian Force-Directed Physics Active · Resumed (Drag nodes to deform network)
           </div>
         </div>
         <div class="graph-toolbar-actions">
@@ -2650,7 +2650,7 @@ window.togglePhysicsPause = function() {
   if ($('physics-status')) {
     $('physics-status').innerHTML = isPhysicsPaused
       ? `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-coral); border:1.5px solid var(--memphis-black);"></span> Physics Paused · Static View`
-      : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Settled · Topology Stable`;
+      : `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Resumed (Drag nodes to deform network)`;
   }
   if (!isPhysicsPaused) {
     if (window.wakePhysics) window.wakePhysics(0.4);
@@ -3107,6 +3107,12 @@ function initObsidianPhysics(cyInstance) {
       p.vy = 0;
       lastGrabPos = { ...e.target.position() };
       dragVel = { vx: 0, vy: 0 };
+      isPhysicsSettled = false;
+      settlingStepCount = 0;
+      if (!jiggleLoopId && !isPhysicsPaused) {
+        lastTimestamp = performance.now();
+        jiggleLoopId = requestAnimationFrame(stepPhysics);
+      }
     }
   });
 
@@ -3117,6 +3123,12 @@ function initObsidianPhysics(cyInstance) {
       p.x = currentPos.x;
       p.y = currentPos.y;
       savedNodePositions.set(e.target.id(), { x: currentPos.x, y: currentPos.y });
+      isPhysicsSettled = false;
+      settlingStepCount = 0;
+      if (!jiggleLoopId && !isPhysicsPaused) {
+        lastTimestamp = performance.now();
+        jiggleLoopId = requestAnimationFrame(stepPhysics);
+      }
     }
   });
 
@@ -3132,6 +3144,12 @@ function initObsidianPhysics(cyInstance) {
       p.vy = 0;
       savedNodePositions.set(e.target.id(), { x: currentPos.x, y: currentPos.y });
       lastGrabPos = null;
+      isPhysicsSettled = false;
+      settlingStepCount = 0;
+      if (!jiggleLoopId && !isPhysicsPaused) {
+        lastTimestamp = performance.now();
+        jiggleLoopId = requestAnimationFrame(stepPhysics);
+      }
     }
   });
 
@@ -3149,6 +3167,13 @@ function initObsidianPhysics(cyInstance) {
     lastTimestamp = now;
 
     if (!isPhysicsPaused) {
+      if (isPhysicsSettled && !isAnyGrabbed) {
+        // Network in stable equilibrium: zero coordinate drift on resting nodes
+        // Physics loop remains resumed and active to immediately respond to node dragging
+        jiggleLoopId = requestAnimationFrame(stepPhysics);
+        return;
+      }
+
       settlingStepCount++;
       const nodesArray = Array.from(nodeMap.values());
       const numNodes = nodesArray.length;
@@ -3252,7 +3277,6 @@ function initObsidianPhysics(cyInstance) {
 
       // Settle Condition: when thermal energy cools below threshold after settling frames, or max settling frames reached
       if (!isAnyGrabbed && settlingStepCount >= 15 && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
-        cyInstance.fit(undefined, 40);
         nodesArray.forEach(p => {
           p.vx = 0;
           p.vy = 0;
@@ -3261,11 +3285,11 @@ function initObsidianPhysics(cyInstance) {
           p.y = pos.y;
           savedNodePositions.set(p.id, { x: pos.x, y: pos.y });
         });
-        jiggleLoopId = null;
         isPhysicsSettled = true;
         if ($('physics-status')) {
-          $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Settled · Topology Stable`;
+          $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Resumed (Drag nodes to deform network)`;
         }
+        jiggleLoopId = requestAnimationFrame(stepPhysics);
         return;
       }
     }
@@ -3277,13 +3301,13 @@ function initObsidianPhysics(cyInstance) {
     if (isPhysicsPaused || cy !== cyInstance) return;
     settlingStepCount = 0;
     isPhysicsSettled = false;
+    nodeMap.forEach(p => {
+      if (!p.isLocked && !p.isGrabbed) {
+        p.vx = (Math.random() - 0.5) * 1.5 * boost;
+        p.vy = (Math.random() - 0.5) * 1.5 * boost;
+      }
+    });
     if (!jiggleLoopId) {
-      nodeMap.forEach(p => {
-        if (!p.isLocked && !p.isGrabbed) {
-          p.vx = (Math.random() - 0.5) * 1.5 * boost;
-          p.vy = (Math.random() - 0.5) * 1.5 * boost;
-        }
-      });
       lastTimestamp = performance.now();
       jiggleLoopId = requestAnimationFrame(stepPhysics);
     }
@@ -5017,9 +5041,8 @@ async function drawGraph() {
     cy.fit(undefined, 40);
     initObsidianPhysics(cy);
     isPhysicsSettled = true;
-    if (jiggleLoopId) {
-      cancelAnimationFrame(jiggleLoopId);
-      jiggleLoopId = null;
+    if ($('physics-status')) {
+      $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-mint); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Resumed (Drag nodes to deform network)`;
     }
     if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths) {
       window.selectAttackPath(activePathIdx || 'all');
