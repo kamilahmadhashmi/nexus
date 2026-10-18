@@ -2197,8 +2197,8 @@
           </div>
           <!-- Cyber Topology View Modes -->
           <div class="view-mode-group">
-            <button type="button" class="view-mode-btn active" id="view-corridor-btn" title="Focus Attack Corridor" onclick="window.setViewMode && window.setViewMode('corridor')">Corridor</button>
-            <button type="button" class="view-mode-btn" id="view-fabric-btn" title="View Full Threat Fabric" onclick="window.setViewMode && window.setViewMode('fabric')">Fabric</button>
+            <button type="button" class="view-mode-btn" id="view-corridor-btn" title="Focus Attack Corridor" onclick="window.setViewMode && window.setViewMode('corridor')">Corridor</button>
+            <button type="button" class="view-mode-btn active" id="view-fabric-btn" title="View Full Threat Fabric" onclick="window.setViewMode && window.setViewMode('fabric')">Fabric</button>
             <button type="button" class="view-mode-btn" id="view-blast-btn" title="Inspect Microservice Blast Radius" onclick="window.setViewMode && window.setViewMode('blast')">Blast</button>
           </div>
           <button id="physics-pause-btn" class="secondary" title="Pause or Resume Live Force-Directed Physics">
@@ -3723,7 +3723,9 @@ window.selectAttackPath = function(idx) {
     targetEdges.addClass('path-selected-edge');
 
     const activeElements = targetNodes.union(targetEdges);
-    cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+    if (activePathIdx !== 'all') {
+      cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+    }
   }
 };
 

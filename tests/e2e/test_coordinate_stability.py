@@ -44,11 +44,13 @@ def test_initial_highlighting_and_coordinate_stability():
         for node_id in expected_incident_nodes:
             assert node_id in highlighted_nodes, f"Incident node {node_id} was not highlighted on initial run!"
         
-        # Unrelated background assets must be dimmed
+        # All nodes remain at 100% full brightness by default in All Routes view
         dimmed_nodes = page.evaluate("() => cy.nodes('.obsidian-dimmed').map(n => n.id())")
-        expected_dimmed_nodes = ["WEB-FRONTEND", "PAYMENTS-SVC", "MOBILE-APP", "IP-203-0-113-99"]
-        for node_id in expected_dimmed_nodes:
-            assert node_id in dimmed_nodes, f"Background node {node_id} should be dimmed on initial run!"
+        assert len(dimmed_nodes) == 0, f"No nodes should be dimmed on initial run in All Routes view, got: {dimmed_nodes}"
+        expected_bg_nodes = ["WEB-FRONTEND", "PAYMENTS-SVC", "MOBILE-APP", "IP-203-0-113-99"]
+        for node_id in expected_bg_nodes:
+            opacity = page.evaluate(f"() => cy.getElementById('{node_id}').style('opacity')")
+            assert float(opacity) >= 0.9, f"Background node {node_id} should be full brightness (1.0), got {opacity}"
 
         # 4. Wait for initial physics settling to complete and lock coordinates
         page.wait_for_function("isPhysicsSettled === true || jiggleLoopId === null", timeout=6000)
