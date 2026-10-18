@@ -860,57 +860,74 @@
       max-width: none;
     }
 
-    /* Subway Header and Path Switcher Tabs (Item 3) */
+    /* Subway Header and Path Switcher Tabs (Ultra-Compact Single-Line) */
     .subway-header-row {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      width: 100%;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
+      gap: 5px;
+      flex-shrink: 0;
+      white-space: nowrap;
+      flex-wrap: nowrap !important;
+      margin-bottom: 0;
     }
     .path-switcher-tabs {
-      display: flex;
-      gap: 4px;
+      display: inline-flex;
+      gap: 3px;
       align-items: center;
-      flex-wrap: wrap;
+      flex-shrink: 0;
+      white-space: nowrap;
+      flex-wrap: nowrap !important;
     }
     .path-tab-btn {
       background: #FFFFFF;
-      border: 1.5px solid var(--memphis-black);
-      border-radius: var(--radius-sm);
-      padding: 2px 6px;
-      font-size: 9px;
+      border: 1px solid var(--memphis-black);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 8.5px;
       font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-primary);
       cursor: pointer;
       box-shadow: 1px 1px 0px var(--memphis-black);
-      transition: all 0.15s ease;
+      transition: all 0.1s ease;
+      white-space: nowrap;
+      line-height: 1.35;
+      flex-shrink: 0;
     }
     .path-tab-btn:hover {
-      background: var(--memphis-yellow-light);
-      transform: translateY(-1px);
+      background: var(--memphis-yellow);
+      transform: translateY(-0.5px);
     }
     .path-tab-btn.active {
       background: var(--memphis-coral);
       color: #FFFFFF;
       border-color: var(--memphis-black);
-      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+      font-weight: 900;
     }
     .choke-point-callout {
-      font-size: 9.5px;
+      font-size: 8.5px;
+      font-weight: 700;
       color: #064E3B;
       background: var(--memphis-mint-light);
-      border: 1.5px solid #059669;
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      display: flex;
+      border: 1px solid #059669;
+      padding: 1px 6px;
+      border-radius: 3px;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
-      margin-top: 4px;
-      width: 100%;
+      margin: 0;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 1px 1px 0px #065F46;
+      line-height: 1.35;
+    }
+    .choke-point-callout code {
+      background: #FFFFFF;
+      border: 1px solid #059669;
+      padding: 0 3px;
+      border-radius: 2px;
+      font-weight: 800;
+      font-size: 8.5px;
     }
 
     /* Cytoscape Highlighted Path Classes */
@@ -1614,31 +1631,41 @@
       color: var(--memphis-yellow) !important;
     }
 
-    /* Active Attack Route Traversal Bar (Subway Stepper directly above canvas) */
+    /* Active Attack Route Traversal Bar (Ultra-Compact Single-Line directly above canvas) */
     .graph-subway-bar {
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 8px;
-      margin-bottom: 5px;
+      padding: 2px 8px;
+      margin-bottom: 4px;
       background: var(--memphis-yellow-light);
       border: 1.5px solid var(--memphis-black);
       border-radius: var(--radius-sm);
-      box-shadow: var(--shadow-offset-xs);
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
       overflow-x: auto;
+      overflow-y: hidden;
       white-space: nowrap;
+      flex-wrap: nowrap !important;
       flex-shrink: 0;
+      height: 30px;
+      max-height: 30px;
+      box-sizing: border-box;
+      scrollbar-width: none;
+    }
+    .graph-subway-bar::-webkit-scrollbar {
+      display: none;
     }
     .subway-strip-label {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      font-size: 10.5px;
+      gap: 4px;
+      font-size: 9px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: var(--memphis-black);
       flex-shrink: 0;
+      white-space: nowrap;
     }
     .subway-strip-label svg {
       color: var(--memphis-coral);
@@ -1646,29 +1673,38 @@
     .subway-route-wrap {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: nowrap;
+      gap: 3px;
+      flex-shrink: 1;
+      white-space: nowrap;
+      flex-wrap: nowrap !important;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .subway-route-wrap::-webkit-scrollbar {
+      display: none;
     }
     .subway-node-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 3px;
       background: #FFFFFF;
-      border: 1.5px solid var(--memphis-black);
-      border-radius: 4px;
-      padding: 2px 7px;
+      border: 1px solid var(--memphis-black);
+      border-radius: 3px;
+      padding: 1px 5px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 10.5px;
+      font-size: 8.5px;
       font-weight: 800;
       color: var(--memphis-black);
       cursor: pointer;
-      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+      box-shadow: 1px 1px 0px var(--memphis-black);
       transition: transform 0.1s, background 0.1s;
       white-space: nowrap;
+      line-height: 1.35;
+      flex-shrink: 0;
     }
     .subway-node-badge:hover {
       background: var(--memphis-yellow);
-      transform: translateY(-1px);
+      transform: translateY(-0.5px);
     }
     .subway-node-badge.crown-jewel {
       background: var(--memphis-coral-light);
@@ -1678,15 +1714,17 @@
     }
     .subway-edge-badge {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 800;
+      font-size: 8px;
+      font-weight: 700;
       color: var(--text-muted);
       background: #F1F5F9;
-      border: 1px dashed var(--memphis-black);
-      padding: 1px 4px;
-      border-radius: 3px;
+      border: 1px dashed #94A3B8;
+      padding: 0 3px;
+      border-radius: 2px;
       user-select: none;
       white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.4;
     }
 
     #forces-drawer {
@@ -3573,8 +3611,8 @@ function renderSubway(data, selectedIdx = 0) {
   if (paths.length === 0) {
     if (data.is_benign) {
       subwayBar.innerHTML = `
-        <div style="display:flex; align-items:center; gap:8px; width:100%; font-size:10px; font-weight:800; color:#065F46; background:var(--memphis-mint-light); border:1.5px solid #059669; padding:4px 8px; border-radius:var(--radius-sm);">
-          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#10B981;"></span>
+        <div style="display:inline-flex; align-items:center; gap:6px; font-size:9px; font-weight:800; color:#065F46; background:var(--memphis-mint-light); border:1px solid #059669; padding:2px 8px; border-radius:3px; white-space:nowrap;">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
           BENIGN ACTIVITY · NO CRITICAL ATTACK PATHS TO CROWN JEWEL IDENTIFIED (MONITOR ONLY)
         </div>
       `;
@@ -3588,7 +3626,7 @@ function renderSubway(data, selectedIdx = 0) {
 
   const p = paths[selectedIdx] || paths[0];
   const tabs = paths.map((path, idx) => {
-    return `<button type="button" class="path-tab-btn ${idx === selectedIdx ? 'active' : ''}" onclick="window.selectAttackPath(${idx})">Route ${idx + 1} (${path.ids.length - 1} Hops)</button>`;
+    return `<button type="button" class="path-tab-btn ${idx === selectedIdx ? 'active' : ''}" onclick="window.selectAttackPath(${idx})" title="Route ${idx + 1} (${path.ids.length - 1} Hops)">Route ${idx + 1}</button>`;
   }).join('');
 
   const hops = p.ids.map((id, idx) => {
@@ -3606,7 +3644,7 @@ function renderSubway(data, selectedIdx = 0) {
       'DataStore': '#FF6B6B'
     };
     const dotColor = kindColors[kind] || (isLast ? '#FF6B6B' : (isFirst ? '#A78BFA' : '#38BDF8'));
-    const dotHtml = `<span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:${dotColor}; border:1px solid #0F172A; margin-right:4px;"></span>`;
+    const dotHtml = `<span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${dotColor}; border:1px solid #0F172A; margin-right:3px;"></span>`;
     const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${dotHtml}${esc(id)}</button>`;
     const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
     return nodeBadge + edgeBadge;
@@ -3629,23 +3667,21 @@ function renderSubway(data, selectedIdx = 0) {
   }
 
   const chokePointHtml = chokePoint ? `
-    <div class="choke-point-callout">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span><b>Critical Choke Point Identified:</b> <code>${esc(chokePoint)}</code> appears on 100% of attack paths. Severing it blocks all routes to Crown Jewel.</span>
+    <div class="choke-point-callout" title="Critical choke point blocks 100% of routes to crown jewel">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Choke: <code>${esc(chokePoint)}</code> (100% of paths)</span>
     </div>
   ` : '';
 
   subwayBar.innerHTML = `
     <div class="subway-header-row">
-      <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span class="subway-strip-label" style="margin-right:2px;">Attack Paths (${paths.length} Identified):</span>
-        <div class="path-switcher-tabs">${tabs}</div>
-      </div>
-      <div style="font-size:9px; font-weight:700; color:var(--text-muted);">Inspecting Route ${selectedIdx + 1} of ${paths.length}</div>
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span style="font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.5px; color:var(--memphis-black); margin-right:1px;">Paths:</span>
+      <div class="path-switcher-tabs">${tabs}</div>
     </div>
+    <span style="color:#CBD5E1; font-weight:bold; font-size:9px; flex-shrink:0;">│</span>
     <div class="subway-route-wrap">${hops}</div>
-    ${chokePointHtml}
+    ${chokePoint ? `<span style="color:#CBD5E1; font-weight:bold; font-size:9px; flex-shrink:0;">│</span>${chokePointHtml}` : ''}
   `;
   subwayBar.style.display = 'flex';
 }
