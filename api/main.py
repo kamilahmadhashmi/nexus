@@ -48,6 +48,7 @@ def _serialize_cell(val):
 
 
 @app.post("/api/cypher")
+@app.post("/cypher")
 def run_cypher(req: CypherReq):
     start = time.perf_counter()
     query_str = (req.query or "").strip()
@@ -86,6 +87,7 @@ def run_cypher(req: CypherReq):
 
 
 @app.get("/api/health")
+@app.get("/health")
 def health():
     start = time.perf_counter()
     try:
@@ -133,6 +135,7 @@ def health():
 
 
 @app.get("/api/history")
+@app.get("/history")
 def incident_history():
     try:
         rows = graph().query(
@@ -160,6 +163,7 @@ def incident_history():
 
 
 @app.get("/api/alerts")
+@app.get("/alerts")
 def alerts():
     rows = graph().query(
         "MATCH (a:Alert) RETURN a.id, a.type, a.raw_text ORDER BY a.id"
@@ -168,6 +172,7 @@ def alerts():
 
 
 @app.post("/api/reset")
+@app.post("/reset")
 def reset_demo():
     count = rebuild_demo_graph()
     try:
@@ -179,6 +184,7 @@ def reset_demo():
 
 
 @app.post("/api/investigate")
+@app.post("/investigate")
 def investigate(request: InvestigateReq):
     rows = graph().query(
         "MATCH (a:Alert {id:$id}) RETURN a.raw_text", {"id": request.alert_id}
@@ -215,6 +221,7 @@ def investigate(request: InvestigateReq):
 
 
 @app.post("/api/contain")
+@app.post("/contain")
 def contain(request: ActReq):
     record = store.get(request.investigation_id)
     if not record:
@@ -227,11 +234,13 @@ def contain(request: ActReq):
 
 
 @app.post("/api/rollback")
+@app.post("/rollback")
 def rollback(request: ActReq):
     return execute.rollback(request.investigation_id)
 
 
 @app.get("/api/investigations/{investigation_id}")
+@app.get("/investigations/{investigation_id}")
 def investigation(investigation_id: str):
     record = store.get(investigation_id)
     if not record:
@@ -276,6 +285,7 @@ def investigation(investigation_id: str):
 
 
 @app.get("/api/graph/{investigation_id}")
+@app.get("/graph/{investigation_id}")
 def subgraph(investigation_id: str):
     record = store.get(investigation_id)
     if not record:
@@ -404,6 +414,7 @@ def subgraph(investigation_id: str):
 
 
 @app.get("/api/graph/expand/{node_id}")
+@app.get("/graph/expand/{node_id}")
 def expand_node(node_id: str):
     g = graph()
     res_out = g.query(
@@ -466,6 +477,8 @@ UI_DIR = Path(__file__).resolve().parent.parent / "ui"
 @app.get("/index.html", response_class=HTMLResponse)
 def serve_ui():
     index_path = UI_DIR / "index.html"
+    if not index_path.exists():
+        index_path = Path(__file__).resolve().parent.parent / "public" / "index.html"
     content = index_path.read_text(encoding="utf-8")
     response = HTMLResponse(content=content)
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
@@ -474,5 +487,6 @@ def serve_ui():
     return response
 
 
-app.mount("/", StaticFiles(directory="ui", html=True), name="ui")
+if UI_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(UI_DIR), html=True), name="ui")
 
