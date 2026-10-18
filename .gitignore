@@ -5,3 +5,4 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 artifacts/playwright/
+tests/e2e/screenshots/

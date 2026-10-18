@@ -91,6 +91,326 @@
       --radius-pill: 9999px;
     }
 
+    /* ==========================================================================
+       NEO-MEMPHIS CYBERPUNK DARK MODE DESIGN SYSTEM TOKENS
+       Deep obsidian midnight canvas, electric neon accents, crisp graphic contrast
+       ========================================================================== */
+    [data-theme="dark"] {
+      color-scheme: dark;
+
+      /* Deep Cyberpunk Midnight Obsidian Canvas & Glowing Grid Dots */
+      --memphis-canvas: #090D16;
+      --memphis-canvas-dot: #1E293B;
+      --memphis-card-bg: #111827;
+      --memphis-black: #030712;
+      --memphis-border: 3px solid #334155;
+      --memphis-border-thick: 4px solid #475569;
+      --memphis-border-thin: 2px solid #334155;
+
+      /* High-Contrast Electric Cyber Shadows */
+      --shadow-offset-xs: 2px 2px 0px #000000;
+      --shadow-offset: 4px 4px 0px #000000;
+      --shadow-offset-md: 5px 5px 0px #000000;
+      --shadow-offset-lg: 7px 7px 0px #000000;
+      --shadow-offset-active: 1px 1px 0px #000000;
+
+      /* Neon Memphis Glow Palette */
+      --memphis-yellow: #FACC15;
+      --memphis-yellow-light: #242211;
+      --memphis-coral: #F43F5E;
+      --memphis-coral-light: #38121E;
+      --memphis-blue: #3B82F6;
+      --memphis-blue-light: #172554;
+      --memphis-mint: #10B981;
+      --memphis-mint-light: #064E3B;
+      --memphis-pink: #EC4899;
+      --memphis-pink-light: #3D0C22;
+      --memphis-lilac: #A855F7;
+      --memphis-lilac-light: #2E1065;
+      --memphis-orange: #FB923C;
+      --memphis-teal: #14B8A6;
+
+      /* Typography */
+      --text-primary: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --text-muted: #94A3B8;
+      --text-ethereal: #64748B;
+      --text-white: #FFFFFF;
+
+      /* Semantic Security Statuses */
+      --status-critical-text: #FDA4AF;
+      --status-critical-bg: #4C0519;
+      --status-critical-border: #F43F5E;
+
+      --status-warning-text: #FDE047;
+      --status-warning-bg: #422006;
+      --status-warning-border: #EAB308;
+
+      --status-success-text: #6EE7B7;
+      --status-success-bg: #064E3B;
+      --status-success-border: #10B981;
+    }
+
+    /* Dark Mode Component Overrides */
+    [data-theme="dark"] header {
+      background: var(--memphis-card-bg);
+      border-bottom-color: #334155;
+      box-shadow: 0 4px 0px rgba(0, 0, 0, 0.4);
+    }
+    [data-theme="dark"] select {
+      background: #111827;
+      color: #F8FAFC;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .checkbox-label {
+      background: #111827;
+      color: #F8FAFC;
+      border-color: #334155;
+    }
+    [data-theme="dark"] button.secondary {
+      background: #1E293B;
+      color: #F8FAFC;
+      border-color: #475569;
+    }
+    [data-theme="dark"] button.secondary:hover:not(:disabled) {
+      background: #334155;
+      color: #FACC15;
+    }
+    [data-theme="dark"] #theme-toggle-btn {
+      background: #FACC15;
+      color: #0F172A;
+      border-color: #0F172A;
+    }
+    [data-theme="dark"] #theme-toggle-btn:hover:not(:disabled) {
+      background: #FEF08A;
+      color: #0F172A;
+    }
+    [data-theme="dark"] .demo-guide {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .demo-guide-title {
+      color: #FACC15;
+    }
+    [data-theme="dark"] .demo-guide-steps {
+      color: #CBD5E1;
+    }
+    [data-theme="dark"] .card {
+      background: var(--memphis-card-bg);
+      border-color: #334155;
+    }
+    [data-theme="dark"] .card-title {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .card-header {
+      border-bottom-color: #334155;
+    }
+    [data-theme="dark"] #cy {
+      background-color: #0A0F1D;
+      background-image: radial-gradient(#1E293B 1.5px, transparent 1.5px);
+      background-size: 26px 26px;
+    }
+    [data-theme="dark"] .graph-toolbar {
+      border-bottom-color: #334155;
+      background: #111827;
+    }
+    [data-theme="dark"] .graph-search-wrap input {
+      background: #090D16;
+      color: #F8FAFC;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .view-mode-btn {
+      background: #1E293B;
+      color: #94A3B8;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .view-mode-btn.active {
+      background: #FACC15;
+      color: #0F172A;
+      border-color: #0F172A;
+    }
+    [data-theme="dark"] #forces-drawer {
+      background: #111827;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] #node-inspector {
+      background: #111827;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] #graph-subway-container {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .canvas-controls {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .legend-pill {
+      background: #1E293B;
+      color: #F8FAFC;
+      border-color: #334155;
+    }
+    [data-theme="dark"] #matrix-card .table-container {
+      background: #0D1322;
+      border-color: #334155;
+    }
+    [data-theme="dark"] #matrix-card th {
+      background: #1E293B;
+      color: #FACC15;
+      border-bottom: 2px solid #334155;
+    }
+    [data-theme="dark"] #matrix-card td {
+      border-bottom: 1.5px solid #1E293B;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] #matrix-card tr:hover td {
+      background: #192237;
+    }
+    [data-theme="dark"] .policy-recommendation {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .policy-header {
+      background: #1E293B;
+      color: #F8FAFC;
+      border-bottom-color: #334155;
+    }
+    [data-theme="dark"] .evidence-panel {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .evidence-item {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .risk-instrument-row {
+      background: #1A2234;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .risk-gauge-bg {
+      stroke: #2A364F;
+    }
+    [data-theme="dark"] .risk-score {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .panel-cue-strip {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] #sandbox-preview-hud {
+      background: #111827;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .cypher-console-panel {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .cypher-editor-wrap {
+      background: #090D16;
+      border-color: #334155;
+    }
+    [data-theme="dark"] #cypher-input {
+      background: #090D16;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .cypher-table-wrap table th {
+      background: #1E293B;
+      color: #FACC15;
+      border-bottom-color: #334155;
+    }
+    [data-theme="dark"] .cypher-table-wrap table td {
+      border-bottom-color: #1E293B;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .badge {
+      background: #1E293B;
+      color: #F8FAFC;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .badge.pulse {
+      background: #064E3B;
+      color: #6EE7B7;
+      border-color: #10B981;
+    }
+
+    /* ==========================================================================
+       NEO-MEMPHIS HARDWARE-COMPOSITED ZERO-LAG CUSTOM CURSOR
+       Hardware GPU compositing via CSS cursor property: 0.00ms input latency!
+       Accompanied by a smooth trailing HUD targeting reticle.
+       ========================================================================== */
+    html, body {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='3,2 3,18 7,14 11,21 13,20 9,13 15,13' fill='%230F172A' transform='translate(2, 2)'/%3E%3Cpolygon points='3,2 3,18 7,14 11,21 13,20 9,13 15,13' fill='%23FFE033' stroke='%230F172A' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='7' cy='9' r='1.5' fill='%232563EB'/%3E%3C/svg%3E") 3 2, auto;
+    }
+
+    [data-theme="dark"], [data-theme="dark"] body {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpolygon points='3,2 3,18 7,14 11,21 13,20 9,13 15,13' fill='%23000000' transform='translate(2, 2)'/%3E%3Cpolygon points='3,2 3,18 7,14 11,21 13,20 9,13 15,13' fill='%2338BDF8' stroke='%23030712' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='7' cy='9' r='1.5' fill='%23FACC15'/%3E%3C/svg%3E") 3 2, auto;
+    }
+
+    button, a, select, input[type="checkbox"], input[type="range"], .clickable, .legend-pill, .view-mode-btn, .path-tab-btn, summary, .panel-pin-btn, .subway-step {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpolygon points='4,2 4,20 8,16 12,23 14,22 10,15 16,15' fill='%230F172A' transform='translate(2, 2)'/%3E%3Cpolygon points='4,2 4,20 8,16 12,23 14,22 10,15 16,15' fill='%23FF5C8A' stroke='%230F172A' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='7' r='3.5' fill='%23FFE033' stroke='%230F172A' stroke-width='1.5'/%3E%3Cline x1='21' y1='2' x2='21' y2='12' stroke='%230F172A' stroke-width='1.5'/%3E%3Cline x1='16' y1='7' x2='26' y2='7' stroke='%230F172A' stroke-width='1.5'/%3E%3C/svg%3E") 4 2, pointer !important;
+    }
+
+    [data-theme="dark"] button, [data-theme="dark"] a, [data-theme="dark"] select, [data-theme="dark"] input[type="checkbox"], [data-theme="dark"] input[type="range"], [data-theme="dark"] .clickable, [data-theme="dark"] .legend-pill, [data-theme="dark"] .view-mode-btn, [data-theme="dark"] .path-tab-btn, [data-theme="dark"] summary, [data-theme="dark"] .panel-pin-btn, [data-theme="dark"] .subway-step {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cpolygon points='4,2 4,20 8,16 12,23 14,22 10,15 16,15' fill='%23000000' transform='translate(2, 2)'/%3E%3Cpolygon points='4,2 4,20 8,16 12,23 14,22 10,15 16,15' fill='%23FB7185' stroke='%23030712' stroke-width='1.8' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='7' r='3.5' fill='%2334D399' stroke='%23030712' stroke-width='1.5'/%3E%3Cline x1='21' y1='2' x2='21' y2='12' stroke='%23030712' stroke-width='1.5'/%3E%3Cline x1='16' y1='7' x2='26' y2='7' stroke='%23030712' stroke-width='1.5'/%3E%3C/svg%3E") 4 2, pointer !important;
+    }
+
+    input[type="text"], textarea {
+      cursor: text !important;
+    }
+
+    /* Geometric Memphis Cyber Reticle Follower */
+    .memphis-cursor-follower {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 28px;
+      height: 28px;
+      border: 2px dashed var(--memphis-black);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 999999;
+      transform: translate(-50%, -50%);
+      transition: width 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.18s ease, border-color 0.18s ease, transform 0.08s ease-out;
+      will-change: left, top, width, height, transform;
+      opacity: 0.75;
+      display: none;
+    }
+
+    [data-theme="dark"] .memphis-cursor-follower {
+      border: 2px dashed var(--memphis-yellow);
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.35);
+    }
+
+    .memphis-cursor-follower.is-hovering {
+      width: 40px;
+      height: 40px;
+      border-radius: 6px;
+      border-style: solid;
+      border-color: var(--memphis-coral);
+      transform: translate(-50%, -50%) rotate(45deg);
+      opacity: 0.95;
+    }
+
+    [data-theme="dark"] .memphis-cursor-follower.is-hovering {
+      border-color: #38BDF8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+    }
+
+    .memphis-cursor-follower.is-clicking {
+      transform: translate(-50%, -50%) scale(0.75);
+    }
+
+    @media (pointer: coarse) {
+      .memphis-cursor-follower {
+        display: none !important;
+      }
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     html, body {
@@ -2279,6 +2599,11 @@
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Live Cypher
     </button>
+
+    <button id="theme-toggle-btn" class="secondary" aria-label="Toggle dark mode" title="Toggle Memphis Cyber Dark / Light Mode" onclick="window.toggleTheme && window.toggleTheme()" style="font-weight:900;">
+      <span id="theme-toggle-icon">🌙</span>
+      <span id="theme-toggle-text">Dark</span>
+    </button>
   </div>
 </header>
 
@@ -2603,6 +2928,517 @@ let savedNodePositions = new Map();
 let isPhysicsSettled = false;
 let lastLoadedAlertId = null;
 
+// ==============================================================
+// 0. THEME MANAGER & NON-LAGGY MEMPHIS CUSTOM CURSOR
+// ==============================================================
+window.getCytoscapeStyles = function(isDark) {
+  const nodeTextColor = isDark ? '#F8FAFC' : '#0F172A';
+  const nodeTextBg = isDark ? '#1E293B' : '#FFFFFF';
+  const nodeTextBorder = isDark ? '#475569' : '#0F172A';
+  const nodeBorder = isDark ? '#334155' : '#0F172A';
+
+  const edgeLine = isDark ? '#64748B' : '#0F172A';
+  const edgeArrow = isDark ? '#94A3B8' : '#0F172A';
+  const edgeTextBg = isDark ? '#1E293B' : '#FFE033';
+  const edgeTextBorder = isDark ? '#475569' : '#0F172A';
+  const edgeTextColor = isDark ? '#F1F5F9' : '#0F172A';
+
+  return [
+    /* --- MEMPHIS 1980s BOLD GEOMETRIC NODE STYLES --- */
+    {
+      selector: 'node',
+      style: {
+        'label': 'data(label)',
+        'color': nodeTextColor,
+        'font-size': '11.5px',
+        'font-weight': 800,
+        'font-family': 'JetBrains Mono, monospace',
+        'text-valign': 'bottom',
+        'text-margin-y': 7,
+        'text-background-color': nodeTextBg,
+        'text-background-opacity': 1.0,
+        'text-background-padding': '4px',
+        'text-background-shape': 'roundrectangle',
+        'text-border-color': nodeTextBorder,
+        'text-border-width': 2,
+        'text-border-opacity': 1.0,
+        'width': 38,
+        'height': 38,
+        'border-width': 3,
+        'border-color': nodeBorder,
+        'background-color': '#FFFFFF',
+        'transition-property': 'background-color, border-color, width, height',
+        'transition-duration': '0.15s'
+      }
+    },
+    {
+      selector: 'node[kind = "Person"]',
+      style: {
+        'shape': 'ellipse',
+        'border-color': nodeBorder,
+        'background-color': '#A78BFA'
+      }
+    },
+    {
+      selector: 'node[kind = "Device"]',
+      style: {
+        'shape': 'round-rectangle',
+        'border-color': nodeBorder,
+        'background-color': '#38BDF8'
+      }
+    },
+    {
+      selector: 'node[kind = "Server"]',
+      style: {
+        'shape': 'round-rectangle',
+        'border-color': nodeBorder,
+        'background-color': '#34D399'
+      }
+    },
+    {
+      selector: 'node[kind = "ServiceAccount"]',
+      style: {
+        'shape': 'diamond',
+        'width': 42,
+        'height': 42,
+        'border-color': nodeBorder,
+        'background-color': '#FDE047'
+      }
+    },
+    {
+      selector: 'node[kind = "Service"]',
+      style: {
+        'shape': 'round-hexagon',
+        'border-color': nodeBorder,
+        'background-color': '#F472B6'
+      }
+    },
+    {
+      selector: 'node[kind = "DataStore"]',
+      style: {
+        'shape': 'octagon',
+        'width': 46,
+        'height': 46,
+        'border-color': nodeBorder,
+        'background-color': '#FF6B6B',
+        'border-width': 4,
+        'color': nodeTextColor
+      }
+    },
+    {
+      selector: 'node[kind = "IPAddress"]',
+      style: {
+        'shape': 'octagon',
+        'width': 40,
+        'height': 40,
+        'border-color': nodeBorder,
+        'background-color': '#FB923C'
+      }
+    },
+    {
+      selector: 'node[kind = "Vulnerability"]',
+      style: {
+        'shape': 'round-diamond',
+        'width': 42,
+        'height': 42,
+        'border-color': nodeBorder,
+        'border-width': 3.5,
+        'background-color': '#EF4444',
+        'color': nodeTextColor
+      }
+    },
+    {
+      selector: 'node[kind = "Alert"]',
+      style: {
+        'shape': 'diamond',
+        'width': 40,
+        'height': 40,
+        'border-color': nodeBorder,
+        'border-style': 'dashed',
+        'background-color': '#FACC15'
+      }
+    },
+    {
+      selector: 'node[bad = 1]',
+      style: {
+        'border-color': isDark ? '#EF4444' : '#0F172A',
+        'background-color': isDark ? '#450A0A' : '#FEE2E2',
+        'border-style': 'dashed',
+        'border-width': 4,
+        'color': isDark ? '#FCA5A5' : '#E11D48'
+      }
+    },
+
+    /* --- MEMPHIS THICK GRAPHIC EDGE STYLES --- */
+    {
+      selector: 'edge',
+      style: {
+        'label': 'data(label)',
+        'color': edgeTextColor,
+        'font-size': '9.5px',
+        'font-weight': 800,
+        'font-family': 'JetBrains Mono, monospace',
+        'text-background-color': edgeTextBg,
+        'text-background-opacity': 1.0,
+        'text-background-padding': '3px 6px',
+        'text-background-shape': 'roundrectangle',
+        'text-border-color': edgeTextBorder,
+        'text-border-width': 1.5,
+        'text-border-opacity': 1.0,
+        'text-rotation': 'autorotate',
+        'curve-style': 'bezier',
+        'min-zoomed-font-size': 0,
+        'line-color': edgeLine,
+        'width': 2.8,
+        'target-arrow-shape': 'triangle',
+        'target-arrow-color': edgeArrow,
+        'arrow-scale': 1.2
+      }
+    },
+    {
+      selector: 'edge[label = "USED_BY"]',
+      style: {
+        'line-color': '#FB923C',
+        'line-style': 'dashed',
+        'line-dash-pattern': [6, 4],
+        'target-arrow-color': '#FB923C',
+        'text-background-color': isDark ? '#431407' : '#FFEDD5',
+        'text-border-color': '#FB923C',
+        'color': isDark ? '#FED7AA' : '#C2410C'
+      }
+    },
+    {
+      selector: 'edge[label = "AFFECTED_BY"]',
+      style: {
+        'line-color': '#EF4444',
+        'line-style': 'dashed',
+        'line-dash-pattern': [6, 4],
+        'target-arrow-color': '#EF4444',
+        'text-background-color': isDark ? '#450A0A' : '#FEE2E2',
+        'text-border-color': '#EF4444',
+        'color': isDark ? '#FCA5A5' : '#DC2626'
+      }
+    },
+    {
+      selector: 'edge[label = "DEPENDS_ON"]',
+      style: {
+        'line-color': '#38BDF8',
+        'line-style': 'dotted',
+        'line-dash-pattern': [3, 4],
+        'target-arrow-color': '#38BDF8',
+        'text-background-color': isDark ? '#082F49' : '#E0F2FE',
+        'text-border-color': '#38BDF8',
+        'color': isDark ? '#BAE6FD' : '#0284C7'
+      }
+    },
+    {
+      selector: 'edge[label = "ABOUT"]',
+      style: {
+        'line-color': '#FACC15',
+        'line-style': 'dotted',
+        'line-dash-pattern': [3, 4],
+        'target-arrow-color': '#FACC15',
+        'text-background-color': isDark ? '#422006' : '#FEF9C3',
+        'text-border-color': '#FACC15',
+        'color': isDark ? '#FEF08A' : '#A16207'
+      }
+    },
+    {
+      selector: 'edge[bad = 1]',
+      style: {
+        'line-color': '#FF6B6B',
+        'line-style': 'dashed',
+        'target-arrow-color': '#FF6B6B',
+        'color': isDark ? '#FCA5A5' : '#E11D48',
+        'opacity': 0.75
+      }
+    },
+
+    /* --- FOCUS SPOTLIGHT & ATTACK PATH STYLES --- */
+    {
+      selector: '.obsidian-dimmed',
+      style: {
+        'opacity': 0.15,
+        'text-opacity': 0.05
+      }
+    },
+    {
+      selector: 'edge.obsidian-dimmed',
+      style: {
+        'opacity': 0.08,
+        'text-opacity': 0
+      }
+    },
+    {
+      selector: 'node.obsidian-focused',
+      style: {
+        'opacity': 1,
+        'border-width': 4.5,
+        'border-color': isDark ? '#60A5FA' : '#2563EB'
+      }
+    },
+    {
+      selector: 'edge.obsidian-focused',
+      style: {
+        'opacity': 1,
+        'width': 3.5,
+        'line-color': isDark ? '#60A5FA' : '#2563EB',
+        'target-arrow-color': isDark ? '#60A5FA' : '#2563EB',
+        'text-background-color': isDark ? '#172554' : '#DBEAFE',
+        'text-border-color': isDark ? '#60A5FA' : '#2563EB',
+        'color': isDark ? '#BFDBFE' : '#1D4ED8'
+      }
+    },
+    {
+      selector: 'node.obsidian-active',
+      style: {
+        'width': 46,
+        'height': 46,
+        'border-width': 4.5,
+        'border-color': isDark ? '#60A5FA' : '#2563EB'
+      }
+    },
+    {
+      selector: 'node.node-pinned',
+      style: {
+        'border-width': 5,
+        'border-style': 'double',
+        'border-color': '#FB923C'
+      }
+    },
+    {
+      selector: 'node.attack-path-highlight',
+      style: {
+        'opacity': 1,
+        'border-width': 5,
+        'border-color': isDark ? '#F43F5E' : '#0F172A',
+        'underlay-color': '#FF6B6B',
+        'underlay-padding': 7,
+        'underlay-opacity': 0.85
+      }
+    },
+    {
+      selector: 'edge.attack-path-highlight',
+      style: {
+        'opacity': 1,
+        'width': 3.8,
+        'line-color': '#FF6B6B',
+        'target-arrow-color': '#FF6B6B',
+        'text-background-color': isDark ? '#4C0519' : '#FFE4E6',
+        'text-border-color': isDark ? '#FB7185' : '#0F172A',
+        'color': isDark ? '#FECDD3' : '#E11D48'
+      }
+    },
+    {
+      selector: 'node:selected',
+      style: {
+        'border-width': 4.5,
+        'border-color': isDark ? '#60A5FA' : '#2563EB'
+      }
+    },
+    {
+      selector: 'node.path-selected-node',
+      style: {
+        'opacity': 1,
+        'border-width': 5,
+        'border-color': isDark ? '#FACC15' : '#0F172A',
+        'underlay-color': '#FFE033',
+        'underlay-padding': 7,
+        'underlay-opacity': 0.85,
+        'width': 44,
+        'height': 44,
+        'z-index': 100
+      }
+    },
+    {
+      selector: 'edge.path-selected-edge',
+      style: {
+        'opacity': 1,
+        'width': 4.5,
+        'line-color': '#FF3366',
+        'target-arrow-color': '#FF3366',
+        'text-background-color': isDark ? '#4C0519' : '#FFE4E6',
+        'text-border-color': '#FF3366',
+        'text-border-width': 2,
+        'color': isDark ? '#FECDD3' : '#BE123C',
+        'z-index': 110
+      }
+    },
+
+    /* --- WHAT-IF SANDBOX DIFF PREVIEW STYLES --- */
+    {
+      selector: 'node.sandbox-target',
+      style: {
+        'opacity': 1,
+        'width': 52,
+        'height': 52,
+        'border-width': 5,
+        'border-color': isDark ? '#FFFFFF' : '#0F172A',
+        'background-color': '#FF3366',
+        'color': '#FFFFFF',
+        'text-background-color': '#FF3366',
+        'text-border-color': isDark ? '#FFFFFF' : '#0F172A',
+        'text-border-width': 2
+      }
+    },
+    {
+      selector: 'edge.sandbox-severed',
+      style: {
+        'opacity': 1,
+        'width': 4.5,
+        'line-color': '#FF3366',
+        'line-style': 'dashed',
+        'line-dash-pattern': [8, 5],
+        'target-arrow-color': '#FF3366',
+        'text-background-color': isDark ? '#4C0519' : '#FEE2E2',
+        'text-border-color': '#FF3366',
+        'text-border-width': 2,
+        'color': isDark ? '#FECDD3' : '#BE123C'
+      }
+    },
+    {
+      selector: 'node.sandbox-protected',
+      style: {
+        'opacity': 1,
+        'width': 52,
+        'height': 52,
+        'border-width': 5,
+        'border-color': isDark ? '#FFFFFF' : '#0F172A',
+        'background-color': '#00E5A3'
+      }
+    },
+    {
+      selector: '.sandbox-dimmed',
+      style: {
+        'opacity': 0.16,
+        'text-opacity': 0.05
+      }
+    },
+    {
+      selector: 'edge.sandbox-dimmed',
+      style: {
+        'opacity': 0.06,
+        'text-opacity': 0
+      }
+    }
+  ];
+};
+
+window.updateCytoscapeTheme = function(isDark) {
+  if (cy && typeof cy.style === 'function') {
+    cy.style(window.getCytoscapeStyles(isDark)).update();
+  }
+};
+
+window.applyTheme = function(theme) {
+  const isDark = theme === 'dark';
+  if (isDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  const icon = $('theme-toggle-icon');
+  const text = $('theme-toggle-text');
+  const btn = $('theme-toggle-btn');
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+  if (text) text.textContent = isDark ? 'Light' : 'Dark';
+  if (btn) btn.title = isDark ? 'Switch to Memphis Light Mode' : 'Switch to Cyber Dark Mode';
+  try {
+    localStorage.setItem('nexus-theme', theme);
+  } catch(e) {}
+  if (window.updateCytoscapeTheme) {
+    window.updateCytoscapeTheme(isDark);
+  }
+};
+
+window.toggleTheme = function() {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  window.applyTheme(current === 'dark' ? 'light' : 'dark');
+};
+
+(function initTheme() {
+  let pref = 'light';
+  try {
+    pref = localStorage.getItem('nexus-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  } catch(e) {}
+  window.applyTheme(pref);
+})();
+
+// Non-Laggy Memphis Cyber Cursor Reticle Follower
+(function initCustomCursor() {
+  const follower = document.createElement('div');
+  follower.className = 'memphis-cursor-follower';
+  follower.id = 'memphis-cursor-follower';
+  document.body.appendChild(follower);
+
+  let mouseX = -100, mouseY = -100;
+  let followerX = -100, followerY = -100;
+  let isVisible = false;
+  let isHovering = false;
+  let rafId = null;
+
+  window.addEventListener('mousemove', e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    if (!isVisible) {
+      isVisible = true;
+      follower.style.display = 'block';
+      followerX = mouseX;
+      followerY = mouseY;
+    }
+    if (!rafId) {
+      rafId = requestAnimationFrame(updateFollower);
+    }
+  }, { passive: true });
+
+  window.addEventListener('mousedown', () => {
+    follower.classList.add('is-clicking');
+  }, { passive: true });
+
+  window.addEventListener('mouseup', () => {
+    follower.classList.remove('is-clicking');
+  }, { passive: true });
+
+  document.addEventListener('mouseover', e => {
+    const target = e.target;
+    if (target && target.closest && target.closest('button, a, select, input, .legend-pill, .view-mode-btn, .path-tab-btn, summary, .panel-pin-btn, .subway-step, .card')) {
+      if (!isHovering) {
+        isHovering = true;
+        follower.classList.add('is-hovering');
+      }
+    }
+  }, { passive: true });
+
+  document.addEventListener('mouseout', e => {
+    const target = e.target;
+    if (target && target.closest && target.closest('button, a, select, input, .legend-pill, .view-mode-btn, .path-tab-btn, summary, .panel-pin-btn, .subway-step, .card')) {
+      isHovering = false;
+      follower.classList.remove('is-hovering');
+    }
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => {
+    follower.style.display = 'none';
+    isVisible = false;
+    rafId = null;
+  });
+
+  function updateFollower() {
+    const dx = mouseX - followerX;
+    const dy = mouseY - followerY;
+    followerX += dx * 0.35;
+    followerY += dy * 0.35;
+
+    follower.style.left = `${followerX.toFixed(1)}px`;
+    follower.style.top = `${followerY.toFixed(1)}px`;
+
+    if (Math.abs(dx) > 0.15 || Math.abs(dy) > 0.15) {
+      rafId = requestAnimationFrame(updateFollower);
+    } else {
+      rafId = null;
+    }
+  }
+})();
 
 // ==============================================================
 // 1. LIVE TELEMETRY CLOCK
@@ -4695,385 +5531,7 @@ async function drawGraph() {
     container: $('cy'),
     elements: elements,
     layout: { name: 'preset' },
-    style: [
-      /* --- MEMPHIS 1980s BOLD GEOMETRIC NODE STYLES --- */
-      {
-        selector: 'node',
-        style: {
-          'label': 'data(label)',
-          'color': '#0F172A',
-          'font-size': '11.5px',
-          'font-weight': 800,
-          'font-family': 'JetBrains Mono, monospace',
-          'text-valign': 'bottom',
-          'text-margin-y': 7,
-          'text-background-color': '#FFFFFF',
-          'text-background-opacity': 1.0,
-          'text-background-padding': '4px',
-          'text-background-shape': 'roundrectangle',
-          'text-border-color': '#0F172A',
-          'text-border-width': 2,
-          'text-border-opacity': 1.0,
-          'width': 38,
-          'height': 38,
-          'border-width': 3,
-          'border-color': '#0F172A',
-          'background-color': '#FFFFFF',
-          'transition-property': 'background-color, border-color, width, height',
-          'transition-duration': '0.15s'
-        }
-      },
-      {
-        selector: 'node[kind = "Person"]',
-        style: {
-          'shape': 'ellipse',
-          'border-color': '#0F172A',
-          'background-color': '#A78BFA'
-        }
-      },
-      {
-        selector: 'node[kind = "Device"]',
-        style: {
-          'shape': 'round-rectangle',
-          'border-color': '#0F172A',
-          'background-color': '#38BDF8'
-        }
-      },
-      {
-        selector: 'node[kind = "Server"]',
-        style: {
-          'shape': 'round-rectangle',
-          'border-color': '#0F172A',
-          'background-color': '#34D399'
-        }
-      },
-      {
-        selector: 'node[kind = "ServiceAccount"]',
-        style: {
-          'shape': 'diamond',
-          'width': 42,
-          'height': 42,
-          'border-color': '#0F172A',
-          'background-color': '#FDE047'
-        }
-      },
-      {
-        selector: 'node[kind = "Service"]',
-        style: {
-          'shape': 'round-hexagon',
-          'border-color': '#0F172A',
-          'background-color': '#F472B6'
-        }
-      },
-      {
-        selector: 'node[kind = "DataStore"]',
-        style: {
-          'shape': 'octagon',
-          'width': 46,
-          'height': 46,
-          'border-color': '#0F172A',
-          'background-color': '#FF6B6B',
-          'border-width': 4,
-          'color': '#0F172A'
-        }
-      },
-      {
-        selector: 'node[kind = "IPAddress"]',
-        style: {
-          'shape': 'octagon',
-          'width': 40,
-          'height': 40,
-          'border-color': '#0F172A',
-          'background-color': '#FB923C'
-        }
-      },
-      {
-        selector: 'node[kind = "Vulnerability"]',
-        style: {
-          'shape': 'round-diamond',
-          'width': 42,
-          'height': 42,
-          'border-color': '#0F172A',
-          'border-width': 3.5,
-          'background-color': '#EF4444',
-          'color': '#0F172A'
-        }
-      },
-      {
-        selector: 'node[kind = "Alert"]',
-        style: {
-          'shape': 'diamond',
-          'width': 40,
-          'height': 40,
-          'border-color': '#0F172A',
-          'border-style': 'dashed',
-          'background-color': '#FACC15'
-        }
-      },
-      {
-        selector: 'node[bad = 1]',
-        style: {
-          'border-color': '#0F172A',
-          'background-color': '#FEE2E2',
-          'border-style': 'dashed',
-          'border-width': 4,
-          'color': '#E11D48'
-        }
-      },
-
-      /* --- MEMPHIS THICK GRAPHIC EDGE STYLES --- */
-      {
-        selector: 'edge',
-        style: {
-          'label': 'data(label)',
-          'color': '#0F172A',
-          'font-size': '9.5px',
-          'font-weight': 800,
-          'font-family': 'JetBrains Mono, monospace',
-          'text-background-color': '#FFE033',
-          'text-background-opacity': 1.0,
-          'text-background-padding': '3px 6px',
-          'text-background-shape': 'roundrectangle',
-          'text-border-color': '#0F172A',
-          'text-border-width': 1.5,
-          'text-border-opacity': 1.0,
-          'text-rotation': 'autorotate',
-          'curve-style': 'bezier',
-          'min-zoomed-font-size': 0,
-          'line-color': '#0F172A',
-          'width': 2.8,
-          'target-arrow-shape': 'triangle',
-          'target-arrow-color': '#0F172A',
-          'arrow-scale': 1.2
-        }
-      },
-      {
-        selector: 'edge[label = "USED_BY"]',
-        style: {
-          'line-color': '#FB923C',
-          'line-style': 'dashed',
-          'line-dash-pattern': [6, 4],
-          'target-arrow-color': '#FB923C',
-          'text-background-color': '#FFEDD5',
-          'text-border-color': '#FB923C',
-          'color': '#C2410C'
-        }
-      },
-      {
-        selector: 'edge[label = "AFFECTED_BY"]',
-        style: {
-          'line-color': '#EF4444',
-          'line-style': 'dashed',
-          'line-dash-pattern': [6, 4],
-          'target-arrow-color': '#EF4444',
-          'text-background-color': '#FEE2E2',
-          'text-border-color': '#EF4444',
-          'color': '#DC2626'
-        }
-      },
-      {
-        selector: 'edge[label = "DEPENDS_ON"]',
-        style: {
-          'line-color': '#38BDF8',
-          'line-style': 'dotted',
-          'line-dash-pattern': [3, 4],
-          'target-arrow-color': '#38BDF8',
-          'text-background-color': '#E0F2FE',
-          'text-border-color': '#38BDF8',
-          'color': '#0284C7'
-        }
-      },
-      {
-        selector: 'edge[label = "ABOUT"]',
-        style: {
-          'line-color': '#FACC15',
-          'line-style': 'dotted',
-          'line-dash-pattern': [3, 4],
-          'target-arrow-color': '#FACC15',
-          'text-background-color': '#FEF9C3',
-          'text-border-color': '#FACC15',
-          'color': '#A16207'
-        }
-      },
-      {
-        selector: 'edge[bad = 1]',
-        style: {
-          'line-color': '#FF6B6B',
-          'line-style': 'dashed',
-          'target-arrow-color': '#FF6B6B',
-          'color': '#E11D48',
-          'opacity': 0.75
-        }
-      },
-
-      /* --- FOCUS SPOTLIGHT & ATTACK PATH STYLES --- */
-      {
-        selector: '.obsidian-dimmed',
-        style: {
-          'opacity': 0.15,
-          'text-opacity': 0.05
-        }
-      },
-      {
-        selector: 'edge.obsidian-dimmed',
-        style: {
-          'opacity': 0.08,
-          'text-opacity': 0
-        }
-      },
-      {
-        selector: 'node.obsidian-focused',
-        style: {
-          'opacity': 1,
-          'border-width': 4.5,
-          'border-color': '#2563EB'
-        }
-      },
-      {
-        selector: 'edge.obsidian-focused',
-        style: {
-          'opacity': 1,
-          'width': 3.5,
-          'line-color': '#2563EB',
-          'target-arrow-color': '#2563EB',
-          'text-background-color': '#DBEAFE',
-          'text-border-color': '#2563EB',
-          'color': '#1D4ED8'
-        }
-      },
-      {
-        selector: 'node.obsidian-active',
-        style: {
-          'width': 46,
-          'height': 46,
-          'border-width': 4.5,
-          'border-color': '#2563EB'
-        }
-      },
-      {
-        selector: 'node.node-pinned',
-        style: {
-          'border-width': 5,
-          'border-style': 'double',
-          'border-color': '#FB923C'
-        }
-      },
-      {
-        selector: 'node.attack-path-highlight',
-        style: {
-          'opacity': 1,
-          'border-width': 5,
-          'border-color': '#0F172A',
-          'underlay-color': '#FF6B6B',
-          'underlay-padding': 7,
-          'underlay-opacity': 0.85
-        }
-      },
-      {
-        selector: 'edge.attack-path-highlight',
-        style: {
-          'opacity': 1,
-          'width': 3.8,
-          'line-color': '#FF6B6B',
-          'target-arrow-color': '#FF6B6B',
-          'text-background-color': '#FFE4E6',
-          'text-border-color': '#0F172A',
-          'color': '#E11D48'
-        }
-      },
-      {
-        selector: 'node:selected',
-        style: {
-          'border-width': 4.5,
-          'border-color': '#2563EB'
-        }
-      },
-      {
-        selector: 'node.path-selected-node',
-        style: {
-          'opacity': 1,
-          'border-width': 5,
-          'border-color': '#0F172A',
-          'underlay-color': '#FFE033',
-          'underlay-padding': 7,
-          'underlay-opacity': 0.85,
-          'width': 44,
-          'height': 44,
-          'z-index': 100
-        }
-      },
-      {
-        selector: 'edge.path-selected-edge',
-        style: {
-          'opacity': 1,
-          'width': 4.5,
-          'line-color': '#FF3366',
-          'target-arrow-color': '#FF3366',
-          'text-background-color': '#FFE4E6',
-          'text-border-color': '#FF3366',
-          'text-border-width': 2,
-          'color': '#BE123C',
-          'z-index': 110
-        }
-      },
-
-      /* --- WHAT-IF SANDBOX DIFF PREVIEW STYLES --- */
-      {
-        selector: 'node.sandbox-target',
-        style: {
-          'opacity': 1,
-          'width': 52,
-          'height': 52,
-          'border-width': 5,
-          'border-color': '#0F172A',
-          'background-color': '#FF3366',
-          'color': '#FFFFFF',
-          'text-background-color': '#FF3366',
-          'text-border-color': '#0F172A',
-          'text-border-width': 2
-        }
-      },
-      {
-        selector: 'edge.sandbox-severed',
-        style: {
-          'opacity': 1,
-          'width': 4.5,
-          'line-color': '#FF3366',
-          'line-style': 'dashed',
-          'line-dash-pattern': [8, 5],
-          'target-arrow-color': '#FF3366',
-          'text-background-color': '#FEE2E2',
-          'text-border-color': '#FF3366',
-          'text-border-width': 2,
-          'color': '#BE123C'
-        }
-      },
-      {
-        selector: 'node.sandbox-protected',
-        style: {
-          'opacity': 1,
-          'width': 52,
-          'height': 52,
-          'border-width': 5,
-          'border-color': '#0F172A',
-          'background-color': '#00E5A3'
-        }
-      },
-      {
-        selector: '.sandbox-dimmed',
-        style: {
-          'opacity': 0.16,
-          'text-opacity': 0.05
-        }
-      },
-      {
-        selector: 'edge.sandbox-dimmed',
-        style: {
-          'opacity': 0.06,
-          'text-opacity': 0
-        }
-      }
-    ]
+    style: window.getCytoscapeStyles(document.documentElement.getAttribute('data-theme') === 'dark')
   });
 
   $('fit-btn').disabled = false;
