@@ -10,6 +10,13 @@ An alert can look small while the affected identity can reach critical data thro
 - Video: pending recording.
 - **Judge & Evaluator Guide**: See [docs/falkordb-architecture.md](docs/falkordb-architecture.md) for complete schema, Cypher queries, and demonstrable verification flows.
 
+### 🚀 Deploy to Vercel (1-Click)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fkamilahmadhashmi%2Fnexus)
+
+- **Zero Configuration**: NEXUS includes a serverless graph simulator (`engine/in_memory.py`) that boots instantly on Vercel without requiring an external database cluster.
+- **Optional FalkorDB Cloud Integration**: In Vercel Project Settings, add `FALKOR_HOST`, `FALKOR_PORT`, `FALKOR_PASSWORD`, `FALKOR_SSL` to connect directly to a live FalkorDB Cloud instance.
+
 ## 1-Minute Judge Demo Walkthrough (Start to Finish)
 
 Experience the full autonomous graph SOC investigation in 60 seconds:
