@@ -25,7 +25,7 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         assert "NEXUS" in page.title()
         assert page.locator("#alert option").count() in (3, 4)
         expect(page.locator("#mode")).to_have_value("mock")
-        expect(page.locator("#guided-demo")).to_contain_text("Run guided demo")
+        expect(page.locator("#guided-demo")).to_contain_text("Start clean demo")
         expect(page.locator(".demo-guide")).to_contain_text("no model key required")
         assert page.locator("#matrix-card").evaluate("el => el.getBoundingClientRect().width") > page.locator("#decision-card").evaluate("el => el.getBoundingClientRect().width")
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-home-desktop.png"), full_page=True)

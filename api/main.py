@@ -94,8 +94,17 @@ def health():
         node_count = node_res[0][0] if node_res else 0
         edge_res = g.query("MATCH ()-[r]->() RETURN count(r)").result_set
         edge_count = edge_res[0][0] if edge_res else 0
-        quarantined_res = g.query("MATCH (n) WHERE n.status = 'QUARANTINED' RETURN count(n)").result_set
-        quarantined_count = quarantined_res[0][0] if quarantined_res else 0
+
+        # Check for any active containment mutations or saved incidents in FalkorDB
+        mutated_res = g.query("MATCH (n) WHERE coalesce(n.status, 'ACTIVE') <> 'ACTIVE' RETURN count(n), collect(n.id)").result_set
+        mutated_count = mutated_res[0][0] if mutated_res else 0
+        mutated_ids = [str(x) for x in (mutated_res[0][1] or [])] if mutated_res else []
+
+        inc_res = g.query("MATCH (inc:Incident) RETURN count(inc), collect(inc.action + ' ' + coalesce(inc.target, ''))").result_set
+        incident_count = inc_res[0][0] if inc_res else 0
+        saved_actions = [str(x).strip() for x in (inc_res[0][1] or [])] if inc_res else []
+
+        is_pristine = (mutated_count == 0 and incident_count == 0)
         latency_ms = round((time.perf_counter() - start) * 1000, 2)
         return {
             "status": "healthy",
@@ -103,7 +112,11 @@ def health():
             "latency_ms": latency_ms,
             "node_count": node_count,
             "edge_count": edge_count,
-            "quarantined_count": quarantined_count,
+            "is_pristine": is_pristine,
+            "mutated_count": mutated_count,
+            "mutated_ids": mutated_ids,
+            "incident_count": incident_count,
+            "saved_actions": saved_actions,
             "synthetic_dataset": True,
         }
     except Exception as exc:
@@ -112,6 +125,9 @@ def health():
             "status": "unhealthy",
             "falkordb_connected": False,
             "latency_ms": latency_ms,
+            "is_pristine": True,
+            "mutated_count": 0,
+            "saved_actions": [],
             "error": str(exc),
         }
 
@@ -220,6 +236,29 @@ def investigation(investigation_id: str):
     record = store.get(investigation_id)
     if not record:
         raise HTTPException(404, "unknown investigation")
+    try:
+        hist_rows = graph().query(
+            """
+            MATCH (inc:Incident)
+            OPTIONAL MATCH (inc)-[:CONTAINED_ENTITY]->(t)
+            RETURN inc.id, inc.alert_id, inc.action, coalesce(t.name, inc.target), inc.status, inc.timestamp
+            ORDER BY inc.timestamp DESC
+            LIMIT 5
+            """
+        ).result_set
+        history = [
+            {
+                "id": r[0],
+                "alert_id": r[1],
+                "action": r[2],
+                "target": r[3],
+                "status": r[4],
+                "timestamp": r[5],
+            }
+            for r in hist_rows
+        ]
+    except Exception:
+        history = []
     return {
         "mode": "scripted",
         "trace": [],
@@ -232,6 +271,7 @@ def investigation(investigation_id: str):
         "evidence_path_count": len(record["base_paths"]),
         "executed": record.get("executed"),
         "falkordb_memory": record.get("falkordb_memory"),
+        "history": history,
     }
 
 
