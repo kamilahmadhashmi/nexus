@@ -822,13 +822,13 @@
       border-radius: var(--radius-sm);
       padding: 8px 14px;
       box-shadow: var(--shadow-offset-xs);
-      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      flex-shrink: 0;
+      height: 100%;
+      box-sizing: border-box;
     }
     .mhb-title {
       font-size: 9.5px;
@@ -1873,23 +1873,60 @@
     /* ==========================================================================
        WHAT-IF SANDBOX DIFF PREVIEW & PARETO HOVER AFFORDANCE
        ========================================================================== */
-    .sandbox-hud {
+    /* Active Policy & Sandbox Diff Preview Dual Header */
+    .matrix-top-deck {
+      display: grid;
+      grid-template-columns: minmax(320px, 1fr) minmax(360px, 1.25fr);
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: stretch;
+    }
+    @media (max-width: 900px) {
+      .matrix-top-deck {
+        grid-template-columns: 1fr;
+      }
+    }
+    .sandbox-hud-dock {
+      position: relative;
+      min-height: 76px;
+      display: flex;
+    }
+    .sandbox-hud-placeholder {
       position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 25;
-      background: var(--memphis-canvas);
-      border: var(--memphis-border-thick);
-      box-shadow: var(--shadow-offset-md);
+      inset: 0;
+      border: 1.5px dashed #CBD5E1;
       border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      max-width: 400px;
-      pointer-events: none;
-      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      background: #F8FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #94A3B8;
+      padding: 10px 16px;
+      text-align: center;
+      z-index: 1;
+    }
+    .sandbox-hud {
+      position: relative;
+      z-index: 2;
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      box-shadow: var(--shadow-offset-xs);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: opacity 0.18s ease;
+      pointer-events: auto;
     }
     .sandbox-hud.hidden {
       opacity: 0;
-      transform: translateY(-8px) scale(0.96);
+      visibility: hidden;
       pointer-events: none;
     }
     .sandbox-hud-header {
@@ -1897,15 +1934,15 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .sandbox-hud-title {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 900;
       letter-spacing: 0.5px;
       color: #FFFFFF;
       background: var(--memphis-coral);
-      padding: 3px 8px;
+      padding: 2px 7px;
       border: 1.5px solid var(--memphis-black);
       border-radius: 3px;
       display: inline-flex;
@@ -1913,10 +1950,10 @@
       gap: 5px;
     }
     .sandbox-hud-action {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 900;
       color: var(--text-primary);
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -1925,24 +1962,26 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .sb-stat {
       font-size: 11px;
       font-family: 'JetBrains Mono', monospace;
       font-weight: 700;
-      background: #FFFFFF;
+      background: var(--memphis-canvas);
       border: 1.5px solid var(--memphis-black);
-      padding: 3px 6px;
+      padding: 2px 7px;
       border-radius: 3px;
+      box-shadow: 1px 1px 0px var(--memphis-black);
       display: inline-flex;
+      align-items: center;
       gap: 4px;
     }
     .sandbox-hud-hint {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 700;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     /* Pareto Table Row Hover Affordance */
@@ -2279,23 +2318,6 @@
       <div class="canvas-wrap">
         <div id="cy" style="width:100%; height:100%;"></div>
 
-        <!-- Floating Sandbox Diff Preview HUD Overlay -->
-        <div id="sandbox-preview-hud" class="sandbox-hud hidden">
-          <div class="sandbox-hud-header">
-            <span class="sandbox-hud-title">⚡ WHAT-IF SANDBOX PREVIEW</span>
-            <span id="sb-hud-tag" class="pill-tag pill-pareto">PARETO CANDIDATE</span>
-          </div>
-          <div class="sandbox-hud-action">
-            <span id="sb-hud-action-name" style="font-family:'JetBrains Mono'; font-weight:900; color:var(--memphis-coral); text-transform:uppercase;">quarantine_host</span>
-            <code id="sb-hud-target" style="font-family:'JetBrains Mono'; font-weight:800; font-size:11px; background:#FFFFFF; border:1.5px solid var(--memphis-black); padding:2px 6px; border-radius:3px;">srv-jump-01</code>
-          </div>
-          <div class="sandbox-hud-stats">
-            <span class="sb-stat">Simulated Risk: <b id="sb-hud-risk" style="color:var(--memphis-coral);">38/100</b></span>
-            <span class="sb-stat">Paths Broken: <b id="sb-hud-broken">2 / 2</b></span>
-            <span class="sb-stat">Disruption: <b id="sb-hud-impact">MEDIUM (45)</b></span>
-          </div>
-          <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
-        </div>
 
         <!-- Floating Node Inspector Overlay with Cyber Intelligence -->
         <div id="node-inspector" style="display:none;" aria-label="Node details inspector">
@@ -2399,7 +2421,33 @@
       </div>
     </div>
 
-    <div id="matrix-quick-summary"></div>
+    <!-- Dual Deck: Recommended Policy + Docked What-If Sandbox Preview -->
+    <div class="matrix-top-deck">
+      <div id="matrix-quick-summary"></div>
+      <div class="sandbox-hud-dock">
+        <div class="sandbox-hud-placeholder">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--memphis-coral);"></span>
+          Hover or click any candidate row below to preview what-if simulation & graph diff
+        </div>
+        <!-- Docked What-If Sandbox Diff Preview HUD -->
+        <div id="sandbox-preview-hud" class="sandbox-hud hidden">
+          <div class="sandbox-hud-header">
+            <span class="sandbox-hud-title">⚡ WHAT-IF SANDBOX PREVIEW</span>
+            <span id="sb-hud-tag" class="pill-tag pill-pareto">PARETO CANDIDATE</span>
+          </div>
+          <div class="sandbox-hud-action">
+            <span id="sb-hud-action-name" style="font-family:'JetBrains Mono'; font-weight:900; color:var(--memphis-coral); text-transform:uppercase;">quarantine_host</span>
+            <code id="sb-hud-target" style="font-family:'JetBrains Mono'; font-weight:800; font-size:11px; background:#FFFFFF; border:1.5px solid var(--memphis-black); padding:2px 6px; border-radius:3px;">srv-jump-01</code>
+          </div>
+          <div class="sandbox-hud-stats">
+            <span class="sb-stat">Simulated Risk: <b id="sb-hud-risk" style="color:var(--memphis-coral);">38/100</b></span>
+            <span class="sb-stat">Paths Broken: <b id="sb-hud-broken">2 / 2</b></span>
+            <span class="sb-stat">Disruption: <b id="sb-hud-impact">MEDIUM (45)</b></span>
+          </div>
+          <div class="sandbox-hud-hint">Simulated via FalkorDB GRAPH.COPY in-memory sandbox. Click row to lock preview.</div>
+        </div>
+      </div>
+    </div>
     <div id="matrix-container" class="table-container" data-lenis-prevent>
       <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
     </div>
@@ -3013,6 +3061,10 @@ function initObsidianPhysics(cyInstance) {
   const nodeMap = physicsNodeMap;
   const edgesList = physicsEdgesList;
 
+  if ($('physics-status')) {
+    $('physics-status').innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--memphis-yellow); border:1.5px solid var(--memphis-black);"></span> Obsidian Force-Directed Physics Active · Settling...`;
+  }
+
   // Initialize node states from current canvas coordinates
   cyInstance.nodes().forEach((n, idx) => {
     const pos = n.position();
@@ -3023,8 +3075,8 @@ function initObsidianPhysics(cyInstance) {
       node: n,
       x: pos.x,
       y: pos.y,
-      vx: 0,
-      vy: 0,
+      vx: (Math.random() - 0.5) * 1.5,
+      vy: (Math.random() - 0.5) * 1.5,
       fx: 0,
       fy: 0,
       mass: mass,
@@ -3198,8 +3250,8 @@ function initObsidianPhysics(cyInstance) {
         savedNodePositions.set(p.id, { x: p.x, y: p.y });
       }
 
-      // Settle Condition: when thermal energy cools below threshold or max settling frames reached
-      if (!isAnyGrabbed && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
+      // Settle Condition: when thermal energy cools below threshold after settling frames, or max settling frames reached
+      if (!isAnyGrabbed && settlingStepCount >= 15 && (totalKinetic < 0.03 || settlingStepCount >= maxSettlingSteps)) {
         cyInstance.fit(undefined, 40);
         nodesArray.forEach(p => {
           p.vx = 0;
