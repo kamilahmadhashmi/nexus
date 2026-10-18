@@ -2575,12 +2575,12 @@ const initialLayout = {
 // 3. CONTINUOUS FORCE-DIRECTED PHYSICS ENGINE
 // ==============================================================
 const obsidianDefaults = {
-  repulsion: 4500,
-  linkDistance: 130,
-  springK: 0.025,
-  gravity: 0.0004,
-  damping: 0.78,
-  collisionRadius: 75
+  repulsion: 6500,
+  linkDistance: 240,
+  springK: 0.02,
+  gravity: 0.0003,
+  damping: 0.82,
+  collisionRadius: 95
 };
 
 let obsidianParams = { ...obsidianDefaults };
@@ -3023,8 +3023,8 @@ function initObsidianPhysics(cyInstance) {
       node: n,
       x: pos.x,
       y: pos.y,
-      vx: (Math.random() - 0.5) * 2.5,
-      vy: (Math.random() - 0.5) * 2.5,
+      vx: 0,
+      vy: 0,
       fx: 0,
       fy: 0,
       mass: mass,
@@ -4436,35 +4436,48 @@ async function drawGraph() {
   });
 
   const semanticKnownMap = {
-    'IP-203-0-113-77':    { x: 100, y: 130 },
-    'ALT-1042':           { x: 100, y: 265 },
-    'ALT-1043':           { x: 100, y: 395 },
-    'IP-203-0-113-99':    { x: 100, y: 520 },
-    'U-ALEX':             { x: 260, y: 200 },
-    'LAPTOP-042':         { x: 260, y: 380 },
-    'DEV-SERVER-07':      { x: 460, y: 150 },
-    'DEV-SERVER-03':      { x: 460, y: 325 },
-    'JUMPBOX-01':         { x: 460, y: 500 },
-    'SYNTH-VULN-2026-01': { x: 630, y: 215 },
-    'SVC-ACCT-09':        { x: 630, y: 380 },
-    'WEB-FRONTEND':       { x: 800, y: 150 },
-    'PROD-API':           { x: 800, y: 340 },
-    'MOBILE-APP':         { x: 800, y: 510 },
-    'PAYMENTS-SVC':       { x: 940, y: 160 },
-    'CUSTOMER-DB':        { x: 940, y: 350 }
+    // Ingress Threat Telemetry (IPs & Alerts)
+    'IP-203-0-113-77':    { x: 80,  y: 110 },
+    'ALT-1042':           { x: 80,  y: 230 },
+    'IP-203-0-113-99':    { x: 80,  y: 370 },
+    'ALT-1043':           { x: 80,  y: 490 },
+
+    // Initial Compromise (Identity & Asset)
+    'U-ALEX':             { x: 280, y: 190 },
+    'LAPTOP-042':         { x: 280, y: 370 },
+
+    // Lateral Movement Servers (Route 1: DEV-SERVER-03, Route 2: DEV-SERVER-07, Route 3: JUMPBOX-01)
+    'DEV-SERVER-03':      { x: 520, y: 170 },
+    'DEV-SERVER-07':      { x: 520, y: 370 },
+    'JUMPBOX-01':         { x: 520, y: 570 },
+
+    // Exploit / Vulnerability (branching cleanly above DEV-SERVER-03 without crossing lateral routes)
+    'SYNTH-VULN-2026-01': { x: 640, y: 60 },
+
+    // Privilege Escalation Account
+    'SVC-ACCT-09':        { x: 760, y: 370 },
+
+    // Target Tier & Ambient Microservices
+    'WEB-FRONTEND':       { x: 1020, y: 150 },
+    'PROD-API':           { x: 1020, y: 370 },
+    'MOBILE-APP':         { x: 1020, y: 590 },
+
+    // Crown Jewel & Ambient Microservice
+    'PAYMENTS-SVC':       { x: 1260, y: 150 },
+    'CUSTOMER-DB':        { x: 1260, y: 370 }
   };
 
   const zoneX = {
-    IPAddress: 100,
-    Alert: 100,
-    Person: 260,
-    Device: 260,
-    Server: 460,
-    Vulnerability: 630,
-    ServiceAccount: 630,
-    Service: 800,
-    BlastService: 800,
-    DataStore: 940
+    IPAddress: 80,
+    Alert: 80,
+    Person: 280,
+    Device: 280,
+    Server: 520,
+    Vulnerability: 640,
+    ServiceAccount: 760,
+    Service: 1020,
+    BlastService: 1020,
+    DataStore: 1260
   };
 
   const hasExistingPositions = data.nodes.some(n => savedNodePositions.has(n.id));
@@ -4845,7 +4858,7 @@ async function drawGraph() {
           'text-border-color': '#FF3366',
           'text-border-width': 2,
           'color': '#BE123C',
-          'z-index': 99
+          'z-index': 110
         }
       },
 
