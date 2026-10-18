@@ -8,6 +8,7 @@ An alert can look small while the affected identity can reach critical data thro
 
 - Browser screenshots: [desktop investigation](artifacts/screenshots/nexus-investigation-desktop.png) · [live cypher repl & sandbox diff](artifacts/screenshots/nexus-cypher-repl-sandbox-diff.png) · [mobile investigation](artifacts/screenshots/nexus-investigation-mobile.png).
 - Video: pending recording.
+- **Judge & Evaluator Guide**: See [docs/falkordb-architecture.md](docs/falkordb-architecture.md) for complete schema, Cypher queries, and demonstrable verification flows.
 
 ## First-run walkthrough
 

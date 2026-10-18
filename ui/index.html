@@ -578,14 +578,14 @@
 
     /* Left Side Panel: Pareto Action Simulation Matrix */
     #matrix-card {
-      width: 240px;
-      min-width: 240px;
+      width: 320px;
+      min-width: 320px;
     }
     #matrix-card:hover,
     #matrix-card:focus-within,
     #matrix-card.is-expanded {
-      width: 540px;
-      min-width: 540px;
+      width: 560px;
+      min-width: 560px;
     }
 
     /* Center Panel: Attack Path Traversal Topology (Hero Center Canvas) */
@@ -608,14 +608,14 @@
 
     /* Right Side Panel: Threat Analysis & Containment */
     #decision-card {
-      width: 200px;
-      min-width: 200px;
+      width: 300px;
+      min-width: 300px;
     }
     #decision-card:hover,
     #decision-card:focus-within,
     #decision-card.is-expanded {
-      width: 450px;
-      min-width: 450px;
+      width: 480px;
+      min-width: 480px;
     }
 
     /* Panel Cue Strip (Visual indicator for min info & expansion) */
@@ -733,6 +733,230 @@
       overflow-y: auto;
       flex: 1;
       min-height: 0;
+    }
+
+    /* FalkorDB Persistent Memory Banner (Item 1) */
+    .falkordb-memory-card {
+      background: #ECFDF5;
+      border: 2px solid #059669;
+      border-radius: var(--radius-sm);
+      padding: 7px 9px;
+      box-shadow: 2px 2px 0px #065F46;
+      margin-bottom: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      animation: fadeIn 0.3s ease;
+      flex-shrink: 0;
+    }
+    .memory-glow-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px #10B981;
+      animation: pulse 1.5s infinite;
+      margin-right: 4px;
+    }
+    .falkordb-memory-title {
+      font-weight: 900;
+      font-size: 9.5px;
+      color: #065F46;
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .falkordb-memory-body {
+      font-size: 9.5px;
+      color: #064E3B;
+      line-height: 1.35;
+    }
+    .falkordb-memory-impact {
+      font-size: 9px;
+      color: #047857;
+      background: #D1FAE5;
+      padding: 3px 6px;
+      border-radius: 3px;
+      border-left: 3px solid #059669;
+      font-weight: 700;
+    }
+
+    /* Risk Calculation Breakdown (Item 5) */
+    .risk-breakdown-card {
+      background: #FFFFFF;
+      border: var(--memphis-border-thin);
+      border-radius: var(--radius-sm);
+      padding: 6px 8px;
+      box-shadow: var(--shadow-offset-xs);
+      font-size: 9.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 4px;
+    }
+    .rb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 900;
+      font-size: 9px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      border-bottom: 1.5px solid var(--memphis-black);
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+    }
+    .rb-formula-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      background: var(--memphis-yellow-light);
+      padding: 1px 4px;
+      border-radius: 2px;
+      border: 1px solid var(--memphis-black);
+      font-weight: 800;
+    }
+    .rb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 6px;
+      font-size: 8.5px;
+    }
+    .rb-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+    .rb-item b {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Matrix Quick Recommendation Banner (Item 2) */
+    .matrix-highlight-box {
+      background: #FEF3C7;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 5px 8px;
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+    .mhb-title {
+      font-size: 8.5px;
+      font-weight: 900;
+      color: #92400E;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .mhb-action {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .mhb-action code {
+      background: #FFFFFF;
+      border: 1px solid var(--memphis-black);
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-size: 9.5px;
+    }
+    .mhb-metrics {
+      display: flex;
+      gap: 8px;
+      font-size: 8.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+    .mhb-metrics b {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Candidate Action Reason in Matrix (Item 4) */
+    .matrix-action-reason {
+      font-size: 8.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.25;
+      margin-top: 2px;
+      max-width: 200px;
+    }
+    #matrix-card:hover .matrix-action-reason,
+    #matrix-card.is-expanded .matrix-action-reason {
+      max-width: 320px;
+    }
+
+    /* Subway Header and Path Switcher Tabs (Item 3) */
+    .subway-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .path-switcher-tabs {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .path-tab-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--memphis-black);
+      border-radius: var(--radius-sm);
+      padding: 2px 6px;
+      font-size: 9px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      cursor: pointer;
+      box-shadow: 1px 1px 0px var(--memphis-black);
+      transition: all 0.15s ease;
+    }
+    .path-tab-btn:hover {
+      background: var(--memphis-yellow-light);
+      transform: translateY(-1px);
+    }
+    .path-tab-btn.active {
+      background: var(--memphis-coral);
+      color: #FFFFFF;
+      border-color: var(--memphis-black);
+      box-shadow: 1.5px 1.5px 0px var(--memphis-black);
+    }
+    .choke-point-callout {
+      font-size: 9.5px;
+      color: #064E3B;
+      background: var(--memphis-mint-light);
+      border: 1.5px solid #059669;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    /* Cytoscape Highlighted Path Classes */
+    .path-selected-node {
+      border-width: 4px !important;
+      border-color: var(--memphis-coral) !important;
+      background-color: var(--memphis-yellow) !important;
+    }
+    .path-selected-edge {
+      line-color: var(--memphis-coral) !important;
+      target-arrow-color: var(--memphis-coral) !important;
+      width: 4px !important;
+      z-index: 99 !important;
     }
 
     /* Responsive Table Padding for Matrix Card */
@@ -1893,6 +2117,7 @@
         <span class="hover-tag">HOVER TO EXPAND ⤢</span>
       </div>
 
+      <div id="matrix-quick-summary"></div>
       <div id="matrix-container" class="table-container" data-lenis-prevent>
         <p style="color:var(--text-ethereal); padding:20px; text-align:center;">No simulations run yet.</p>
       </div>
@@ -2929,6 +3154,11 @@ async function resetDemo() {
       $('graph-subway-container').innerHTML = '';
       $('graph-subway-container').style.display = 'none';
     }
+    if ($('matrix-quick-summary')) {
+      $('matrix-quick-summary').innerHTML = '';
+    }
+    const benignBadge = $('benign-graph-badge');
+    if (benignBadge) benignBadge.remove();
     activeKindFilter = null;
     document.querySelectorAll('.legend-pill').forEach(pill => pill.classList.remove('active'));
     $('decision-content').innerHTML = `<p style="color:var(--text-muted); padding: 20px 0;">Demo graph successfully restored (${result.nodes} nodes). Select an alert to investigate.</p>`;
@@ -2958,8 +3188,120 @@ function describeRecommendation(rec, row, initial) {
   return `${tradeoff} Review the candidate matrix for the other simulated choices.`;
 }
 
+let currentInvestigationData = null;
+let activePathIdx = 0;
+
+window.selectAttackPath = function(idx) {
+  if (!window.currentInvestigationData || !window.currentInvestigationData.evidence_paths) return;
+  const paths = window.currentInvestigationData.evidence_paths;
+  if (idx < 0 || idx >= paths.length) return;
+  activePathIdx = idx;
+  renderSubway(window.currentInvestigationData, activePathIdx);
+
+  if (cy) {
+    cy.elements().removeClass('path-selected-node path-selected-edge obsidian-dimmed');
+    const selectedPath = paths[idx];
+    const nodeIds = selectedPath.ids;
+    const targetNodes = cy.nodes().filter(n => nodeIds.includes(n.id()));
+
+    for (let i = 0; i < nodeIds.length - 1; i++) {
+      const src = nodeIds[i];
+      const tgt = nodeIds[i + 1];
+      const edges = cy.edges().filter(e =>
+        (e.source().id() === src && e.target().id() === tgt) ||
+        (e.source().id() === tgt && e.target().id() === src)
+      );
+      edges.addClass('path-selected-edge');
+    }
+    targetNodes.addClass('path-selected-node');
+
+    const activeElements = cy.elements('.path-selected-node, .path-selected-edge');
+    cy.elements().difference(activeElements).addClass('obsidian-dimmed');
+
+    if (targetNodes.length > 0) {
+      cy.animate({
+        center: { eles: targetNodes },
+        duration: 350
+      });
+    }
+  }
+};
+
+function renderSubway(data, selectedIdx = 0) {
+  const subwayBar = $('graph-subway-container');
+  if (!subwayBar) return;
+  const paths = data.evidence_paths || [];
+  if (paths.length === 0) {
+    if (data.is_benign) {
+      subwayBar.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; width:100%; font-size:10px; font-weight:800; color:#065F46; background:var(--memphis-mint-light); border:1.5px solid #059669; padding:4px 8px; border-radius:var(--radius-sm);">
+          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#10B981;"></span>
+          BENIGN ACTIVITY · NO CRITICAL ATTACK PATHS TO CROWN JEWEL IDENTIFIED (MONITOR ONLY)
+        </div>
+      `;
+      subwayBar.style.display = 'flex';
+    } else {
+      subwayBar.innerHTML = '';
+      subwayBar.style.display = 'none';
+    }
+    return;
+  }
+
+  const p = paths[selectedIdx] || paths[0];
+  const tabs = paths.map((path, idx) => {
+    return `<button type="button" class="path-tab-btn ${idx === selectedIdx ? 'active' : ''}" onclick="window.selectAttackPath(${idx})">Route ${idx + 1} (${path.ids.length - 1} Hops)</button>`;
+  }).join('');
+
+  const hops = p.ids.map((id, idx) => {
+    const isLast = idx === p.ids.length - 1;
+    const isFirst = idx === 0;
+    const rel = p.types[idx];
+    const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : (isFirst ? 'entry-point' : '')}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${esc(id)}</button>`;
+    const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
+    return nodeBadge + edgeBadge;
+  }).join('');
+
+  let chokePoint = null;
+  if (paths.length > 1) {
+    const candidateNodes = new Set(paths[0].ids.slice(1, -1));
+    for (let i = 1; i < paths.length; i++) {
+      const currentIds = new Set(paths[i].ids);
+      for (const node of candidateNodes) {
+        if (!currentIds.has(node)) candidateNodes.delete(node);
+      }
+    }
+    if (candidateNodes.size > 0) {
+      chokePoint = Array.from(candidateNodes)[0];
+    }
+  } else if (paths.length === 1 && paths[0].ids.length > 2) {
+    chokePoint = paths[0].ids[1];
+  }
+
+  const chokePointHtml = chokePoint ? `
+    <div class="choke-point-callout">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span><b>Critical Choke Point Identified:</b> <code>${esc(chokePoint)}</code> appears on 100% of attack paths. Severing it blocks all routes to Crown Jewel.</span>
+    </div>
+  ` : '';
+
+  subwayBar.innerHTML = `
+    <div class="subway-header-row">
+      <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span class="subway-strip-label" style="margin-right:2px;">Attack Paths (${paths.length} Identified):</span>
+        <div class="path-switcher-tabs">${tabs}</div>
+      </div>
+      <div style="font-size:9px; font-weight:700; color:var(--text-muted);">Inspecting Route ${selectedIdx + 1} of ${paths.length}</div>
+    </div>
+    <div class="subway-route-wrap">${hops}</div>
+    ${chokePointHtml}
+  `;
+  subwayBar.style.display = 'flex';
+}
+
 function render(data) {
   if (!data.initial) return;
+  window.currentInvestigationData = data;
   const rec = data.recommendation;
   const ini = data.initial;
   const ex = data.executed;
@@ -3019,31 +3361,9 @@ function render(data) {
   const circumference = 276.46;
   const initialOffset = circumference - (circumference * currentScore) / 100;
 
-  // Active Multi-Hop Attack Route Stepper (Docked above Cytoscape Canvas)
-  const subwayBar = $('graph-subway-container');
-  if (subwayBar) {
-    if (data.evidence_paths && data.evidence_paths.length > 0) {
-      const p0 = data.evidence_paths[0];
-      const hops = p0.ids.map((id, idx) => {
-        const isLast = idx === p0.ids.length - 1;
-        const rel = p0.types[idx];
-        const nodeBadge = `<button type="button" class="subway-node-badge ${isLast ? 'crown-jewel' : ''}" onclick="window.inspectNodeById && window.inspectNodeById('${esc(id)}')" onmouseenter="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', true)" onmouseleave="window.highlightNodeHover && window.highlightNodeHover('${esc(id)}', false)">${esc(id)}</button>`;
-        const edgeBadge = rel ? `<span class="subway-edge-badge" title="Relationship type">—${esc(rel)}→</span>` : '';
-        return nodeBadge + edgeBadge;
-      }).join('');
-      subwayBar.innerHTML = `
-        <span class="subway-strip-label">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          Active Attack Route (${p0.ids.length - 1} Hops):
-        </span>
-        <div class="subway-route-wrap">${hops}</div>
-      `;
-      subwayBar.style.display = 'flex';
-    } else {
-      subwayBar.innerHTML = '';
-      subwayBar.style.display = 'none';
-    }
-  }
+  // Render Multi-Route Stepper (Item 3)
+  activePathIdx = 0;
+  renderSubway(data, activePathIdx);
 
   // Decision Trade-Off Comparison (Why this action vs alternatives)
   const chosenRow = recRow || data.matrix[0];
@@ -3080,7 +3400,7 @@ function render(data) {
     </div>
   `;
 
-  // Persistent Graph Memory Feed (if historical incidents exist in FalkorDB)
+  // Persistent Graph Memory Feed
   const memoryFeed = (data.history && data.history.length > 0)
     ? `<div class="memory-box">
         <div class="memory-title">
@@ -3096,7 +3416,45 @@ function render(data) {
       </div>`
     : '';
 
+  // Persistent FalkorDB Incident Memory Notice (Item 1)
+  const memoryEscalationNotice = (data.falkordb_memory && data.falkordb_memory.has_memory) ? `
+    <div class="falkordb-memory-card" id="falkordb-memory-notice">
+      <div class="falkordb-memory-title">
+        <span class="memory-glow-dot"></span>
+        FalkorDB Persistent Incident Memory Active
+      </div>
+      <div class="falkordb-memory-body">
+        Retrieved prior incident <b>${esc(data.falkordb_memory.incident_id)}</b> from FalkorDB: Prior containment was executed on <code>${esc(data.falkordb_memory.prior_target)}</code> under <b>${esc(data.falkordb_memory.prior_alert)}</b>.
+      </div>
+      <div class="falkordb-memory-impact">
+        ⚡ POLICY ESCALATION: Repeated intrusion detected. Containment policy escalated to <code>${esc(rec.action)} ${esc(rec.target || '')}</code> to eliminate lateral re-compromise vector.
+      </div>
+    </div>
+  ` : '';
+
+  // Risk Drivers & Deterministic Formula Breakdown (Item 5)
+  const riskDriversWidget = `
+    <div class="risk-breakdown-card">
+      <div class="rb-header">
+        <span>Risk Drivers (FalkorDB Path Reachability)</span>
+        <span class="rb-formula-pill">Score = min(100, round(Σ C×P×R × 100))</span>
+      </div>
+      ${(ini.terms && ini.terms.length > 0) ? ini.terms.map(t => `
+        <div class="rb-grid">
+          <div class="rb-item"><span>Target:</span> <b>${esc(t.target)}</b></div>
+          <div class="rb-item"><span>Criticality (C):</span> <b>${t.criticality}</b></div>
+          <div class="rb-item"><span>Privilege (P):</span> <b>${t.privilege}</b></div>
+          <div class="rb-item"><span>Reach Factor (R):</span> <b>${ex ? '0.0 (SEVERED)' : t.reach_probability}</b></div>
+        </div>
+      `).join('') : `
+        <div style="font-size:8.5px; color:var(--text-muted); padding:2px;">Zero reachability to Crown Jewels · Residual Risk = 0</div>
+      `}
+    </div>
+  `;
+
   $('decision-content').innerHTML = `
+    ${memoryEscalationNotice}
+
     <div class="decision-head-grid">
       <div class="risk-instrument-row">
         <div class="risk-gauge-container">
@@ -3127,6 +3485,8 @@ function render(data) {
       </div>
     </div>
 
+    ${riskDriversWidget}
+
     ${actionButton}
 
     ${ACTION_NOTICE ? `<div class="action-notice ${ACTION_NOTICE.startsWith('CHECK') ? 'mismatch' : ''}" role="status">${esc(ACTION_NOTICE)}</div>` : ''}
@@ -3150,7 +3510,26 @@ function render(data) {
     animateScoreCounter(scoreCounter, currentScore);
   }
 
-  // Render Containment Matrix Table
+  // Matrix Quick Recommendation Highlight Box (Item 2)
+  const quickSummaryEl = $('matrix-quick-summary');
+  if (quickSummaryEl) {
+    quickSummaryEl.innerHTML = `
+      <div class="matrix-highlight-box">
+        <div class="mhb-title">★ Recommended Response Policy</div>
+        <div class="mhb-action">
+          <code>${esc(rec.action)} ${esc(rec.target || '')}</code>
+          <span class="pill-tag pill-pareto">PARETO OPTIMAL</span>
+        </div>
+        <div class="mhb-metrics">
+          <span>Residual: <b>${recRow?.residual_risk ?? 0}/100</b></span>
+          <span>Paths: <b>${recRow?.paths_broken ?? 0}/${recRow?.paths_before ?? 0} Broken</b></span>
+          <span>Disruption: <b>${esc(recRow?.impact_label ?? 'LOW')} (${recRow?.impact ?? 1.0})</b></span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Render Containment Matrix Table with Candidate Reasons (Item 4)
   const rows = data.matrix.map(row => {
     const isRecommended = row.action === rec.action && row.target === rec.target;
     const badge = row.dominated_by
@@ -3158,6 +3537,7 @@ function render(data) {
       : `<span class="pill-tag pill-pareto">PARETO OPTIMAL</span>`;
     
     const riskBarColor = row.residual_risk > 70 ? 'var(--memphis-coral)' : (row.residual_risk > 40 ? 'var(--memphis-orange)' : 'var(--memphis-mint)');
+    const reasonText = row.reason ? `<div class="matrix-action-reason">${esc(row.reason)}</div>` : '';
 
     return `
       <tr class="${isRecommended ? 'recommended-row' : ''}" 
@@ -3170,7 +3550,10 @@ function render(data) {
           data-impact-label="${esc(row.impact_label)}" 
           data-dominated="${row.dominated_by ? '1' : '0'}"
           title="Hover or click to preview what-if simulation on graph">
-        <td><b>${esc(row.action)}</b></td>
+        <td>
+          <b>${esc(row.action)}</b>
+          ${reasonText}
+        </td>
         <td><code style="color:var(--text-primary); font-size:11px; font-family:'JetBrains Mono'; background:#FFFFFF; padding:2px 6px; border-radius:3px; border:1.5px solid var(--memphis-black); font-weight:700;">${esc(row.target || '—')}</code></td>
         <td>
           <div style="font-family:'JetBrains Mono', monospace; font-weight:800; color:var(--text-primary);">${row.residual_risk}</div>
@@ -3508,6 +3891,21 @@ async function drawGraph() {
   const data = await (await fetch(`/api/graph/${INV}`)).json();
   const inactive = new Set(data.nodes.filter(n => n.status !== 'ACTIVE').map(n => n.id));
 
+  // Benign watermark indicator if 0 critical attack paths found (Item 6)
+  const existingBenignBadge = $('benign-graph-badge');
+  if (data.is_benign) {
+    if (!existingBenignBadge) {
+      const b = document.createElement('div');
+      b.id = 'benign-graph-badge';
+      b.style.cssText = 'position:absolute; top:12px; left:12px; z-index:20; padding:6px 10px; font-size:9.5px; font-weight:800; border:2px solid #059669; background:#ECFDF5; color:#065F46; box-shadow:2px 2px 0px #065F46; border-radius:4px; font-family:"JetBrains Mono", monospace;';
+      b.innerHTML = '🛡️ LOCAL EGO-TOPOLOGY · BENIGN BASELINE (NO CRITICAL ATTACK PATHS TO CROWN JEWEL)';
+      const wrap = $('cy').parentElement;
+      if (wrap) wrap.appendChild(b);
+    }
+  } else {
+    if (existingBenignBadge) existingBenignBadge.remove();
+  }
+
   const total = (data.nodes && data.nodes.length) || 1;
   const elements = data.nodes.map((n, idx) => ({
     data: {
@@ -3750,6 +4148,32 @@ async function drawGraph() {
           'border-color': '#2563EB'
         }
       },
+      {
+        selector: 'node.path-selected-node',
+        style: {
+          'opacity': 1,
+          'border-width': 5,
+          'border-color': '#0F172A',
+          'background-color': '#FFE033',
+          'width': 48,
+          'height': 48,
+          'z-index': 100
+        }
+      },
+      {
+        selector: 'edge.path-selected-edge',
+        style: {
+          'opacity': 1,
+          'width': 4.5,
+          'line-color': '#FF3366',
+          'target-arrow-color': '#FF3366',
+          'text-background-color': '#FFE4E6',
+          'text-border-color': '#FF3366',
+          'text-border-width': 2,
+          'color': '#BE123C',
+          'z-index': 99
+        }
+      },
 
       /* --- WHAT-IF SANDBOX DIFF PREVIEW STYLES --- */
       {
@@ -3847,6 +4271,9 @@ async function drawGraph() {
     if (cy !== graphInstance) return;
     graphInstance.fit(undefined, 50);
     initObsidianPhysics(graphInstance);
+    if (window.currentInvestigationData && window.currentInvestigationData.evidence_paths && window.currentInvestigationData.evidence_paths.length > 0) {
+      window.selectAttackPath(activePathIdx || 0);
+    }
   });
   layout.run();
 }

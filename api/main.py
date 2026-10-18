@@ -94,6 +94,8 @@ def health():
         node_count = node_res[0][0] if node_res else 0
         edge_res = g.query("MATCH ()-[r]->() RETURN count(r)").result_set
         edge_count = edge_res[0][0] if edge_res else 0
+        quarantined_res = g.query("MATCH (n) WHERE n.status = 'QUARANTINED' RETURN count(n)").result_set
+        quarantined_count = quarantined_res[0][0] if quarantined_res else 0
         latency_ms = round((time.perf_counter() - start) * 1000, 2)
         return {
             "status": "healthy",
@@ -101,6 +103,7 @@ def health():
             "latency_ms": latency_ms,
             "node_count": node_count,
             "edge_count": edge_count,
+            "quarantined_count": quarantined_count,
             "synthetic_dataset": True,
         }
     except Exception as exc:
@@ -228,6 +231,7 @@ def investigation(investigation_id: str):
         "evidence_paths": record["base_paths"][:3],
         "evidence_path_count": len(record["base_paths"]),
         "executed": record.get("executed"),
+        "falkordb_memory": record.get("falkordb_memory"),
     }
 
 
@@ -237,6 +241,41 @@ def subgraph(investigation_id: str):
     if not record:
         raise HTTPException(404, "unknown investigation")
     ids = sorted({node_id for path in record["base_paths"] for node_id in path["ids"]})
+    
+    # If 0 critical paths found, fetch the local benign ego-network around the subject
+    if not ids and record.get("subject"):
+        subj = record["subject"]
+        ego_res = graph().query(
+            """
+            MATCH (s {id:$subj})-[r:OWNS|LOGS_INTO|AUTHENTICATES_TO|USED_BY|ABOUT*1..2]-(m)
+            RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE'),
+                   m.id, labels(m)[0], m.name, coalesce(m.status, 'ACTIVE')
+            LIMIT 15
+            """,
+            {"subj": subj}
+        ).result_set
+        ego_nodes = {}
+        for r in ego_res:
+            ego_nodes[r[0]] = {"id": r[0], "label": r[1], "name": r[2], "status": r[3]}
+            ego_nodes[r[4]] = {"id": r[4], "label": r[5], "name": r[6], "status": r[7]}
+        if not ego_nodes:
+            s_row = graph().query("MATCH (s {id:$subj}) RETURN s.id, labels(s)[0], s.name, coalesce(s.status, 'ACTIVE')", {"subj": subj}).result_set
+            if s_row:
+                ego_nodes[subj] = {"id": s_row[0][0], "label": s_row[0][1], "name": s_row[0][2], "status": s_row[0][3]}
+        edge_res = graph().query(
+            """
+            MATCH (a)-[r]->(b)
+            WHERE a.id IN $ids AND b.id IN $ids
+            RETURN a.id, b.id, type(r)
+            """,
+            {"ids": list(ego_nodes.keys())}
+        ).result_set if ego_nodes else []
+        return {
+            "nodes": list(ego_nodes.values()),
+            "edges": [{"source": r[0], "target": r[1], "type": r[2]} for r in edge_res],
+            "is_benign": True,
+        }
+
     query = """MATCH (n) WHERE n.id IN $ids
 RETURN n.id, labels(n)[0], n.name, coalesce(n.status, 'ACTIVE')"""
     rows = graph().query(query, {"ids": ids}).result_set
@@ -247,6 +286,7 @@ RETURN n.id, labels(n)[0], n.name, coalesce(n.status, 'ACTIVE')"""
     return {
         "nodes": [{"id": row[0], "label": row[1], "name": row[2], "status": row[3]} for row in rows],
         "edges": [{"source": source, "target": target, "type": kind} for source, target, kind in sorted(edges)],
+        "is_benign": False,
     }
 
 

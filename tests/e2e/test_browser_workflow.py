@@ -23,12 +23,17 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         response = page.goto(BASE_URL, wait_until="networkidle")
         assert response and response.status == 200
         assert "NEXUS" in page.title()
-        assert page.locator("#alert option").count() == 3
+        assert page.locator("#alert option").count() in (3, 4)
         expect(page.locator("#mode")).to_have_value("mock")
         expect(page.locator("#guided-demo")).to_contain_text("Run guided demo")
         expect(page.locator(".demo-guide")).to_contain_text("no model key required")
         assert page.locator("#matrix-card").evaluate("el => el.getBoundingClientRect().width") > page.locator("#decision-card").evaluate("el => el.getBoundingClientRect().width")
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-home-desktop.png"), full_page=True)
+
+        # Reset to ensure clean initial graph state
+        page.once("dialog", lambda dialog: dialog.accept())
+        page.locator("#reset").click()
+        page.locator("#decision-content").filter(has_text="Demo graph successfully restored").wait_for()
 
         # 2. Run the one-click guided investigation
         page.locator("#guided-demo").click()
@@ -124,7 +129,7 @@ def test_investigate_contain_rollback_reset_and_responsive_layout():
         page.once("dialog", lambda dialog: dialog.accept())
         page.locator("#reset").click()
         page.locator("#decision-content").filter(has_text="Demo graph successfully restored").wait_for()
-        assert page.locator("#alert option").count() == 3
+        assert page.locator("#alert option").count() in (3, 4)
 
         # Verify no console or unhandled page errors occurred
         assert page_errors == []
@@ -140,6 +145,11 @@ def test_sandbox_diff_preview_and_live_cypher_repl():
         page.on("pageerror", lambda error: page_errors.append(f"{error}\n{error.stack}"))
 
         page.goto(BASE_URL, wait_until="networkidle")
+
+        # Reset to ensure clean initial graph state
+        page.once("dialog", lambda dialog: dialog.accept())
+        page.locator("#reset").click()
+        page.locator("#decision-content").filter(has_text="Demo graph successfully restored").wait_for()
 
         # 1. Run investigation to populate matrix
         page.locator("#guided-demo").click()
@@ -195,6 +205,85 @@ def test_sandbox_diff_preview_and_live_cypher_repl():
 
         # Screenshot the 11/10 additions
         page.screenshot(path=str(SCREENSHOT_DIR / "nexus-cypher-repl-sandbox-diff.png"), full_page=True)
+
+        assert page_errors == []
+        browser.close()
+
+
+def test_persistent_memory_path_switcher_and_risk_drivers():
+    SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
+        page_errors = []
+        page.on("pageerror", lambda error: page_errors.append(f"{error}\n{error.stack}"))
+
+        page.goto(BASE_URL, wait_until="networkidle")
+
+        # 0. Reset to ensure clean state
+        page.once("dialog", lambda dialog: dialog.accept())
+        page.locator("#reset").click()
+        page.locator("#decision-content").filter(has_text="Demo graph successfully restored").wait_for()
+
+        # 1. Investigate ALT-1042
+        page.locator("#alert").select_option("ALT-1042")
+        page.locator("#go").click()
+        page.locator(".action-header").filter(has_text="Recommended Response Policy").wait_for()
+
+        # Check Matrix highlight box & candidate action reasons (Item 2 & 4)
+        expect(page.locator(".matrix-highlight-box")).to_be_visible()
+        expect(page.locator(".matrix-highlight-box")).to_contain_text("isolate_device")
+        expect(page.locator(".matrix-action-reason").first).to_be_visible()
+
+        # Check Risk Drivers Breakdown widget (Item 5)
+        expect(page.locator(".risk-breakdown-card")).to_be_visible()
+        expect(page.locator(".rb-formula-pill")).to_contain_text("Score = min(100, round(Σ C×P×R × 100))")
+
+        # Check Attack Path Switcher tabs (Item 3)
+        expect(page.locator(".path-switcher-tabs")).to_be_visible()
+        tab_buttons = page.locator(".path-tab-btn")
+        assert tab_buttons.count() >= 3
+        expect(tab_buttons.first).to_have_class(re.compile(r"active"))
+        expect(page.locator(".choke-point-callout")).to_contain_text("LAPTOP-042")
+
+        # Switch to Route 2
+        tab_buttons.nth(1).click()
+        expect(tab_buttons.nth(1)).to_have_class(re.compile(r"active"))
+        expect(tab_buttons.first).not_to_have_class(re.compile(r"active"))
+
+        # Verify Cytoscape path highlighting classes
+        page.wait_for_function("cy.elements('.path-selected-node, .path-selected-edge').length > 0")
+
+        # Screenshot the multi-route stepper and risk breakdown
+        page.screenshot(path=str(SCREENSHOT_DIR / "nexus-multi-path-risk-drivers.png"), full_page=True)
+
+        # 2. Contain ALT-1042
+        page.locator("#contain").click()
+        page.locator(".mutation-alert").wait_for()
+
+        # 3. Investigate repeat offender ALT-1043 (Item 1)
+        page.locator("#alert").select_option("ALT-1043")
+        page.locator("#go").click()
+        page.locator("#falkordb-memory-notice").wait_for()
+
+        # Verify FalkorDB persistent memory escalation is demonstrable
+        expect(page.locator("#falkordb-memory-notice")).to_contain_text("FalkorDB Persistent Incident Memory Active")
+        expect(page.locator("#falkordb-memory-notice")).to_contain_text("POLICY ESCALATION")
+        expect(page.locator(".action-name")).to_contain_text("REVOKE_CREDENTIALS U-ALEX")
+
+        # Screenshot persistent memory escalation
+        page.screenshot(path=str(SCREENSHOT_DIR / "nexus-persistent-memory-escalation.png"), full_page=True)
+
+        # 4. Investigate benign alert ALT-3310 (Item 6)
+        page.locator("#alert").select_option("ALT-3310")
+        page.locator("#go").click()
+        page.locator(".action-name").filter(has_text="MONITOR ONLY").wait_for()
+        expect(page.locator("#benign-graph-badge")).to_be_visible()
+
+        # Reset demo graph at completion
+        page.once("dialog", lambda dialog: dialog.accept())
+        page.locator("#reset").click()
+        page.locator("#decision-content").filter(has_text="Demo graph successfully restored").wait_for()
 
         assert page_errors == []
         browser.close()

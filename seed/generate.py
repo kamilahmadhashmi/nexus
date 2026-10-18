@@ -5,7 +5,7 @@ random.seed(42)
 ROLES = ["engineer", "analyst", "sales", "support", "finance", "hr"]
 LABELS = [
     "Person", "Device", "Server", "ServiceAccount", "Service", "DataStore",
-    "Vulnerability", "IPAddress", "Alert",
+    "Vulnerability", "IPAddress", "Alert", "Incident",
 ]
 
 
@@ -182,6 +182,23 @@ def scenario3(graph):
     )
 
 
+def scenario4(graph):
+    # Scenario 4 (FalkorDB Persistent Memory & Repeat Offender Demo):
+    # Attacker attempts secondary lateral authentication using U-ALEX credentials.
+    # When investigated AFTER ALT-1042 containment, NEXUS retrieves the prior Incident
+    # node from FalkorDB and escalates the response policy from standard credential revocation
+    # to full account quarantine.
+    node(graph, "IPAddress", "IP-203-0-113-99", region="BR", reputation="suspicious")
+    edge(graph, "IP-203-0-113-99", "U-ALEX", "USED_BY", 0.0)
+    alert(
+        graph,
+        "ALT-1043",
+        "REPEAT_ACCESS_ATTEMPT",
+        "U-ALEX",
+        "ALT-1043 | REPEAT_ACCESS_ATTEMPT | user alex.m secondary API access attempt from suspicious IP 203.0.113.99 | subject U-ALEX",
+    )
+
+
 def build():
     graph_client = client()
     try:
@@ -195,6 +212,7 @@ def build():
     scenario1(target_graph)
     scenario2(target_graph)
     scenario3(target_graph)
+    scenario4(target_graph)
     count = target_graph.query("MATCH (n) RETURN count(n)").result_set[0][0]
     print(f"seeded nodes: {count}")
     return count

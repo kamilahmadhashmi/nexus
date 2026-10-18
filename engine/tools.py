@@ -81,9 +81,72 @@ def find_choke_points(start_id, top_n=5):
     }
 
 
+def query_incident_memory(start_id):
+    current_graph = graph()
+    query = """
+    MATCH (inc:Incident)
+    WHERE inc.status = 'CONTAINED'
+    OPTIONAL MATCH (inc)-[:CONTAINED_ENTITY]->(target)
+    RETURN inc.id AS incident_id, inc.alert_id AS alert_id, inc.action AS action,
+           coalesce(target.id, inc.target) AS target, inc.timestamp AS timestamp,
+           inc.status AS status
+    ORDER BY inc.timestamp DESC
+    LIMIT 5
+    """
+    try:
+        rows = current_graph.query(query).result_set
+    except Exception:
+        rows = []
+    history = [
+        {
+            "incident_id": r[0],
+            "alert_id": r[1],
+            "action": r[2],
+            "target": r[3],
+            "timestamp": r[4],
+            "status": r[5],
+        }
+        for r in rows
+    ]
+
+    # Check if this subject or owned/connected devices have active containment history in FalkorDB
+    related_query = """
+    MATCH (inc:Incident)
+    WHERE inc.status = 'CONTAINED'
+    MATCH (s {id: $id})
+    MATCH (inc)-[:CONTAINED_ENTITY]->(t)
+    WHERE t.id = s.id OR inc.target = s.id OR (s)-[:OWNS|LOGS_INTO|AUTHENTICATES_TO*1..2]-(t)
+    RETURN inc.id, inc.alert_id, inc.action, coalesce(t.id, inc.target)
+    LIMIT 1
+    """
+    escalation = None
+    try:
+        matched = current_graph.query(related_query, {"id": start_id}).result_set
+        if matched and matched[0][0]:
+            inc_id, alert_id, action, target = matched[0]
+            escalation = {
+                "has_memory": True,
+                "incident_id": inc_id,
+                "prior_alert": alert_id,
+                "prior_action": action,
+                "prior_target": target,
+                "reason": f"Repeat incident detected in FalkorDB: entity {target} was previously contained under {alert_id} ({action}).",
+            }
+    except Exception:
+        pass
+
+    return {
+        "memory_records": history,
+        "escalation": escalation,
+        "cypher": query.strip(),
+    }
+
+
 def simulate_containment(start_id, alert_id):
+    memory_info = query_incident_memory(start_id)
+    escalation = memory_info.get("escalation")
     simulation = simulate.simulate(start_id, alert_id)
-    decision = pareto.recommend(simulation["initial"]["score"], simulation["matrix"])
+    decision = pareto.recommend(simulation["initial"]["score"], simulation["matrix"], prior_incident=escalation)
     investigation_id = store.new_id()
     selected = decision["row"]
     record = dict(simulation)
@@ -93,7 +156,9 @@ def simulate_containment(start_id, alert_id):
         "target": selected["target"],
         "requires_approval": decision["requires_approval"],
         "why": decision["why"],
+        "memory_escalated": decision.get("memory_escalated", False),
     }
+    record["falkordb_memory"] = escalation
     record["executed"] = None
     record["change_log"] = []
     store.save(investigation_id, record)
@@ -102,6 +167,7 @@ def simulate_containment(start_id, alert_id):
         "initial_risk": simulation["initial"]["score"],
         "matrix": simulation["matrix"],
         "recommendation": record["recommendation"],
+        "falkordb_memory": escalation,
         "cypher": simulation["cypher"],
     }
 
@@ -120,6 +186,7 @@ FUNCS = {
     "blast_radius": blast_radius,
     "calculate_risk": calculate_risk,
     "find_choke_points": find_choke_points,
+    "query_incident_memory": query_incident_memory,
     "simulate_containment": simulate_containment,
     "execute_containment": execute_containment,
     "rollback": rollback,
@@ -131,6 +198,7 @@ TOOL_DEFS = [
     {"name": "blast_radius", "description": "Count reachable entities by type.", "input_schema": {"type": "object", "properties": {"start_id": {"type": "string"}}, "required": ["start_id"]}},
     {"name": "calculate_risk", "description": "Calculate deterministic graph-grounded risk.", "input_schema": {"type": "object", "properties": {"start_id": {"type": "string"}}, "required": ["start_id"]}},
     {"name": "find_choke_points", "description": "Rank nodes by attack-path coverage.", "input_schema": {"type": "object", "properties": {"start_id": {"type": "string"}, "top_n": {"type": "integer"}}, "required": ["start_id"]}},
+    {"name": "query_incident_memory", "description": "Retrieve historical security incidents and containment records from FalkorDB graph memory.", "input_schema": {"type": "object", "properties": {"start_id": {"type": "string"}}, "required": ["start_id"]}},
     {"name": "simulate_containment", "description": "Simulate candidate containment actions on disposable graph copies.", "input_schema": {"type": "object", "properties": {"start_id": {"type": "string"}, "alert_id": {"type": "string"}}, "required": ["start_id", "alert_id"]}},
     {"name": "execute_containment", "description": "Execute only a previously simulated action, respecting human approval.", "input_schema": {"type": "object", "properties": {"investigation_id": {"type": "string"}, "action": {"type": "string"}, "target": {"type": ["string", "null"]}}, "required": ["investigation_id", "action"]}},
     {"name": "rollback", "description": "Restore graph status and edge weights changed by an investigation.", "input_schema": {"type": "object", "properties": {"investigation_id": {"type": "string"}}, "required": ["investigation_id"]}},

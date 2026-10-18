@@ -93,7 +93,7 @@ def test_api_mock_flow():
 
     with TestClient(app) as web:
         alerts = web.get("/api/alerts")
-        assert alerts.status_code == 200 and len(alerts.json()) == 3
+        assert alerts.status_code == 200 and len(alerts.json()) >= 3
         investigation = web.post("/api/investigate", json={"alert_id": "ALT-1042", "mode": "mock"})
         assert investigation.status_code == 200
         body = investigation.json()
@@ -105,3 +105,30 @@ def test_api_mock_flow():
         assert web.get(f"/api/investigations/{inv}").json()["executed"]["action"] == "isolate_device"
         rolled = web.post("/api/rollback", json={"investigation_id": inv})
         assert rolled.json()["risk_now"] == 80
+
+
+def test_falkordb_persistent_memory_escalation():
+    from fastapi.testclient import TestClient
+    from api.main import app
+
+    with TestClient(app) as web:
+        # Reset to ensure clean graph state
+        web.post("/api/reset")
+        # 1. Investigate and contain ALT-1042
+        inv1 = web.post("/api/investigate", json={"alert_id": "ALT-1042", "mode": "mock"}).json()["investigation_id"]
+        web.post("/api/contain", json={"investigation_id": inv1})
+
+        # 2. Run follow-up investigation on ALT-1043 (repeat offender)
+        inv2_res = web.post("/api/investigate", json={"alert_id": "ALT-1043", "mode": "mock"})
+        assert inv2_res.status_code == 200
+        data2 = inv2_res.json()
+
+        # 3. Verify that FalkorDB memory was retrieved and visibly escalated the policy
+        assert data2.get("falkordb_memory") is not None
+        assert data2["falkordb_memory"]["has_memory"] is True
+        assert data2["falkordb_memory"]["prior_alert"] == "ALT-1042"
+        assert "ESCALATED VIA FALKORDB PERSISTENT MEMORY" in data2["recommendation"]["why"]
+
+        # Cleanup: rollback ALT-1042 and reset
+        web.post("/api/rollback", json={"investigation_id": inv1})
+        web.post("/api/reset")

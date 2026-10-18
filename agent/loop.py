@@ -56,6 +56,7 @@ def finish(trace, summary, mode, investigation_id):
         "evidence_paths": record["base_paths"][:3] if record else [],
         "evidence_path_count": len(record["base_paths"]) if record else 0,
         "executed": record["executed"] if record else None,
+        "falkordb_memory": record.get("falkordb_memory") if record else None,
     }
 
 
@@ -64,11 +65,15 @@ def explain(record):
     lines = [
         f"Decision: {pick['action']} {pick['target'] or ''} ({pick['why']})".strip(),
         f"Evidence: initial risk {initial['score']} {initial['label']} from {len(record['base_paths'])} attack paths.",
-        "Alternatives considered:",
     ]
+    if record.get("falkordb_memory"):
+        mem = record["falkordb_memory"]
+        lines.append(f"FalkorDB Persistent Memory: Prior incident {mem['incident_id']} on {mem['prior_target']} under {mem['prior_alert']} retrieved.")
+    lines.append("Alternatives considered:")
     for row in record["matrix"]:
         dominated = f" [dominated by {row['dominated_by']}]" if row.get("dominated_by") else ""
-        lines.append(f" - {row['action']} {row['target'] or ''}: residual risk {row['residual_risk']}, impact {row['impact_label']} ({row['impact']}){dominated}")
+        reason = f" - Reason: {row['reason']}" if row.get("reason") else ""
+        lines.append(f" - {row['action']} {row['target'] or ''}: residual risk {row['residual_risk']}, impact {row['impact_label']} ({row['impact']}){dominated}{reason}")
     executed = record.get("executed")
     if executed:
         lines.append(f"Verification: risk {executed['before']} -> {executed['after']}, matches simulation: {executed['verified']}")
