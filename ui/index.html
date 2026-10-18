@@ -281,10 +281,95 @@
       background: #111827;
       border-color: #334155;
     }
+    [data-theme="dark"] .evidence-panel h4 {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .evidence-panel p {
+      color: #CBD5E1;
+    }
+    [data-theme="dark"] .evidence-panel details {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .evidence-panel summary {
+      color: #F8FAFC;
+    }
     [data-theme="dark"] .evidence-item {
       background: #1E293B;
       border-color: #334155;
       color: #F8FAFC;
+    }
+    [data-theme="dark"] .action-banner {
+      background: #064E3B;
+      border-color: #10B981;
+    }
+    [data-theme="dark"] .action-header {
+      color: #6EE7B7;
+    }
+    [data-theme="dark"] .action-name {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .action-reason {
+      color: #A7F3D0;
+    }
+    [data-theme="dark"] .evidence-summary-deck {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .esd-value {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .esd-desc {
+      color: #94A3B8;
+    }
+    [data-theme="dark"] .before-after-scoreboard {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .before-after-scoreboard.is-contained-active {
+      background: #064E3B;
+      border-color: #10B981;
+    }
+    [data-theme="dark"] .bas-col {
+      background: #1E293B;
+      border-color: #334155;
+      box-shadow: 1px 1px 0px #0F172A;
+    }
+    [data-theme="dark"] .risk-breakdown-card {
+      background: #111827;
+      border-color: #334155;
+    }
+    [data-theme="dark"] .rb-header {
+      border-bottom-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .rb-formula-pill {
+      background: #1E293B;
+      border-color: #334155;
+      color: #FACC15;
+    }
+    [data-theme="dark"] .rb-item b {
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .terms-glossary-bar {
+      background: #1E293B;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .term-pill {
+      background: #111827;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .tradeoff-item {
+      background: #111827;
+      border-color: #334155;
+      color: #F8FAFC;
+    }
+    [data-theme="dark"] .tradeoff-item.winner {
+      background: #064E3B;
+      border-color: #10B981;
     }
     [data-theme="dark"] .risk-instrument-row {
       background: #1A2234;
@@ -972,9 +1057,9 @@
 
     /* Right Side Panel: Threat Analysis & Containment */
     #decision-card {
-      width: 320px;
-      min-width: 280px;
-      max-width: 340px;
+      width: 380px;
+      min-width: 340px;
+      max-width: 420px;
       flex-shrink: 0;
       height: 100%;
       display: flex;
@@ -985,7 +1070,7 @@
       box-shadow: var(--shadow-offset-md);
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 10px 12px;
+      padding: 12px 14px;
       position: relative;
       z-index: 20;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1081,27 +1166,28 @@
     }
 
     /* Responsive Head Grid for Decision Card */
-    /* Head Grid for Decision Card */
     .decision-head-grid {
       display: grid;
-      grid-template-columns: 130px minmax(0, 1fr);
-      gap: 8px;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 10px;
       align-items: stretch;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       flex-shrink: 0;
     }
 
     /* Action Buttons in Decision Card */
     #decision-card #contain, #decision-card #rollback {
       width: 100%;
-      padding: 7px 12px;
-      font-size: 11px;
+      padding: 9px 14px;
+      font-size: 11.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
       justify-content: center;
-      margin-top: 4px;
-      margin-bottom: 6px;
+      margin-top: 6px;
+      margin-bottom: 8px;
       flex-shrink: 0;
       text-align: center;
-      white-space: nowrap;
+      border-radius: var(--radius-sm);
     }
     #decision-card .btn-text-full { display: inline; }
     #decision-card .btn-text-min { display: none; }
@@ -1169,13 +1255,13 @@
       background: #FFFFFF;
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
-      padding: 6px 8px;
+      padding: 8px 10px;
       box-shadow: var(--shadow-offset-xs);
-      font-size: 9.5px;
+      font-size: 9px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      margin-bottom: 4px;
+      gap: 4px;
+      margin-bottom: 6px;
     }
     .rb-header {
       display: flex;
@@ -1185,33 +1271,40 @@
       font-size: 9px;
       color: var(--text-primary);
       text-transform: uppercase;
+      letter-spacing: 0.4px;
       border-bottom: 1.5px solid var(--memphis-black);
-      padding-bottom: 2px;
-      margin-bottom: 2px;
+      padding-bottom: 4px;
+      margin-bottom: 4px;
+      gap: 6px;
     }
     .rb-formula-pill {
       font-family: 'JetBrains Mono', monospace;
       font-size: 8px;
       background: var(--memphis-yellow-light);
-      padding: 1px 4px;
+      padding: 2px 5px;
       border-radius: 2px;
       border: 1px solid var(--memphis-black);
       font-weight: 800;
+      white-space: nowrap;
     }
     .rb-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2px 6px;
-      font-size: 8.5px;
+      gap: 3px 10px;
+      font-size: 9px;
     }
     .rb-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       color: var(--text-muted);
+      font-weight: 600;
     }
     .rb-item b {
       color: var(--text-primary);
       font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      font-weight: 800;
     }
 
     /* Matrix Quick Recommendation Banner (Item 2) */
@@ -1544,45 +1637,43 @@
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      padding: 6px 10px;
+      padding: 7px 10px;
       margin-bottom: 0;
       flex-shrink: 0;
       min-width: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 2px;
     }
     .action-header {
-      font-size: 9.5px;
+      font-size: 8.5px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--memphis-black);
-      margin-bottom: 1px;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
     }
     .action-name {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 900;
       color: var(--memphis-black);
       display: flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: font-size 0.2s ease;
-    }
-    #decision-card:hover .action-name,
-    #decision-card.is-expanded .action-name {
-      font-size: 12.5px;
+      align-items: flex-start;
+      gap: 5px;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.25;
+      margin-top: 1px;
+      margin-bottom: 2px;
     }
     .action-reason {
-      font-size: 10px;
+      font-size: 9.5px;
       color: var(--text-secondary);
       margin-top: 1px;
-      line-height: 1.25;
+      line-height: 1.35;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -1590,22 +1681,23 @@
     .evidence-panel {
       background: var(--memphis-lilac-light);
       border: var(--memphis-border-thin);
-      border-radius: var(--radius-md);
+      border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      padding: 14px 18px;
-      margin-top: 14px;
+      padding: 10px 12px;
+      margin-top: 8px;
     }
     .evidence-panel h4 {
-      font-size: 12.5px;
+      font-size: 11.5px;
       font-weight: 900;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       color: var(--memphis-black);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .evidence-panel p {
-      font-size: 12px;
+      font-size: 10px;
       color: var(--text-secondary);
-      line-height: 1.5;
+      line-height: 1.4;
     }
     .evidence-panel details {
       margin-top: 10px;
@@ -1698,25 +1790,26 @@
     .tradeoff-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 8px;
-      margin-top: 12px;
+      gap: 6px;
+      margin-top: 8px;
     }
     .tradeoff-item {
       background: #FFFFFF;
       border: 1.5px solid var(--memphis-black);
       border-radius: 4px;
-      padding: 8px 12px;
-      font-size: 11.5px;
-      box-shadow: 2px 2px 0px var(--memphis-black);
+      padding: 7px 9px;
+      font-size: 9.5px;
+      line-height: 1.35;
+      box-shadow: 1px 1px 0px var(--memphis-black);
     }
     .tradeoff-item.winner {
       background: var(--memphis-mint-light);
-      border: 2px solid var(--memphis-black);
+      border: 1.5px solid var(--memphis-black);
     }
     .tradeoff-label {
       font-weight: 900;
       text-transform: uppercase;
-      font-size: 10px;
+      font-size: 8.5px;
       letter-spacing: 0.5px;
       margin-bottom: 2px;
     }
@@ -2407,22 +2500,23 @@
 
     .evidence-summary-deck {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 8px;
-      margin: 10px 0;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 10px;
+      margin: 8px 0;
       background: #FFFFFF;
       border: 1.5px solid var(--memphis-black);
       border-radius: var(--radius-sm);
-      padding: 10px 12px;
+      padding: 9px 11px;
       box-shadow: var(--shadow-offset-xs);
     }
     .esd-item {
       display: flex;
       flex-direction: column;
       gap: 2px;
+      min-width: 0;
     }
     .esd-label {
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -2430,18 +2524,25 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      line-height: 1.1;
     }
     .esd-value {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
       font-weight: 900;
       color: var(--text-primary);
+      line-height: 1.2;
+      word-break: break-word;
     }
     .esd-desc {
-      font-size: 9.5px;
+      font-size: 9px;
       color: var(--text-secondary);
       font-weight: 600;
-      line-height: 1.25;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .before-after-scoreboard {
@@ -2449,8 +2550,8 @@
       border: 2px solid var(--memphis-black);
       border-radius: var(--radius-sm);
       box-shadow: var(--shadow-offset-xs);
-      padding: 10px 14px;
-      margin: 10px 0;
+      padding: 9px 11px;
+      margin: 8px 0;
     }
     .before-after-scoreboard.is-contained-active {
       background: var(--memphis-mint-light);
@@ -2461,67 +2562,74 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 1.5px dashed #CBD5E1;
-      padding-bottom: 6px;
-      margin-bottom: 8px;
-      font-size: 10.5px;
+      padding-bottom: 5px;
+      margin-bottom: 6px;
+      font-size: 10px;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
+      gap: 6px;
     }
     .bas-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 1.15fr 0.95fr 0.9fr;
+      gap: 6px;
       text-align: center;
     }
     .bas-col {
       background: var(--memphis-canvas);
       border: 1.5px solid var(--memphis-black);
       border-radius: 4px;
-      padding: 6px 8px;
+      padding: 6px 4px;
       box-shadow: 1px 1px 0px var(--memphis-black);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 72px;
     }
     .bas-title {
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 900;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       color: var(--text-muted);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
+      line-height: 1.1;
     }
     .bas-stat {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 13.5px;
+      font-size: 12.5px;
       font-weight: 900;
+      line-height: 1.2;
     }
     .bas-sub {
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 700;
       color: var(--text-muted);
-      margin-top: 2px;
+      margin-top: 3px;
+      line-height: 1.15;
     }
 
     .terms-glossary-bar {
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
+      flex-direction: column;
+      gap: 4px;
+      padding: 7px 9px;
       background: var(--memphis-yellow-light);
       border: 1.5px solid var(--memphis-black);
       border-radius: var(--radius-sm);
-      margin-top: 10px;
-      font-size: 10px;
+      margin-top: 8px;
+      font-size: 9px;
+      line-height: 1.3;
     }
     .term-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      display: block;
       background: #FFFFFF;
       border: 1px solid var(--memphis-black);
       border-radius: 3px;
-      padding: 2px 6px;
-      font-weight: 800;
-      cursor: help;
+      padding: 4px 6px;
+      font-size: 8.5px;
+      line-height: 1.3;
       box-shadow: 1px 1px 0px var(--memphis-black);
     }
 
@@ -5229,26 +5337,34 @@ function render(data) {
   const beforeAfterScoreboard = `
     <div class="before-after-scoreboard ${ex ? 'is-contained-active' : ''}">
       <div class="bas-header">
-        <div style="display:flex; align-items:center; gap:6px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          <span>Before & After Containment Scoreboard</span>
+        <div style="display:flex; align-items:center; gap:6px; min-width:0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="flex-shrink:0;"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Before & After Scoreboard</span>
         </div>
-        <span class="pill-tag ${ex ? 'pill-pareto' : 'pill-dominated'}" style="font-size:8.5px;">${ex ? 'LIVE MITIGATED' : 'SIMULATION PREVIEW'}</span>
+        <span class="pill-tag ${ex ? 'pill-pareto' : 'pill-dominated'}" style="font-size:8px; flex-shrink:0;">${ex ? 'LIVE MITIGATED' : 'SIMULATION PREVIEW'}</span>
       </div>
       <div class="bas-grid">
         <div class="bas-col">
           <div class="bas-title">Action Applied</div>
-          <div class="bas-stat" style="font-size:11px; color:${ex ? 'var(--status-success-text)' : 'var(--text-primary)'};">${ex ? `✓ ${esc(ex.action.toUpperCase())} ${esc(ex.target || '')}` : `PROPOSED: ${esc(rec.action.toUpperCase())} ${esc(rec.target || '')}`}</div>
+          <div class="bas-stat" style="font-size:10px; line-height:1.2; font-weight:900; color:${ex ? 'var(--status-success-text)' : 'var(--text-primary)'}; word-break:break-word;">
+            ${ex ? `✓ ${esc(ex.action.replace(/_/g, ' '))} <span style="font-family:'JetBrains Mono'; font-size:10px; font-weight:800; display:block; margin-top:2px;">${esc(ex.target || '')}</span>` : `<span style="font-size:8px; color:var(--text-muted); display:block; letter-spacing:0.5px; margin-bottom:2px;">PROPOSED</span>${esc(rec.action.replace(/_/g, ' '))} <span style="font-family:'JetBrains Mono'; font-size:10px; font-weight:800; display:block; margin-top:2px;">${esc(rec.target || '')}</span>`}
+          </div>
           <div class="bas-sub">${ex ? 'Committed to Graph' : 'Pareto Optimal Choice'}</div>
         </div>
         <div class="bas-col">
           <div class="bas-title">Risk Trajectory</div>
-          <div class="bas-stat" style="color:${ex ? 'var(--status-success-text)' : 'var(--status-critical-text)'};">${ex ? `${ex.before} → ${ex.after}` : `${ini.score} → ${recRow ? recRow.residual_risk : ini.score}`} <span style="font-size:10px; font-weight:700;">/100</span></div>
-          <div class="bas-sub">${ex ? (ex.after === 0 ? '✓ Complete Reduction' : 'Residual risk within SLA') : `Predicted -${ini.score - (recRow ? recRow.residual_risk : ini.score)} pts`}</div>
+          <div class="bas-stat" style="font-size:13px; line-height:1.2; font-weight:900; color:${ex ? 'var(--status-success-text)' : 'var(--status-critical-text)'};">
+            ${ex ? `${ex.before} → ${ex.after}` : `${ini.score} → ${recRow ? recRow.residual_risk : ini.score}`}
+            <span style="font-size:9.5px; font-weight:700; color:var(--text-muted); display:block; margin-top:2px;">/ 100 max</span>
+          </div>
+          <div class="bas-sub">${ex ? (ex.after === 0 ? '✓ Complete Reduction' : 'Residual within SLA') : `Predicted -${ini.score - (recRow ? recRow.residual_risk : ini.score)} pts`}</div>
         </div>
         <div class="bas-col">
           <div class="bas-title">Reachable Routes</div>
-          <div class="bas-stat" style="color:${ex ? 'var(--status-success-text)' : 'var(--status-warning-text)'};">${ex ? `0 / ${data.matrix[0]?.paths_before ?? 3}` : `${recRow ? `${recRow.paths_before - recRow.paths_broken} / ${recRow.paths_before}` : '0'}`} <span style="font-size:9.5px; font-weight:700;">Reachable</span></div>
+          <div class="bas-stat" style="font-size:13px; line-height:1.2; font-weight:900; color:${ex ? 'var(--status-success-text)' : 'var(--status-warning-text)'};">
+            ${ex ? `0 / ${data.matrix[0]?.paths_before ?? 3}` : `${recRow ? `${recRow.paths_before - recRow.paths_broken} / ${recRow.paths_before}` : '0'}`}
+            <span style="font-size:9px; font-weight:700; color:var(--text-muted); display:block; margin-top:2px;">Routes Active</span>
+          </div>
           <div class="bas-sub">${ex ? '✓ All Paths Severed' : `${recRow?.paths_broken ?? 0} Routes Cut`}</div>
         </div>
       </div>
@@ -5258,16 +5374,16 @@ function render(data) {
   // Terms Glossary Bar
   const termsGlossaryBar = `
     <div class="terms-glossary-bar">
-      <span style="font-weight:900; text-transform:uppercase; font-size:9px; color:var(--text-muted); margin-right:4px;">Key Concepts:</span>
-      <span class="term-pill" title="Pareto Optimal: A containment action that achieves the maximum risk reduction without causing unnecessary business disruption. No other action has lower risk AND lower disruption.">
+      <div style="font-weight:900; text-transform:uppercase; font-size:8.5px; color:var(--text-muted); letter-spacing:0.5px;">Key Concept Telemetry</div>
+      <div class="term-pill" title="Pareto Optimal: Maximum risk reduction without unnecessary business disruption.">
         <b>Pareto Optimal:</b> Lowest disruption at required risk reduction
-      </span>
-      <span class="term-pill" title="Choke Point: A single intermediate graph node through which 100% of known attack routes must pass to reach the Crown Jewel. Containing this node severs all paths in a single action.">
-        <b>Choke Point:</b> Single node blocking 100% of attack paths
-      </span>
-      <span class="term-pill" title="Reach Factor: The graph probability of reaching the high-criticality data store along surviving traversal hops. When a choke point is isolated, Reach Factor drops to 0.0.">
-        <b>Reach Factor:</b> Surviving graph path reachability (0.0 = severed)
-      </span>
+      </div>
+      <div class="term-pill" title="Choke Point: Single node blocking 100% of attack paths.">
+        <b>Choke Point:</b> Single node blocking 100% of attack routes
+      </div>
+      <div class="term-pill" title="Reach Factor: Surviving graph path reachability to critical assets.">
+        <b>Reach Factor:</b> Surviving graph reachability (0.0 = severed)
+      </div>
     </div>
   `;
 
