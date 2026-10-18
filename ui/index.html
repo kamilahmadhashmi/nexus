@@ -545,10 +545,12 @@
       display: flex;
       gap: 12px;
       align-items: stretch;
-      height: clamp(520px, calc(100vh - 130px), 640px);
+      min-height: 640px;
+      height: clamp(660px, calc(100vh - 110px), 880px);
       width: 100%;
       margin-bottom: 14px;
       position: relative;
+      transition: height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Left/Center Stage: Attack Path Traversal Topology (Hero Canvas taking majority of screen) */
@@ -566,14 +568,14 @@
       border-radius: var(--radius-md);
       background: var(--memphis-card-bg);
       box-shadow: var(--shadow-offset-md);
-      transition: box-shadow 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     /* Right Side Panel: Threat Analysis & Containment */
     #decision-card {
-      width: 380px;
-      min-width: 340px;
-      max-width: 420px;
+      width: 320px;
+      min-width: 280px;
+      max-width: 340px;
       flex-shrink: 0;
       height: 100%;
       display: flex;
@@ -584,9 +586,22 @@
       box-shadow: var(--shadow-offset-md);
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 12px 14px;
+      padding: 10px 12px;
       position: relative;
       z-index: 20;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Fullscreen / Maximized Graph Mode */
+    .cockpit-stage.graph-maximized {
+      height: clamp(740px, calc(100vh - 80px), 960px);
+    }
+    .cockpit-stage.graph-maximized #decision-card {
+      display: none !important;
+    }
+    .cockpit-stage.graph-maximized #graph-card {
+      width: 100% !important;
+      flex: 1 1 100% !important;
     }
 
     /* ==========================================================================
@@ -1742,7 +1757,7 @@
       position: relative;
       flex: 1;
       width: 100%;
-      min-height: 200px;
+      min-height: 500px;
       overflow: hidden;
       border: var(--memphis-border-thin);
       border-radius: var(--radius-sm);
@@ -2208,6 +2223,10 @@
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Fit View
           </button>
+          <button id="graph-maximize-btn" class="secondary" onclick="window.toggleGraphMaximize && window.toggleGraphMaximize()" title="Toggle full-width maximized graph view">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+            <span id="graph-max-text">Maximize</span>
+          </button>
         </div>
       </div>
 
@@ -2547,13 +2566,13 @@ const initialLayout = {
   name: 'cose',
   animate: false,
   fit: true,
-  padding: 50,
-  componentSpacing: 140,
-  nodeRepulsion: node => 18000,
+  padding: 35,
+  componentSpacing: 160,
+  nodeRepulsion: node => 22000,
   nodeOverlap: 50,
-  idealEdgeLength: edge => 220,
+  idealEdgeLength: edge => 240,
   edgeElasticity: edge => 80,
-  gravity: 0.12,
+  gravity: 0.10,
   numIter: 800
 };
 
@@ -4847,6 +4866,22 @@ window.togglePanelPin = function(panelId) {
         cy.fit(undefined, 35);
       }, 360);
     }
+  }
+};
+
+window.toggleGraphMaximize = function() {
+  const stage = document.querySelector('.cockpit-stage');
+  const maxBtnText = document.getElementById('graph-max-text');
+  if (!stage) return;
+  const isMax = stage.classList.toggle('graph-maximized');
+  if (maxBtnText) {
+    maxBtnText.textContent = isMax ? 'Restore' : 'Maximize';
+  }
+  if (typeof cy !== 'undefined' && cy) {
+    setTimeout(() => {
+      cy.resize();
+      cy.fit(undefined, 40);
+    }, 280);
   }
 };
 
