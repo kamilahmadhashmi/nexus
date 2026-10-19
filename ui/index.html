@@ -3651,8 +3651,15 @@ window.toggleTheme = function() {
 (function initTheme() {
   let pref = 'light';
   try {
-    pref = localStorage.getItem('nexus-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-  } catch(e) {}
+    const saved = localStorage.getItem('nexus-theme');
+    if (saved === 'dark' || saved === 'light') {
+      pref = saved;
+    } else {
+      pref = 'light';
+    }
+  } catch(e) {
+    pref = 'light';
+  }
   window.applyTheme(pref);
 })();
 
