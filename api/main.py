@@ -192,8 +192,21 @@ def investigate(request: InvestigateReq):
     if not rows:
         raise HTTPException(404, "unknown alert")
     mock = request.mode == "mock" or os.getenv("MOCK_LLM") == "1" or not os.getenv("ANTHROPIC_API_KEY")
-    runner = loop.run_scripted if mock else loop.run_llm
-    res = runner(request.alert_id, rows[0][0], request.autonomous)
+    if mock:
+        runner = loop.run_scripted
+    else:
+        try:
+            import anthropic  # noqa: F401
+            runner = loop.run_llm
+        except Exception:
+            runner = loop.run_scripted
+    try:
+        res = runner(request.alert_id, rows[0][0], request.autonomous)
+    except Exception as exc:
+        if runner != loop.run_scripted:
+            res = loop.run_scripted(request.alert_id, rows[0][0], request.autonomous)
+        else:
+            raise HTTPException(500, f"Investigation failed: {exc}")
     try:
         hist_rows = graph().query(
             """
